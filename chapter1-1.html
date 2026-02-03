@@ -1,0 +1,2138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Дашборд координации — Подраздел 1.1</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .management-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-20);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      grid-column: span 2;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(255, 105, 0, 0.04));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: var(--space-12);
+      margin-bottom: var(--space-6);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+    }
+
+    .filter-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-10);
+      position: relative;
+      z-index: 1;
+      align-items: center;
+    }
+
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: var(--radius-md);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: var(--font-size-label);
+    }
+
+    .filter-chip:hover {
+      border-color: var(--color-accent-400);
+      color: var(--material-neutral-content-primary);
+    }
+
+    .filter-chip--active {
+      background: linear-gradient(135deg, var(--color-accent-700), var(--color-accent-500));
+      border-color: var(--color-accent-500);
+      color: var(--color-neutral-0);
+      box-shadow: 0 12px 24px rgba(21, 85, 255, 0.35);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-20);
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-card__label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .kpi-card__value {
+      font-family: var(--font-alt);
+      font-size: 42px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 48px;
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+    }
+
+    .kpi-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-card__trend {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .section-block {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 28px;
+      line-height: 36px;
+      letter-spacing: -0.4px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .chart-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .chart-card__title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-20);
+    }
+
+    .charts-grid--2cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .kpi-widgets-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-20);
+      align-items: stretch;
+      justify-items: stretch;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-body);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table th,
+    .table td {
+      padding: var(--space-16) var(--space-24);
+      text-align: left;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .table th {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label-xl);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+    }
+
+    .table th:not(:last-child) {
+      border-right: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .table td {
+      color: var(--material-neutral-content-primary);
+      background-color: var(--material-neutral-surface-primary);
+    }
+
+    .table tbody tr {
+      transition: background-color 0.15s ease;
+    }
+
+    .table tbody tr:hover {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .table td:not(:last-child) {
+      border-right: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-4) var(--space-8);
+      border-radius: 999px;
+      font-size: var(--font-size-caption);
+      font-weight: 500;
+    }
+
+    .status-badge--success {
+      background: var(--material-lite-positive-surface);
+      color: var(--material-lite-positive-content-primary);
+    }
+
+    .status-badge--warning {
+      background: var(--material-lite-warning-surface);
+      color: var(--material-lite-warning-content-primary);
+    }
+
+    .status-badge--danger {
+      background: var(--material-lite-negative-surface);
+      color: var(--material-lite-negative-content-primary);
+    }
+
+    .status-badge--info {
+      background: var(--material-lite-info-surface);
+      color: var(--material-lite-info-content-primary);
+    }
+
+    .chart-container {
+      height: 300px;
+      position: relative;
+      padding: var(--space-12);
+    }
+
+    .chart-container--small {
+      height: 200px;
+    }
+
+    .chart-container--medium {
+      height: 250px;
+    }
+
+    .kpi-widget {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
+
+    .kpi-widget:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-widget--warning {
+      border-color: var(--color-warning-300);
+      background: linear-gradient(180deg, rgba(255, 185, 106, 0.05) 0%, var(--material-neutral-surface-primary) 20%);
+    }
+
+    .kpi-widget--danger {
+      border-color: var(--color-negative-300);
+      background: linear-gradient(180deg, rgba(251, 44, 54, 0.05) 0%, var(--material-neutral-surface-primary) 20%);
+    }
+
+    .kpi-widget__alert {
+      position: absolute;
+      top: var(--space-12);
+      right: var(--space-12);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .kpi-widget__alert--warning {
+      background: var(--material-lite-warning-surface);
+      color: var(--material-lite-warning-content-primary);
+    }
+
+    .kpi-widget__alert--danger {
+      background: var(--material-lite-negative-surface);
+      color: var(--material-lite-negative-content-primary);
+    }
+
+    .kpi-widget__deviation {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-caption);
+      font-weight: 500;
+      margin-top: var(--space-4);
+    }
+
+    .kpi-widget__deviation--warning {
+      background: var(--material-lite-warning-surface);
+      color: var(--material-lite-warning-content-primary);
+    }
+
+    .kpi-widget__deviation--danger {
+      background: var(--material-lite-negative-surface);
+      color: var(--material-lite-negative-content-primary);
+    }
+
+    .kpi-widget__deviation--success {
+      background: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .kpi-widget__header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .kpi-widget__title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      color: var(--material-neutral-content-secondary);
+      margin: 0;
+    }
+
+    .kpi-widget__values {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-8);
+      flex-wrap: wrap;
+    }
+
+    .kpi-widget__fact {
+      font-family: var(--font-alt);
+      font-size: 32px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 1;
+    }
+
+    .kpi-widget__plan {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-tertiary);
+    }
+
+    .kpi-widget__progress {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .kpi-widget__progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--material-neutral-highlight-primary);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .kpi-widget__progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #0066ff, #51a2ff);
+      transition: width 0.6s ease;
+      position: relative;
+    }
+
+    .kpi-widget__progress-fill--warning {
+      background: linear-gradient(90deg, #ffb96a, #ff9900);
+    }
+
+    .kpi-widget__progress-fill--danger {
+      background: linear-gradient(90deg, #fb2c36, #d91e2a);
+    }
+
+    .kpi-widget__progress-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .kpi-widget__percentage {
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+    }
+
+    .kpi-widget__percentage--success {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-widget__percentage--warning {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-widget__percentage--danger {
+      color: var(--color-negative-300);
+    }
+
+    .vnt-filter-select {
+      padding: var(--space-8) var(--space-12);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      cursor: pointer;
+      min-width: 220px;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .vnt-filter-select:hover {
+      border-color: var(--color-accent-400);
+    }
+
+    .vnt-filter-select:focus {
+      outline: none;
+      border-color: var(--color-accent-500);
+      box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+    }
+
+    .signals-card {
+      background: linear-gradient(165deg, rgba(255, 105, 0, 0.12), rgba(0, 102, 255, 0.12));
+      border: 1px solid var(--color-warning-200);
+      color: var(--material-neutral-content-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .signals-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .signals-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-8);
+      font-family: var(--font-alt);
+      font-weight: var(--font-weight-label-xl);
+      font-size: var(--font-size-label-xl);
+      line-height: var(--line-height-label-xl);
+      letter-spacing: var(--letter-spacing-label-xl);
+      position: relative;
+      z-index: 1;
+    }
+
+    .signals-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: var(--space-10);
+      position: relative;
+      z-index: 1;
+    }
+
+    .signal-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-8);
+      align-items: center;
+      font-size: var(--font-size-body);
+    }
+
+    .signal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 105, 0, 0.1);
+    }
+
+    .signal-dot--high {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.12);
+    }
+
+    .signal-dot--warning {
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 185, 106, 0.15);
+    }
+
+
+    @media (max-width: 1200px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .charts-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .kpi-widgets-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .management-bar {
+        grid-template-columns: 1fr;
+      }
+
+      .management-panel {
+        grid-column: span 1;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-widgets-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-bar">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="chapter1.html">
+                <span class="back-link__icon"></span>
+                К разделу 1
+              </a>
+            </div>
+            <h1>1.1. Координация ФОИВ по НТР, ВНТ, ГП НТР</h1>
+            <p class="ty-body-lg ty-muted">
+              Мониторинг реализации государственной политики научно-технологического развития, координация деятельности федеральных органов исполнительной власти.
+            </p>
+          </div>
+          <div class="meta-row">
+            <span class="meta-pill">Последнее обновление: <strong>12.11.2025</strong></span>
+            <span class="meta-pill">Каналы данных: ФОИВ, РНТР, Роспатент</span>
+          </div>
+        </div>
+        <aside class="signals-card">
+          <div class="signals-title">
+            Сигналы
+          </div>
+          <ul class="signals-list">
+            <li class="signal-item">
+              <span class="signal-dot signal-dot--high"></span>
+              3 поручения просрочены более чем на 7 дней
+            </li>
+            <li class="signal-item">
+              <span class="signal-dot signal-dot--warning"></span>
+              План ГП НТР по показателю "НИОКР % ВВП" не выполняется
+            </li>
+            <li class="signal-item">
+              <span class="signal-dot signal-dot--warning"></span>
+              Минобрнауки системно нарушает сроки подготовки отчётов
+            </li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-card__label">Внутренние затраты на НИОКР (% ВВП)</div>
+          <div class="kpi-card__value kpi-card__value--green">
+            1.08<span style="font-size: 24px; font-weight: 400;">%</span>
+          </div>
+          <div class="kpi-card__trend">
+            <span>↗</span>
+            <span>+0.12% к прошлому году</span>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-card__label">Удельный вес внебюджетных источников</div>
+          <div class="kpi-card__value kpi-card__value--green">
+            68<span style="font-size: 24px; font-weight: 400;">%</span>
+          </div>
+          <div class="kpi-card__trend">
+            <span>↗</span>
+            <span>+2.3% к прошлому году</span>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-card__label">Исследования по направлениям ВНТ</div>
+          <div class="kpi-card__value kpi-card__value--green">
+            1,245
+          </div>
+          <div class="kpi-card__trend">
+            <span>↗</span>
+            <span>+127 за квартал</span>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-card__label">Доля решений КНТР, выполненных в срок</div>
+          <div class="kpi-card__value kpi-card__value--green">
+            92<span style="font-size: 24px; font-weight: 400;">%</span>
+          </div>
+          <div class="kpi-card__trend">
+            <span>→</span>
+            <span>Без изменений</span>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-card__label">Средний срок исполнения поручений</div>
+          <div class="kpi-card__value kpi-card__value--yellow">
+            18<span style="font-size: 24px; font-weight: 400;"> дней</span>
+          </div>
+          <div class="kpi-card__trend">
+            <span>↗</span>
+            <span>+2 дня к прошлому кварталу</span>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-card__label">Число заявок на патенты</div>
+          <div class="kpi-card__value kpi-card__value--green">
+            24.8<span style="font-size: 24px; font-weight: 400;"> тыс.</span>
+          </div>
+          <div class="kpi-card__trend">
+            <span>↗</span>
+            <span>+1.2 тыс. за год</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="charts-grid charts-grid--2cols">
+        <article class="chart-card">
+          <h3 class="chart-card__title">Место РФ в мире по исследованиям</h3>
+          <div class="chart-container">
+            <canvas id="chart-ranking"></canvas>
+          </div>
+        </article>
+        <article class="chart-card">
+          <h3 class="chart-card__title">Доля высокотехнологичных отраслей в ВВП</h3>
+          <div class="chart-container">
+            <canvas id="chart-hightech"></canvas>
+          </div>
+        </article>
+      </section>
+
+      <section class="charts-grid charts-grid--2cols">
+        <article class="chart-card">
+          <h3 class="chart-card__title">Публикации</h3>
+          <div class="chart-container">
+            <canvas id="chart-publications"></canvas>
+          </div>
+        </article>
+        <article class="chart-card">
+          <h3 class="chart-card__title">Исследователи</h3>
+          <div class="chart-container">
+            <canvas id="chart-researchers"></canvas>
+          </div>
+        </article>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Перечень приоритетов НТР и ВНТ</h2>
+        <div class="filter-toolbar" style="margin-bottom: var(--space-24);">
+          <label style="font-size: var(--font-size-label); color: var(--material-neutral-content-secondary); margin-right: var(--space-8);">Период:</label>
+          <select id="priorities-filter-period-from" class="vnt-filter-select" style="margin-right: var(--space-8);">
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025" selected>2025</option>
+          </select>
+          <span style="color: var(--material-neutral-content-secondary); margin: 0 var(--space-8);">—</span>
+          <select id="priorities-filter-period-to" class="vnt-filter-select">
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025" selected>2025</option>
+          </select>
+        </div>
+        <table class="table priorities-table">
+          <thead>
+            <tr>
+              <th>Технологическое направление</th>
+              <th>Исследования</th>
+              <th>Финансирование, млн руб.</th>
+              <th>Публикации</th>
+              <th>РИД</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Искусственный интеллект и машинное обучение</td>
+              <td><strong>245</strong></td>
+              <td><strong>2,845</strong></td>
+              <td><strong>1,845</strong></td>
+              <td><strong>234</strong></td>
+            </tr>
+            <tr>
+              <td>Квантовые технологии</td>
+              <td><strong>189</strong></td>
+              <td><strong>1,956</strong></td>
+              <td><strong>892</strong></td>
+              <td><strong>156</strong></td>
+            </tr>
+            <tr>
+              <td>Новые материалы и нанотехнологии</td>
+              <td><strong>156</strong></td>
+              <td><strong>1,234</strong></td>
+              <td><strong>678</strong></td>
+              <td><strong>189</strong></td>
+            </tr>
+            <tr>
+              <td>Биотехнологии и генная инженерия</td>
+              <td><strong>178</strong></td>
+              <td><strong>1,567</strong></td>
+              <td><strong>954</strong></td>
+              <td><strong>167</strong></td>
+            </tr>
+            <tr>
+              <td>Энергетика и энергосбережение</td>
+              <td><strong>142</strong></td>
+              <td><strong>1,123</strong></td>
+              <td><strong>723</strong></td>
+              <td><strong>142</strong></td>
+            </tr>
+            <tr>
+              <td>Аэрокосмические технологии</td>
+              <td><strong>335</strong></td>
+              <td><strong>3,456</strong></td>
+              <td><strong>1,567</strong></td>
+              <td><strong>278</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section-block">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-24); flex-wrap: wrap; gap: var(--space-16);">
+          <h2 class="section-block__title" style="margin: 0;">Исследования по направлениям ВНТ</h2>
+          <div class="filter-toolbar">
+            <label for="vnt-filter-customer" style="font-size: var(--font-size-label); color: var(--material-neutral-content-secondary); margin-right: var(--space-8);">Заказчик:</label>
+            <select id="vnt-filter-customer" class="vnt-filter-select">
+              <option value="all">Все ФОИВ</option>
+              <option value="minobrnauki">Минобрнауки России</option>
+              <option value="mincifry">Минцифры России</option>
+              <option value="rosatom">Росатом</option>
+              <option value="roskosmos">Роскосмос</option>
+              <option value="minenergo">Минэнерго России</option>
+              <option value="minzdrav">Минздрав России</option>
+              <option value="minpromtorg">Минпромторг России</option>
+            </select>
+            <label style="font-size: var(--font-size-label); color: var(--material-neutral-content-secondary); margin-left: var(--space-16); margin-right: var(--space-8);">Период:</label>
+            <select id="vnt-filter-period-from" class="vnt-filter-select" style="margin-right: var(--space-8);">
+              <option value="2021">2021</option>
+              <option value="2022">2022</option>
+              <option value="2023">2023</option>
+              <option value="2024">2024</option>
+              <option value="2025" selected>2025</option>
+            </select>
+            <span style="color: var(--material-neutral-content-secondary); margin: 0 var(--space-8);">—</span>
+            <select id="vnt-filter-period-to" class="vnt-filter-select">
+              <option value="2021">2021</option>
+              <option value="2022">2022</option>
+              <option value="2023">2023</option>
+              <option value="2024">2024</option>
+              <option value="2025" selected>2025</option>
+            </select>
+          </div>
+        </div>
+        <div class="charts-grid">
+        <article class="chart-card">
+            <h3 class="chart-card__title">Распределение исследований по направлениям ВНТ</h3>
+          <div class="chart-container">
+              <canvas id="chart-vnt-research"></canvas>
+          </div>
+        </article>
+        <article class="chart-card">
+            <h3 class="chart-card__title">Финансирование по направлениям ВНТ</h3>
+          <div class="chart-container">
+              <canvas id="chart-vnt-funding-directions"></canvas>
+          </div>
+        </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Финансирование исследований по источникам</h3>
+            <div class="chart-container">
+              <canvas id="chart-vnt-funding"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Публикации по направлениям ВНТ</h3>
+            <div class="chart-container">
+              <canvas id="chart-vnt-publications"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Результаты интеллектуальной деятельности (РИД)</h3>
+            <div class="chart-container">
+              <canvas id="chart-vnt-rid"></canvas>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Выполнение ключевых KPI ГП НТР</h2>
+        <div class="kpi-widgets-grid">
+          <article class="kpi-widget kpi-widget--warning">
+            <div class="kpi-widget__alert kpi-widget__alert--warning" title="Не достигнут план">!</div>
+            <div class="kpi-widget__header">
+              <h3 class="kpi-widget__title">НИОКР % ВВП</h3>
+              <div class="kpi-widget__values">
+                <span class="kpi-widget__fact">1.08<span style="font-size: 20px; font-weight: 400;">%</span></span>
+                <span class="kpi-widget__plan">из 1.2%</span>
+              </div>
+              <div class="kpi-widget__deviation kpi-widget__deviation--warning">
+                Отставание: 0.12 п.п. (10% от плана)
+              </div>
+            </div>
+            <div class="kpi-widget__progress">
+              <div class="kpi-widget__progress-bar">
+                <div class="kpi-widget__progress-fill kpi-widget__progress-fill--warning" style="width: 90%"></div>
+              </div>
+              <div class="kpi-widget__progress-info">
+                <span>Выполнение плана</span>
+                <span class="kpi-widget__percentage kpi-widget__percentage--warning">90%</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="kpi-widget">
+            <div class="kpi-widget__header">
+              <h3 class="kpi-widget__title">Исследования по ВНТ</h3>
+              <div class="kpi-widget__values">
+                <span class="kpi-widget__fact">1,245<span style="font-size: 20px; font-weight: 400;"> ед.</span></span>
+              </div>
+              <div class="kpi-widget__deviation kpi-widget__deviation--success">
+                Активных исследований по направлениям ВНТ
+              </div>
+            </div>
+            <div class="kpi-widget__progress">
+              <div class="kpi-widget__progress-bar">
+                <div class="kpi-widget__progress-fill" style="width: 100%"></div>
+              </div>
+              <div class="kpi-widget__progress-info">
+                <span>Всего исследований</span>
+                <span class="kpi-widget__percentage kpi-widget__percentage--success">1,245</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="kpi-widget">
+            <div class="kpi-widget__header">
+              <h3 class="kpi-widget__title">Число заявок на патенты</h3>
+              <div class="kpi-widget__values">
+                <span class="kpi-widget__fact">24.8<span style="font-size: 20px; font-weight: 400;"> тыс.</span></span>
+                <span class="kpi-widget__plan">из 25 тыс.</span>
+              </div>
+              <div class="kpi-widget__deviation kpi-widget__deviation--success">
+                Согласно плану
+              </div>
+            </div>
+            <div class="kpi-widget__progress">
+              <div class="kpi-widget__progress-bar">
+                <div class="kpi-widget__progress-fill" style="width: 99.2%"></div>
+              </div>
+              <div class="kpi-widget__progress-info">
+                <span>Выполнение плана</span>
+                <span class="kpi-widget__percentage kpi-widget__percentage--success">99.2%</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="kpi-widget">
+            <div class="kpi-widget__header">
+              <h3 class="kpi-widget__title">Публикации</h3>
+              <div class="kpi-widget__values">
+                <span class="kpi-widget__fact">178<span style="font-size: 20px; font-weight: 400;"> тыс.</span></span>
+                <span class="kpi-widget__plan">из 180 тыс.</span>
+              </div>
+              <div class="kpi-widget__deviation kpi-widget__deviation--success">
+                Согласно плану
+              </div>
+            </div>
+            <div class="kpi-widget__progress">
+              <div class="kpi-widget__progress-bar">
+                <div class="kpi-widget__progress-fill" style="width: 98.9%"></div>
+              </div>
+              <div class="kpi-widget__progress-info">
+                <span>Выполнение плана</span>
+                <span class="kpi-widget__percentage kpi-widget__percentage--success">98.9%</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="kpi-widget">
+            <div class="kpi-widget__header">
+              <h3 class="kpi-widget__title">Исследователи</h3>
+              <div class="kpi-widget__values">
+                <span class="kpi-widget__fact">318<span style="font-size: 20px; font-weight: 400;"> тыс.</span></span>
+                <span class="kpi-widget__plan">из 320 тыс.</span>
+              </div>
+              <div class="kpi-widget__deviation kpi-widget__deviation--success">
+                Согласно плану
+              </div>
+            </div>
+            <div class="kpi-widget__progress">
+              <div class="kpi-widget__progress-bar">
+                <div class="kpi-widget__progress-fill" style="width: 99.4%"></div>
+              </div>
+              <div class="kpi-widget__progress-info">
+                <span>Выполнение плана</span>
+                <span class="kpi-widget__percentage kpi-widget__percentage--success">99.4%</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="charts-grid">
+        <article class="chart-card">
+          <h3 class="chart-card__title">Статус поручений КНТР</h3>
+          <div class="chart-container">
+            <canvas id="chart-status"></canvas>
+          </div>
+        </article>
+        <article class="chart-card">
+          <h3 class="chart-card__title">Средний срок подготовки отчётов по ФОИВ</h3>
+          <div class="chart-container">
+            <canvas id="chart-reports"></canvas>
+          </div>
+        </article>
+        <article class="chart-card">
+          <h3 class="chart-card__title">Нагрузка по ФОИВ</h3>
+          <div class="chart-container">
+            <canvas id="chart-workload"></canvas>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+  <script>
+    Chart.defaults.color = '#64748b';
+    Chart.defaults.borderColor = '#f1f5f9';
+    Chart.defaults.font.family = 'system-ui, -apple-system, sans-serif';
+    Chart.defaults.font.size = 12;
+    
+    // Общие настройки для всех графиков
+    const commonOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false,
+          labels: {
+            usePointStyle: true,
+            padding: 15,
+            font: { size: 12, weight: '500' }
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(15, 23, 42, 0.95)',
+          padding: 12,
+          titleFont: { size: 13, weight: '600' },
+          bodyFont: { size: 12 },
+          cornerRadius: 8,
+          displayColors: true,
+          borderColor: '#e2e8f0',
+          borderWidth: 1
+        }
+      },
+      animation: {
+        duration: 800,
+        easing: 'easeOutQuart'
+      },
+      scales: {
+        x: {
+          grid: {
+            color: '#f1f5f9',
+            drawBorder: false,
+            lineWidth: 1
+          },
+          ticks: {
+            font: { size: 11 },
+            color: '#64748b',
+            padding: 8
+          }
+        },
+        y: {
+          grid: {
+            color: '#f1f5f9',
+            drawBorder: false,
+            lineWidth: 1
+          },
+          ticks: {
+            font: { size: 11 },
+            color: '#64748b',
+            padding: 8
+          }
+        }
+      }
+    };
+
+    // Место РФ в мире по исследованиям (горизонтальный бар)
+    const ctxRanking = document.getElementById('chart-ranking').getContext('2d');
+    const gradientRF = ctxRanking.createLinearGradient(0, 0, 400, 0);
+    gradientRF.addColorStop(0, '#0066ff');
+    gradientRF.addColorStop(1, '#51a2ff');
+    
+    const gradientOther = ctxRanking.createLinearGradient(0, 0, 400, 0);
+    gradientOther.addColorStop(0, '#f8fafc');
+    gradientOther.addColorStop(1, '#e2e8f0');
+
+    new Chart(document.getElementById('chart-ranking'), {
+      type: 'bar',
+      data: {
+        labels: ['США', 'Китай', 'Япония', 'Германия', 'Великобритания', 'Франция', 'РФ', 'Южная Корея', 'Канада', 'Италия'],
+        datasets: [{
+          label: 'Индекс научных публикаций',
+          data: [100, 95, 45, 42, 38, 35, 28, 27, 25, 24],
+          backgroundColor: function(context) {
+            const index = context.dataIndex;
+            const labels = ['США', 'Китай', 'Япония', 'Германия', 'Великобритания', 'Франция', 'РФ', 'Южная Корея', 'Канада', 'Италия'];
+            if (labels[index] === 'РФ') {
+              return gradientRF;
+            }
+            return gradientOther;
+          },
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 24,
+          categoryPercentage: 0.7,
+          barPercentage: 0.8
+        }]
+      },
+      options: {
+        ...commonOptions,
+        indexAxis: 'y',
+        scales: {
+          ...commonOptions.scales,
+          x: { 
+            ...commonOptions.scales.x,
+            beginAtZero: true, 
+            max: 100
+          }
+        }
+      }
+    });
+
+    // Доля высокотехнологичных отраслей в ВВП
+    const ctxHightech = document.getElementById('chart-hightech').getContext('2d');
+    const gradientHightech = ctxHightech.createLinearGradient(0, 0, 0, 300);
+    gradientHightech.addColorStop(0, 'rgba(0, 102, 255, 0.25)');
+    gradientHightech.addColorStop(1, 'rgba(0, 102, 255, 0.05)');
+
+    new Chart(document.getElementById('chart-hightech'), {
+      type: 'line',
+      data: {
+        labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Доля high-tech в ВВП, %',
+          data: [10.8, 11.2, 11.5, 11.9, 12.2, 12.4],
+          borderColor: '#0066ff',
+          backgroundColor: gradientHightech,
+          borderWidth: 3,
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          pointBackgroundColor: '#ffffff',
+          pointBorderColor: '#0066ff',
+          pointBorderWidth: 2,
+          tension: 0.5,
+          fill: true
+        }]
+      },
+      options: {
+        ...commonOptions,
+        scales: {
+          ...commonOptions.scales,
+          y: { 
+            ...commonOptions.scales.y,
+            beginAtZero: false, 
+            min: 10
+          }
+        }
+      }
+    });
+
+    // Публикации
+    const ctxPublications = document.getElementById('chart-publications').getContext('2d');
+    const gradientPublications = ctxPublications.createLinearGradient(0, 0, 0, 300);
+    gradientPublications.addColorStop(0, 'rgba(0, 102, 255, 0.25)');
+    gradientPublications.addColorStop(1, 'rgba(0, 102, 255, 0.05)');
+
+    new Chart(document.getElementById('chart-publications'), {
+      type: 'line',
+      data: {
+        labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Количество публикаций, тыс.',
+          data: [145, 152, 158, 165, 172, 178],
+          borderColor: '#0066ff',
+          backgroundColor: gradientPublications,
+          borderWidth: 3,
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          pointBackgroundColor: '#ffffff',
+          pointBorderColor: '#0066ff',
+          pointBorderWidth: 2,
+          tension: 0.5,
+          fill: true
+        }]
+      },
+      options: commonOptions
+    });
+
+    // Исследователи
+    const ctxResearchers = document.getElementById('chart-researchers').getContext('2d');
+    const gradientResearchers = ctxResearchers.createLinearGradient(0, 0, 0, 300);
+    gradientResearchers.addColorStop(0, 'rgba(0, 201, 81, 0.25)');
+    gradientResearchers.addColorStop(1, 'rgba(0, 201, 81, 0.05)');
+
+    new Chart(document.getElementById('chart-researchers'), {
+      type: 'line',
+      data: {
+        labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Число исследователей с публикациями, тыс.',
+          data: [285, 292, 298, 305, 312, 318],
+          borderColor: '#00c951',
+          backgroundColor: gradientResearchers,
+          borderWidth: 3,
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          pointBackgroundColor: '#ffffff',
+          pointBorderColor: '#00c951',
+          pointBorderWidth: 2,
+          tension: 0.5,
+          fill: true
+        }]
+      },
+      options: commonOptions
+    });
+
+    // Данные для фильтрации по ФОИВ и периодам
+    const vntDataByCustomerAndPeriod = {
+      all: {
+        all: {
+          research: [245, 335, 189, 178, 156, 142, 1126],
+          funding: [2845, 3456, 1956, 1567, 1234, 1123, 8567],
+          publications: [1845, 1567, 954, 892, 678, 723, 8567],
+          rid: [234, 278, 189, 156, 167, 142, 1123]
+        },
+        '2025': {
+          research: [45, 65, 35, 38, 28, 25, 206],
+          funding: [545, 656, 356, 367, 234, 223, 1567],
+          publications: [345, 467, 254, 292, 178, 123, 1567],
+          rid: [44, 58, 35, 36, 27, 22, 223]
+        },
+        '2024': {
+          research: [52, 68, 42, 44, 35, 32, 236],
+          funding: [645, 756, 456, 467, 334, 323, 1867],
+          publications: [445, 567, 354, 392, 278, 223, 1867],
+          rid: [54, 68, 42, 44, 37, 32, 323]
+        },
+        '2023': {
+          research: [48, 62, 38, 40, 32, 29, 228],
+          funding: [545, 656, 356, 367, 234, 223, 1567],
+          publications: [345, 467, 254, 292, 178, 123, 1567],
+          rid: [44, 58, 38, 40, 32, 29, 223]
+        },
+        '2022': {
+          research: [50, 70, 38, 36, 31, 28, 228],
+          funding: [600, 700, 388, 366, 300, 254, 2000],
+          publications: [395, 466, 292, 316, 244, 154, 2000],
+          rid: [46, 54, 38, 36, 31, 28, 254]
+        },
+        '2021': {
+          research: [50, 70, 36, 20, 30, 28, 228],
+          funding: [510, 688, 400, 0, 132, 100, 2166],
+          publications: [315, 0, 0, 0, 0, 0, 2166],
+          rid: [46, 32, 36, 0, 30, 28, 300]
+        }
+      }
+    };
+
+    // Данные для таблицы приоритетов по периодам
+    const prioritiesDataByPeriod = {
+      all: {
+        'Искусственный интеллект и машинное обучение': { research: 245, funding: 2845, publications: 1845, rid: 234 },
+        'Квантовые технологии': { research: 189, funding: 1956, publications: 892, rid: 156 },
+        'Новые материалы и нанотехнологии': { research: 156, funding: 1234, publications: 678, rid: 189 },
+        'Биотехнологии и генная инженерия': { research: 178, funding: 1567, publications: 954, rid: 167 },
+        'Энергетика и энергосбережение': { research: 142, funding: 1123, publications: 723, rid: 142 },
+        'Аэрокосмические технологии': { research: 335, funding: 3456, publications: 1567, rid: 278 }
+      },
+      '2025': {
+        'Искусственный интеллект и машинное обучение': { research: 45, funding: 545, publications: 345, rid: 44 },
+        'Квантовые технологии': { research: 35, funding: 356, publications: 254, rid: 35 },
+        'Новые материалы и нанотехнологии': { research: 28, funding: 234, publications: 178, rid: 27 },
+        'Биотехнологии и генная инженерия': { research: 38, funding: 367, publications: 292, rid: 36 },
+        'Энергетика и энергосбережение': { research: 25, funding: 223, publications: 123, rid: 22 },
+        'Аэрокосмические технологии': { research: 65, funding: 656, publications: 467, rid: 58 }
+      },
+      '2024': {
+        'Искусственный интеллект и машинное обучение': { research: 52, funding: 645, publications: 445, rid: 54 },
+        'Квантовые технологии': { research: 42, funding: 456, publications: 354, rid: 42 },
+        'Новые материалы и нанотехнологии': { research: 35, funding: 334, publications: 278, rid: 37 },
+        'Биотехнологии и генная инженерия': { research: 44, funding: 467, publications: 392, rid: 44 },
+        'Энергетика и энергосбережение': { research: 32, funding: 323, publications: 223, rid: 32 },
+        'Аэрокосмические технологии': { research: 68, funding: 756, publications: 567, rid: 68 }
+      },
+      '2023': {
+        'Искусственный интеллект и машинное обучение': { research: 48, funding: 545, publications: 345, rid: 44 },
+        'Квантовые технологии': { research: 38, funding: 356, publications: 254, rid: 38 },
+        'Новые материалы и нанотехнологии': { research: 32, funding: 234, publications: 178, rid: 32 },
+        'Биотехнологии и генная инженерия': { research: 40, funding: 367, publications: 292, rid: 40 },
+        'Энергетика и энергосбережение': { research: 29, funding: 223, publications: 123, rid: 29 },
+        'Аэрокосмические технологии': { research: 62, funding: 656, publications: 467, rid: 58 }
+      },
+      '2022': {
+        'Искусственный интеллект и машинное обучение': { research: 50, funding: 600, publications: 395, rid: 46 },
+        'Квантовые технологии': { research: 38, funding: 388, publications: 292, rid: 38 },
+        'Новые материалы и нанотехнологии': { research: 31, funding: 300, publications: 244, rid: 31 },
+        'Биотехнологии и генная инженерия': { research: 36, funding: 366, publications: 316, rid: 36 },
+        'Энергетика и энергосбережение': { research: 28, funding: 254, publications: 154, rid: 28 },
+        'Аэрокосмические технологии': { research: 70, funding: 700, publications: 466, rid: 54 }
+      },
+      '2021': {
+        'Искусственный интеллект и машинное обучение': { research: 50, funding: 510, publications: 315, rid: 46 },
+        'Квантовые технологии': { research: 36, funding: 400, publications: 0, rid: 36 },
+        'Новые материалы и нанотехнологии': { research: 30, funding: 132, publications: 0, rid: 30 },
+        'Биотехнологии и генная инженерия': { research: 20, funding: 0, publications: 0, rid: 0 },
+        'Энергетика и энергосбережение': { research: 28, funding: 100, publications: 0, rid: 28 },
+        'Аэрокосмические технологии': { research: 70, funding: 688, publications: 0, rid: 32 }
+      }
+    };
+
+    // Данные для фильтрации по ФОИВ
+    const vntDataByCustomer = {
+      all: {
+        research: [245, 335, 189, 178, 156, 142, 1126],
+        funding: [2845, 3456, 1956, 1567, 1234, 1123, 8567],
+        publications: [1845, 1567, 954, 892, 678, 723, 8567],
+        rid: [234, 278, 189, 156, 167, 142, 1123]
+      },
+      minobrnauki: {
+        research: [156, 98, 45, 89, 67, 54, 234],
+        funding: [1234, 856, 456, 567, 432, 345, 2345],
+        publications: [678, 432, 234, 345, 267, 198, 2345],
+        rid: [89, 78, 45, 56, 67, 54, 345]
+      },
+      mincifry: {
+        research: [245, 45, 34, 23, 12, 8, 67],
+        funding: [2845, 456, 234, 156, 123, 89, 567],
+        publications: [1845, 234, 178, 123, 98, 67, 567],
+        rid: [234, 45, 34, 23, 12, 8, 89]
+      },
+      rosatom: {
+        research: [34, 23, 189, 45, 56, 34, 234],
+        funding: [345, 234, 1956, 456, 567, 345, 2345],
+        publications: [234, 178, 892, 345, 432, 267, 2345],
+        rid: [34, 23, 156, 45, 56, 34, 345]
+      },
+      roskosmos: {
+        research: [45, 335, 34, 56, 45, 67, 234],
+        funding: [456, 3456, 345, 567, 456, 678, 2345],
+        publications: [345, 1567, 298, 432, 345, 523, 2345],
+        rid: [45, 278, 34, 56, 45, 67, 345]
+      },
+      minenergo: {
+        research: [12, 23, 34, 45, 142, 56, 234],
+        funding: [123, 234, 345, 456, 1123, 567, 2345],
+        publications: [98, 178, 267, 345, 723, 432, 2345],
+        rid: [12, 23, 34, 45, 142, 56, 345]
+      },
+      minzdrav: {
+        research: [23, 34, 45, 178, 56, 67, 234],
+        funding: [234, 345, 456, 1567, 567, 678, 2345],
+        publications: [178, 267, 345, 954, 432, 523, 2345],
+        rid: [23, 34, 45, 167, 56, 67, 345]
+      },
+      minpromtorg: {
+        research: [34, 45, 56, 67, 78, 89, 234],
+        funding: [345, 456, 567, 678, 789, 890, 2345],
+        publications: [267, 345, 432, 523, 612, 701, 2345],
+        rid: [34, 45, 56, 67, 78, 89, 345]
+      }
+    };
+
+    // Исследования по направлениям ВНТ - распределение по направлениям
+    const chartVntResearch = new Chart(document.getElementById('chart-vnt-research'), {
+      type: 'doughnut',
+      data: {
+        labels: ['ИИ и машинное обучение', 'Аэрокосмические технологии', 'Квантовые технологии', 'Биотехнологии', 'Новые материалы', 'Энергетика', 'Прочие направления (22)'],
+        datasets: [{
+          data: [245, 335, 189, 178, 156, 142, 1126],
+          backgroundColor: [
+            '#0066ff',
+            '#51a2ff',
+            '#00c951',
+            '#ffb96a',
+            '#ff9900',
+            '#fb2c36',
+            '#e2e8f0'
+          ],
+          borderWidth: 0,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '65%',
+        plugins: {
+          legend: { 
+            display: true,
+            position: 'bottom',
+            labels: {
+              usePointStyle: true,
+              padding: 12,
+              font: { size: 11, weight: '500' }
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            padding: 12,
+            titleFont: { size: 13, weight: '600' },
+            bodyFont: { size: 12 },
+            cornerRadius: 8,
+            displayColors: true,
+            borderColor: '#e2e8f0',
+            borderWidth: 1,
+            callbacks: {
+              label: function(context) {
+                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                return context.label + ': ' + context.parsed + ' (' + percentage + '%)';
+              }
+            }
+          }
+        },
+        animation: {
+          duration: 800,
+          easing: 'easeOutQuart'
+        }
+      }
+    });
+
+    // Финансирование по направлениям ВНТ
+    const chartVntFundingDirections = new Chart(document.getElementById('chart-vnt-funding-directions'), {
+      type: 'doughnut',
+      data: {
+        labels: ['ИИ и машинное обучение', 'Аэрокосмические технологии', 'Квантовые технологии', 'Биотехнологии', 'Новые материалы', 'Энергетика', 'Прочие направления (22)'],
+        datasets: [{
+          data: [2845, 3456, 1956, 1567, 1234, 1123, 8567],
+          backgroundColor: [
+            '#0066ff',
+            '#51a2ff',
+            '#00c951',
+            '#ffb96a',
+            '#ff9900',
+            '#fb2c36',
+            '#e2e8f0'
+          ],
+          borderWidth: 0,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '65%',
+        plugins: {
+          legend: {
+              display: true,
+            position: 'bottom',
+            labels: {
+              usePointStyle: true,
+              padding: 12,
+              font: { size: 11, weight: '500' }
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            padding: 12,
+            titleFont: { size: 13, weight: '600' },
+            bodyFont: { size: 12 },
+            cornerRadius: 8,
+            displayColors: true,
+            borderColor: '#e2e8f0',
+            borderWidth: 1,
+            callbacks: {
+              label: function(context) {
+                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                return context.label + ': ' + context.parsed.toLocaleString('ru-RU') + ' млн руб. (' + percentage + '%)';
+              }
+            }
+          }
+        },
+        animation: {
+          duration: 800,
+          easing: 'easeOutQuart'
+        }
+      }
+    });
+
+    // Финансирование исследований по источникам
+    const chartVntFunding = new Chart(document.getElementById('chart-vnt-funding'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Федеральный бюджет', 'Внебюджетные источники', 'Бюджеты субъектов', 'Международное', 'Частные инвестиции'],
+        datasets: [{
+          data: [42, 28, 12, 8, 10],
+          backgroundColor: [
+            '#0066ff',
+            '#00c951',
+            '#ffb96a',
+            '#51a2ff',
+            '#ff9900'
+          ],
+          borderWidth: 0,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '65%',
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels: {
+              usePointStyle: true,
+              padding: 12,
+              font: { size: 11, weight: '500' }
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            padding: 12,
+            titleFont: { size: 13, weight: '600' },
+            bodyFont: { size: 12 },
+            cornerRadius: 8,
+            displayColors: true,
+            borderColor: '#e2e8f0',
+            borderWidth: 1,
+            callbacks: {
+              label: function(context) {
+                return context.label + ': ' + context.parsed + '%';
+              }
+            }
+          }
+        },
+        animation: {
+          duration: 800,
+          easing: 'easeOutQuart'
+        }
+      }
+    });
+
+    // Публикации по направлениям ВНТ
+    const chartVntPublications = new Chart(document.getElementById('chart-vnt-publications'), {
+      type: 'doughnut',
+      data: {
+        labels: ['ИИ и машинное обучение', 'Аэрокосмические технологии', 'Биотехнологии', 'Квантовые технологии', 'Новые материалы', 'Энергетика', 'Прочие направления (22)'],
+        datasets: [{
+          data: [1845, 1567, 954, 892, 678, 723, 8567],
+          backgroundColor: [
+            '#00c951',
+            '#51a2ff',
+            '#ffb96a',
+            '#0066ff',
+            '#ff9900',
+            '#fb2c36',
+            '#e2e8f0'
+          ],
+          borderWidth: 0,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '65%',
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels: {
+              usePointStyle: true,
+              padding: 12,
+              font: { size: 11, weight: '500' }
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            padding: 12,
+            titleFont: { size: 13, weight: '600' },
+            bodyFont: { size: 12 },
+            cornerRadius: 8,
+            displayColors: true,
+            borderColor: '#e2e8f0',
+            borderWidth: 1,
+            callbacks: {
+              label: function(context) {
+                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                return context.label + ': ' + context.parsed + ' (' + percentage + '%)';
+              }
+            }
+          }
+        },
+        animation: {
+          duration: 800,
+          easing: 'easeOutQuart'
+        }
+      }
+    });
+
+    // РИД по направлениям ВНТ
+    const chartVntRid = new Chart(document.getElementById('chart-vnt-rid'), {
+      type: 'doughnut',
+      data: {
+        labels: ['ИИ и машинное обучение', 'Аэрокосмические технологии', 'Новые материалы', 'Квантовые технологии', 'Биотехнологии', 'Энергетика', 'Прочие направления (22)'],
+        datasets: [{
+          data: [234, 278, 189, 156, 167, 142, 1123],
+          backgroundColor: [
+            '#ff9900',
+            '#51a2ff',
+            '#ffb96a',
+            '#0066ff',
+            '#00c951',
+            '#fb2c36',
+            '#e2e8f0'
+          ],
+          borderWidth: 0,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '65%',
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels: {
+              usePointStyle: true,
+              padding: 12,
+              font: { size: 11, weight: '500' }
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            padding: 12,
+            titleFont: { size: 13, weight: '600' },
+            bodyFont: { size: 12 },
+            cornerRadius: 8,
+            displayColors: true,
+            borderColor: '#e2e8f0',
+            borderWidth: 1,
+            callbacks: {
+              label: function(context) {
+                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                return context.label + ': ' + context.parsed + ' (' + percentage + '%)';
+              }
+            }
+          }
+        },
+        animation: {
+          duration: 800,
+          easing: 'easeOutQuart'
+        }
+      }
+    });
+
+    // Статус поручений КНТР
+    new Chart(document.getElementById('chart-status'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Исполнено', 'В работе', 'Просрочено'],
+        datasets: [{
+          data: [68, 24, 8],
+          backgroundColor: ['#00c951', '#ffb96a', '#fb2c36'],
+          borderWidth: 0,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '65%',
+        plugins: {
+          legend: { 
+            display: true,
+            position: 'bottom',
+            labels: {
+              usePointStyle: true,
+              padding: 20,
+              font: { size: 12, weight: '500' }
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            padding: 12,
+            titleFont: { size: 13, weight: '600' },
+            bodyFont: { size: 12 },
+            cornerRadius: 8,
+            displayColors: true,
+            borderColor: '#e2e8f0',
+            borderWidth: 1
+          }
+        },
+        animation: {
+          duration: 800,
+          easing: 'easeOutQuart'
+        }
+      }
+    });
+
+    // Средний срок подготовки отчётов по ФОИВ
+    const ctxReports = document.getElementById('chart-reports').getContext('2d');
+    
+    new Chart(document.getElementById('chart-reports'), {
+      type: 'bar',
+      data: {
+        labels: ['Минобрнауки', 'Минцифры', 'Росатом', 'Роскосмос', 'Минэнерго', 'Минздрав', 'Минпромторг'],
+        datasets: [{
+          label: 'Средний срок, дней',
+          data: [12, 8, 15, 18, 14, 10, 16],
+          backgroundColor: function(context) {
+            const value = context.parsed.x;
+            const chartArea = context.chart.chartArea;
+            if (!chartArea) return '#0066ff';
+            
+            const ctx = context.chart.ctx;
+            const gradient = ctx.createLinearGradient(chartArea.left, 0, chartArea.right, 0);
+            if (value > 15) {
+              gradient.addColorStop(0, '#fb2c36');
+              gradient.addColorStop(1, '#d91e2a');
+            } else if (value > 12) {
+              gradient.addColorStop(0, '#ffb96a');
+              gradient.addColorStop(1, '#ff9900');
+            } else {
+              gradient.addColorStop(0, '#00c951');
+              gradient.addColorStop(1, '#00a844');
+            }
+            return gradient;
+          },
+          borderRadius: 8,
+          borderSkipped: false,
+          maxBarThickness: 32
+        }]
+      },
+      options: {
+        ...commonOptions,
+        indexAxis: 'y',
+        scales: {
+          x: { 
+            beginAtZero: true, 
+            max: 20,
+            title: {
+              display: true,
+              text: 'Средний срок, дней',
+              font: { size: 12, weight: '600' }
+            },
+            grid: {
+              color: '#f1f5f9',
+              drawBorder: false,
+              lineWidth: 1
+            },
+            ticks: {
+              font: { size: 11 },
+              color: '#64748b',
+              padding: 8
+            }
+          },
+          y: {
+            grid: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              font: { size: 11 },
+              color: '#64748b',
+              padding: 8
+            }
+          }
+        }
+      }
+    });
+
+    // Нагрузка по ФОИВ
+    new Chart(document.getElementById('chart-workload'), {
+      type: 'bubble',
+      data: {
+        datasets: [{
+          label: 'ФОИВ',
+          data: [
+            {x: 45, y: 12, r: 15, label: 'Минобрнауки'},
+            {x: 32, y: 8, r: 12, label: 'Минцифры'},
+            {x: 28, y: 15, r: 10, label: 'Росатом'},
+            {x: 35, y: 18, r: 14, label: 'Роскосмос'},
+            {x: 22, y: 14, r: 8, label: 'Минэнерго'},
+            {x: 18, y: 10, r: 7, label: 'Минздрав'},
+            {x: 25, y: 16, r: 9, label: 'Минпромторг'}
+          ],
+          backgroundColor: 'rgba(0, 102, 255, 0.5)',
+          borderColor: '#0066ff',
+          borderWidth: 2,
+          hoverBackgroundColor: 'rgba(0, 102, 255, 0.7)',
+          hoverBorderWidth: 3
+        }]
+      },
+      options: {
+        ...commonOptions,
+        plugins: {
+          ...commonOptions.plugins,
+          tooltip: {
+            ...commonOptions.plugins.tooltip,
+            callbacks: {
+              label: function(context) {
+                return context.raw.label + ': ' + context.parsed.x + ' поручений, ' + context.parsed.y + ' дней';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            type: 'linear',
+            position: 'bottom',
+            title: { 
+              display: true, 
+              text: 'Количество поручений', 
+              font: { size: 12, weight: '600' },
+              color: '#64748b'
+            },
+            beginAtZero: true,
+            grid: {
+              color: '#f1f5f9',
+              drawBorder: true,
+              borderColor: '#e2e8f0',
+              lineWidth: 1
+            },
+            ticks: {
+              font: { size: 11 },
+              color: '#64748b',
+              padding: 8
+            }
+          },
+          y: { 
+            type: 'linear',
+            position: 'left',
+            title: { 
+              display: true, 
+              text: 'Средний срок исполнения, дней', 
+              font: { size: 12, weight: '600' },
+              color: '#64748b'
+            },
+            beginAtZero: true,
+            grid: {
+              color: '#f1f5f9',
+              drawBorder: true,
+              borderColor: '#e2e8f0',
+              lineWidth: 1
+            },
+            ticks: {
+              font: { size: 11 },
+              color: '#64748b',
+              padding: 8
+            }
+          }
+        }
+      }
+    });
+
+    // Функция суммирования данных за диапазон периодов
+    function sumDataByPeriodRange(periodFrom, periodTo, dataByPeriod) {
+      const years = ['2021', '2022', '2023', '2024', '2025'];
+      const fromIndex = years.indexOf(periodFrom);
+      const toIndex = years.indexOf(periodTo);
+      
+      if (fromIndex === -1 || toIndex === -1 || fromIndex > toIndex) {
+        return dataByPeriod.all;
+      }
+      
+      const result = {
+        research: [0, 0, 0, 0, 0, 0, 0],
+        funding: [0, 0, 0, 0, 0, 0, 0],
+        publications: [0, 0, 0, 0, 0, 0, 0],
+        rid: [0, 0, 0, 0, 0, 0, 0]
+      };
+      
+      for (let i = fromIndex; i <= toIndex; i++) {
+        const year = years[i];
+        const yearData = dataByPeriod.all[year] || dataByPeriod.all.all;
+        
+        result.research = result.research.map((val, idx) => val + (yearData.research[idx] || 0));
+        result.funding = result.funding.map((val, idx) => val + (yearData.funding[idx] || 0));
+        result.publications = result.publications.map((val, idx) => val + (yearData.publications[idx] || 0));
+        result.rid = result.rid.map((val, idx) => val + (yearData.rid[idx] || 0));
+      }
+      
+      return result;
+    }
+
+    // Функция суммирования данных таблицы за диапазон периодов
+    function sumPrioritiesDataByPeriodRange(periodFrom, periodTo) {
+      const years = ['2021', '2022', '2023', '2024', '2025'];
+      const fromIndex = years.indexOf(periodFrom);
+      const toIndex = years.indexOf(periodTo);
+      
+      if (fromIndex === -1 || toIndex === -1 || fromIndex > toIndex) {
+        return prioritiesDataByPeriod.all;
+      }
+      
+      const result = {};
+      const directions = Object.keys(prioritiesDataByPeriod.all);
+      
+      directions.forEach(direction => {
+        result[direction] = {
+          research: 0,
+          funding: 0,
+          publications: 0,
+          rid: 0
+        };
+        
+        for (let i = fromIndex; i <= toIndex; i++) {
+          const year = years[i];
+          const yearData = prioritiesDataByPeriod[year];
+          if (yearData && yearData[direction]) {
+            result[direction].research += yearData[direction].research || 0;
+            result[direction].funding += yearData[direction].funding || 0;
+            result[direction].publications += yearData[direction].publications || 0;
+            result[direction].rid += yearData[direction].rid || 0;
+          }
+        }
+      });
+      
+      return result;
+    }
+
+    // Функция обновления графиков ВНТ
+    function updateVntCharts() {
+      const selectedCustomer = document.getElementById('vnt-filter-customer').value;
+      const periodFrom = document.getElementById('vnt-filter-period-from').value;
+      const periodTo = document.getElementById('vnt-filter-period-to').value;
+      
+      // Получаем данные с учетом заказчика и периода
+      let data;
+      if (selectedCustomer !== 'all') {
+        // Если выбран конкретный заказчик, используем данные по заказчику
+        data = vntDataByCustomer[selectedCustomer] || vntDataByCustomer.all;
+      } else {
+        // Если выбран период, суммируем данные за диапазон
+        data = sumDataByPeriodRange(periodFrom, periodTo, vntDataByCustomerAndPeriod);
+      }
+
+      // Обновляем данные графиков
+      chartVntResearch.data.datasets[0].data = data.research;
+      chartVntResearch.update('active');
+
+      chartVntFundingDirections.data.datasets[0].data = data.funding;
+      chartVntFundingDirections.update('active');
+
+      chartVntPublications.data.datasets[0].data = data.publications;
+      chartVntPublications.update('active');
+
+      chartVntRid.data.datasets[0].data = data.rid;
+      chartVntRid.update('active');
+    }
+
+    // Обработчики фильтров для графиков ВНТ
+    document.getElementById('vnt-filter-customer').addEventListener('change', updateVntCharts);
+    
+    document.getElementById('vnt-filter-period-from').addEventListener('change', function() {
+      const from = parseInt(this.value);
+      const toSelect = document.getElementById('vnt-filter-period-to');
+      const to = parseInt(toSelect.value);
+      
+      // Если "от" больше "до", обновляем "до"
+      if (from > to) {
+        toSelect.value = from;
+      }
+      updateVntCharts();
+    });
+    
+    document.getElementById('vnt-filter-period-to').addEventListener('change', function() {
+      const to = parseInt(this.value);
+      const fromSelect = document.getElementById('vnt-filter-period-from');
+      const from = parseInt(fromSelect.value);
+      
+      // Если "до" меньше "от", обновляем "от"
+      if (to < from) {
+        fromSelect.value = to;
+      }
+      updateVntCharts();
+    });
+
+    // Функция обновления таблицы приоритетов
+    function updatePrioritiesTable() {
+      const periodFrom = document.getElementById('priorities-filter-period-from').value;
+      const periodTo = document.getElementById('priorities-filter-period-to').value;
+      
+      // Суммируем данные за выбранный диапазон периодов
+      const data = sumPrioritiesDataByPeriodRange(periodFrom, periodTo);
+      
+      const tableBody = document.querySelector('.priorities-table tbody');
+      if (!tableBody) return;
+      
+      const tableRows = Array.from(tableBody.querySelectorAll('tr'));
+      
+      tableRows.forEach((row) => {
+        const firstCell = row.querySelector('td:first-child');
+        if (!firstCell) return;
+        
+        const directionName = firstCell.textContent.trim();
+        const rowData = data[directionName];
+        
+        if (rowData) {
+          const cells = row.querySelectorAll('td');
+          if (cells.length >= 5) {
+            cells[1].innerHTML = '<strong>' + rowData.research + '</strong>';
+            cells[2].innerHTML = '<strong>' + rowData.funding.toLocaleString('ru-RU') + '</strong>';
+            cells[3].innerHTML = '<strong>' + rowData.publications.toLocaleString('ru-RU') + '</strong>';
+            cells[4].innerHTML = '<strong>' + rowData.rid + '</strong>';
+          }
+        }
+      });
+    }
+
+    // Обработчики фильтров периода для таблицы приоритетов
+    document.getElementById('priorities-filter-period-from').addEventListener('change', function() {
+      const from = parseInt(this.value);
+      const toSelect = document.getElementById('priorities-filter-period-to');
+      const to = parseInt(toSelect.value);
+      
+      // Если "от" больше "до", обновляем "до"
+      if (from > to) {
+        toSelect.value = from;
+      }
+      updatePrioritiesTable();
+    });
+    
+    document.getElementById('priorities-filter-period-to').addEventListener('change', function() {
+      const to = parseInt(this.value);
+      const fromSelect = document.getElementById('priorities-filter-period-from');
+      const from = parseInt(fromSelect.value);
+      
+      // Если "до" меньше "от", обновляем "от"
+      if (to < from) {
+        fromSelect.value = to;
+      }
+      updatePrioritiesTable();
+    });
+  </script>
+</body>
+</html>
+

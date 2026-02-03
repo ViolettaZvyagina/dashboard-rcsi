@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подраздел 3.6 — Отраслевые стратегии и НПТЛ</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .section-block {
+      padding: var(--space-20) 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .section-block--highlighted {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 32px;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .section-block__description {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .heatmap-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .heatmap-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--font-size-body);
+    }
+
+    .heatmap-table th {
+      background: var(--material-neutral-highlight-primary);
+      padding: var(--space-12);
+      text-align: center;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-size: var(--font-size-label);
+    }
+
+    .heatmap-table td {
+      padding: var(--space-12);
+      text-align: center;
+      border: 1px solid var(--material-neutral-border-primary);
+      font-weight: 500;
+    }
+
+    .heatmap-cell {
+      padding: var(--space-8) var(--space-12);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-caption);
+    }
+
+    .heatmap-cell--high {
+      background: rgba(0, 201, 81, 0.2);
+      color: var(--color-positive-700);
+    }
+
+    .heatmap-cell--medium {
+      background: rgba(255, 185, 106, 0.2);
+      color: var(--color-warning-700);
+    }
+
+    .heatmap-cell--low {
+      background: rgba(251, 44, 54, 0.1);
+      color: var(--color-negative-700);
+    }
+
+    .heatmap-legend {
+      display: flex;
+      gap: var(--space-12);
+      align-items: center;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      margin-top: var(--space-12);
+    }
+
+    .heatmap-legend__bar {
+      flex: 1;
+      height: 10px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(to right, rgba(251, 44, 54, 0.2), rgba(255, 185, 106, 0.2), rgba(0, 201, 81, 0.2));
+    }
+
+    .heatmap-legend__labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      margin-top: var(--space-4);
+    }
+
+    .subsection-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .subsection-card__header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .subsection-card__title {
+      font-family: var(--font-alt);
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 28px;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .subsection-card__subtitle {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+      margin: 0;
+    }
+
+    .mini-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-12);
+    }
+
+    .mini-kpi-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+    }
+
+    .mini-kpi-item__label {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      line-height: var(--line-height-caption);
+    }
+
+    .mini-kpi-item__value {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 28px;
+    }
+
+    .mini-kpi-item__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .mini-kpi-item__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .mini-kpi-item__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .sparkline-container {
+      height: 80px;
+      position: relative;
+    }
+
+    .section-card__indicators {
+      list-style: none;
+      margin: 0;
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .section-card__indicator {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-8);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .section-card__indicator::before {
+      content: "•";
+      color: var(--color-warning-400);
+      font-size: 20px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .data-cuts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+    }
+
+    .data-cut-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: var(--space-6) var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: 999px;
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-primary);
+    }
+
+    .subsection-card__footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: auto;
+    }
+
+    .industry-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-16);
+    }
+
+    .industry-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-16);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .industry-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .industry-card__title {
+      font-family: var(--font-alt);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .industry-card__kpi {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .industry-card__kpi-label {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .industry-card__kpi-value {
+      font-family: var(--font-alt);
+      font-size: 20px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+    }
+
+    .industry-card__trend {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+    }
+
+    .industry-card__footer {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding-top: var(--space-4);
+      padding-bottom: var(--space-4);
+      padding-left: var(--space-16);
+      padding-right: var(--space-16);
+      background: var(--color-accent-500);
+      color: var(--color-neutral-0);
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-body);
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn:hover {
+      background: var(--color-accent-600);
+      transform: translateY(-1px);
+    }
+
+    .btn--small {
+      padding-top: var(--space-3);
+      padding-bottom: var(--space-3);
+      padding-left: var(--space-12);
+      padding-right: var(--space-12);
+      font-size: var(--font-size-caption);
+    }
+
+    @media (max-width: 900px) {
+      .mini-kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .industry-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3.html">
+              <span class="back-link__icon"></span>
+              Назад к разделу 3
+            </a>
+            <span class="meta-pill">Подраздел 3.6</span>
+          </div>
+          <h1>3.6. Отраслевые стратегии и НПТЛ</h1>
+          <p class="ty-body-lg ty-muted">
+            Оценка кадровой, научной и технологической обеспеченности отраслей при согласовании стратегий и паспортов НПТЛ.
+          </p>
+          <div class="meta-row">
+            <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+            <span class="meta-pill">Источники: Стратегия НТР, Минобрнауки, ФОИВ, Росстат</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Групповой статус отраслей</h2>
+        <p class="section-block__description">Сводная оценка состояния отраслей по ключевым метрикам: кадры, подготовка, инфраструктура, технологическая независимость, устойчивость занятости.</p>
+        <div class="heatmap-container">
+          <table class="heatmap-table">
+            <thead>
+              <tr>
+                <th>Метрика</th>
+                <th>Нефтегаз</th>
+                <th>Судостроение</th>
+                <th>Авиа</th>
+                <th>Химия</th>
+                <th>АПК</th>
+                <th>Связь/БАС</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="text-align: left; font-weight: 600;">Кадры</td>
+                <td><span class="heatmap-cell heatmap-cell--medium">71</span></td>
+                <td><span class="heatmap-cell heatmap-cell--low">58</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">68</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">82</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">79</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">85</span></td>
+              </tr>
+              <tr>
+                <td style="text-align: left; font-weight: 600;">Подготовка</td>
+                <td><span class="heatmap-cell heatmap-cell--high">88</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">65</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">84</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">86</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">72</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">91</span></td>
+              </tr>
+              <tr>
+                <td style="text-align: left; font-weight: 600;">Инфраструктура</td>
+                <td><span class="heatmap-cell heatmap-cell--high">83</span></td>
+                <td><span class="heatmap-cell heatmap-cell--low">54</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">69</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">81</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">71</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">87</span></td>
+              </tr>
+              <tr>
+                <td style="text-align: left; font-weight: 600;">Технологическая независимость</td>
+                <td><span class="heatmap-cell heatmap-cell--low">52</span></td>
+                <td><span class="heatmap-cell heatmap-cell--low">48</span></td>
+                <td><span class="heatmap-cell heatmap-cell--low">55</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">64</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">67</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">62</span></td>
+              </tr>
+              <tr>
+                <td style="text-align: left; font-weight: 600;">Устойчивость занятости</td>
+                <td><span class="heatmap-cell heatmap-cell--high">86</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">68</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">74</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">82</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">84</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">89</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="heatmap-legend">
+          <div style="flex: 1;">
+            <div class="heatmap-legend__bar"></div>
+            <div class="heatmap-legend__labels">
+              <span>Низкий</span>
+              <span>Средний</span>
+              <span>Высокий</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="subsection-card">
+        <div class="subsection-card__header">
+          <h2 class="subsection-card__title">Согласование отраслевых стратегий и паспортов НПТЛ</h2>
+          <p class="subsection-card__subtitle">Кадровая обеспеченность, занятость, технологическая независимость по отраслям.</p>
+        </div>
+
+        <div class="mini-kpi-grid">
+          <div class="mini-kpi-item">
+            <div class="mini-kpi-item__label">Доля молодых учёных</div>
+            <div class="mini-kpi-item__value mini-kpi-item__value--green">39%</div>
+          </div>
+          <div class="mini-kpi-item">
+            <div class="mini-kpi-item__label">Место РФ в GTCI</div>
+            <div class="mini-kpi-item__value mini-kpi-item__value--yellow">24</div>
+          </div>
+          <div class="mini-kpi-item">
+            <div class="mini-kpi-item__label">Уровень технологической независимости</div>
+            <div class="mini-kpi-item__value mini-kpi-item__value--yellow">0.62</div>
+          </div>
+        </div>
+
+        <div>
+          <div style="margin-bottom: var(--space-20); font-size: var(--font-size-label); color: var(--material-neutral-content-secondary);">Динамика обеспеченности кадрами (в среднем по отраслям), 5 лет</div>
+          <div class="sparkline-container">
+            <canvas id="chart-sparkline"></canvas>
+          </div>
+        </div>
+
+        <div>
+          <div style="margin-bottom: var(--space-20); font-size: var(--font-size-label); color: var(--material-neutral-content-secondary);">Ключевые отраслевые вызовы</div>
+          <ul class="section-card__indicators">
+            <li class="section-card__indicator">Дефицит кадров в высокотехнологичных отраслях (авиа, судостроение, химия)</li>
+            <li class="section-card__indicator">Неравномерность занятости между регионами</li>
+            <li class="section-card__indicator">Зависимость от импортных технологических решений</li>
+          </ul>
+        </div>
+
+        <div>
+          <div style="margin-bottom: var(--space-20); font-size: var(--font-size-label); color: var(--material-neutral-content-secondary);">Основные разрезы данных</div>
+          <div class="data-cuts">
+            <span class="data-cut-badge">Кадры</span>
+            <span class="data-cut-badge">Технологический суверенитет</span>
+            <span class="data-cut-badge">Профессиональная подготовка</span>
+          </div>
+        </div>
+
+        <div class="subsection-card__footer">
+          <a href="#" class="btn">Перейти к отраслевой аналитике →</a>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Быстрые переходы по отраслям</h2>
+        <div class="industry-grid">
+          <article class="industry-card">
+            <h3 class="industry-card__title">Нефтегаз</h3>
+            <div class="industry-card__kpi">
+              <div class="industry-card__kpi-label">Технологическая независимость</div>
+              <div class="industry-card__kpi-value">52%</div>
+              <div class="industry-card__trend">
+                <span>↗</span>
+                <span>+2.1% YoY</span>
+              </div>
+            </div>
+            <div class="industry-card__footer">
+              <a href="#" class="btn btn--small">Смотреть отрасль</a>
+            </div>
+          </article>
+
+          <article class="industry-card">
+            <h3 class="industry-card__title">Судостроение</h3>
+            <div class="industry-card__kpi">
+              <div class="industry-card__kpi-label">Кадровая обеспеченность</div>
+              <div class="industry-card__kpi-value">58%</div>
+              <div class="industry-card__trend">
+                <span>→</span>
+                <span>Стабильно</span>
+              </div>
+            </div>
+            <div class="industry-card__footer">
+              <a href="#" class="btn btn--small">Смотреть отрасль</a>
+            </div>
+          </article>
+
+          <article class="industry-card">
+            <h3 class="industry-card__title">Авиа</h3>
+            <div class="industry-card__kpi">
+              <div class="industry-card__kpi-label">Подготовка кадров</div>
+              <div class="industry-card__kpi-value">84%</div>
+              <div class="industry-card__trend">
+                <span>↗</span>
+                <span>+1.8% YoY</span>
+              </div>
+            </div>
+            <div class="industry-card__footer">
+              <a href="#" class="btn btn--small">Смотреть отрасль</a>
+            </div>
+          </article>
+
+          <article class="industry-card">
+            <h3 class="industry-card__title">Химия</h3>
+            <div class="industry-card__kpi">
+              <div class="industry-card__kpi-label">Инфраструктура</div>
+              <div class="industry-card__kpi-value">81%</div>
+              <div class="industry-card__trend">
+                <span>↗</span>
+                <span>+3.2% YoY</span>
+              </div>
+            </div>
+            <div class="industry-card__footer">
+              <a href="#" class="btn btn--small">Смотреть отрасль</a>
+            </div>
+          </article>
+
+          <article class="industry-card">
+            <h3 class="industry-card__title">АПК</h3>
+            <div class="industry-card__kpi">
+              <div class="industry-card__kpi-label">Устойчивость занятости</div>
+              <div class="industry-card__kpi-value">84%</div>
+              <div class="industry-card__trend">
+                <span>↗</span>
+                <span>+1.5% YoY</span>
+              </div>
+            </div>
+            <div class="industry-card__footer">
+              <a href="#" class="btn btn--small">Смотреть отрасль</a>
+            </div>
+          </article>
+
+          <article class="industry-card">
+            <h3 class="industry-card__title">Связь / БАС</h3>
+            <div class="industry-card__kpi">
+              <div class="industry-card__kpi-label">Подготовка</div>
+              <div class="industry-card__kpi-value">91%</div>
+              <div class="industry-card__trend">
+                <span>↗</span>
+                <span>+2.4% YoY</span>
+              </div>
+            </div>
+            <div class="industry-card__footer">
+              <a href="#" class="btn btn--small">Смотреть отрасль</a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Sparkline график для динамики обеспеченности кадрами
+    new Chart(document.getElementById('chart-sparkline'), {
+      type: 'line',
+      data: {
+        labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Обеспеченность кадрами, %',
+          data: [62, 64, 66, 68, 70, 72],
+          borderColor: '#0066ff',
+          backgroundColor: 'rgba(0, 102, 255, 0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          pointBackgroundColor: '#0066ff',
+          pointBorderColor: '#ffffff',
+          pointBorderWidth: 2,
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            padding: 8,
+            titleFont: { size: 12, weight: '600' },
+            bodyFont: { size: 11 },
+            cornerRadius: 6,
+            displayColors: false
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              font: { size: 10 },
+              color: '#64748b'
+            }
+          },
+          y: {
+            display: false,
+            grid: {
+              display: false,
+              drawBorder: false
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+

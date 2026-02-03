@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Группа 3.12 — КЦП по приоритетам</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .management-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-20);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      grid-column: span 2;
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .risk-card {
+      background: linear-gradient(165deg, rgba(255, 105, 0, 0.12), rgba(0, 102, 255, 0.12));
+      border: 1px solid var(--color-warning-200);
+      color: var(--material-neutral-content-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .risk-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-8);
+      font-family: var(--font-alt);
+      font-weight: var(--font-weight-label-xl);
+      font-size: var(--font-size-label-xl);
+      line-height: var(--line-height-label-xl);
+      letter-spacing: var(--letter-spacing-label-xl);
+    }
+
+    .risk-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: var(--space-10);
+    }
+
+    .risk-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-8);
+      align-items: center;
+      font-size: var(--font-size-body);
+    }
+
+    .risk-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 105, 0, 0.1);
+    }
+
+    .risk-dot--high {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.12);
+    }
+
+    .risk-dot--progress {
+      background-color: var(--color-info-300);
+      box-shadow: 0 0 0 4px rgba(81, 162, 255, 0.12);
+    }
+
+    .risk-legend {
+      display: flex;
+      gap: var(--space-12);
+      flex-wrap: wrap;
+      align-items: center;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      margin-top: auto;
+      padding-top: var(--space-8);
+    }
+
+    .legend {
+      display: flex;
+      gap: var(--space-8);
+      align-items: center;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.12);
+    }
+
+    .status-dot--red {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.18);
+    }
+
+    .status-dot--yellow {
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 185, 106, 0.15);
+    }
+
+    .status-dot--green {
+      background-color: var(--color-positive-400);
+      box-shadow: 0 0 0 4px rgba(0, 201, 81, 0.15);
+    }
+
+    @media (max-width: 900px) {
+      .management-bar {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: var(--space-4) 0 var(--space-6) 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    /* Блок смысла группы */
+    .group-purpose {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-24);
+      align-items: stretch;
+    }
+
+    @media (max-width: 900px) {
+      .group-purpose {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .group-purpose__text {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .group-purpose__title {
+      font-family: var(--font-alt);
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-12) 0;
+    }
+
+    .group-purpose__description {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    /* Карточка подраздела */
+    .subsection-card-large {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .subsection-card-large::before {
+      content: attr(data-code);
+      position: absolute;
+      top: var(--space-12);
+      right: var(--space-12);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      letter-spacing: var(--letter-spacing-caption);
+      text-transform: uppercase;
+    }
+
+    .subsection-card-large:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .subsection-card-large__header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .subsection-card-large__title {
+      font-family: var(--font-alt);
+      font-size: 28px;
+      line-height: 36px;
+      letter-spacing: -0.4px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+      max-width: 90%;
+    }
+
+    .subsection-card-large__desc {
+      margin: 0;
+      margin-top: var(--space-4);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .subsection-card-large__kpis {
+      list-style: none;
+      margin: 0;
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-10);
+      flex: 1;
+    }
+
+    .subsection-card-large__kpi {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-8);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .subsection-card-large__kpi-label {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .subsection-card-large__kpi-icon {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .subsection-card-large__kpi-value {
+      color: var(--material-neutral-content-primary);
+      font-weight: 600;
+      font-size: var(--font-size-body-lg);
+    }
+
+    .subsection-card-large__kpi-value--green {
+      color: var(--color-positive-300);
+    }
+
+    .subsection-card-large__kpi-value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .subsection-card-large__kpi-value--red {
+      color: var(--color-negative-300);
+    }
+
+    .subsection-card-large__risk {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      margin-top: auto;
+      margin-bottom: 0;
+      flex-shrink: 0;
+    }
+
+    .risk-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .risk-indicator--green {
+      background-color: var(--color-positive-400);
+      box-shadow: 0 0 0 4px rgba(0, 201, 81, 0.15);
+    }
+
+    .risk-indicator--yellow {
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 185, 106, 0.15);
+    }
+
+    .risk-indicator--red {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.18);
+    }
+
+    .risk-text {
+      flex: 1;
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-primary);
+      font-weight: 400;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-6);
+      height: var(--control-height);
+      padding: 0 var(--space-16);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-family: var(--font-main);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      text-decoration: none;
+      cursor: pointer;
+      background-color: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-primary);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn--primary {
+      background-color: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-bar">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="chapter3.html">
+                <span class="back-link__icon"></span>
+                Назад к разделу 3
+              </a>
+              <span class="meta-pill">Группа 3.12</span>
+            </div>
+            <h1>3.12. Контрольные цифры приема (КЦП) по приоритетным направлениям</h1>
+            <p>Кадровые показатели и образовательные тренды, влияющие на определение объемов КЦП.</p>
+            <div class="meta-row">
+              <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+              <span class="meta-pill">Источники: Минобрнауки, Росстат, ФОИВ</span>
+            </div>
+          </div>
+        </div>
+        <aside class="risk-card">
+          <div class="risk-title">
+            Краткая сводка рисков
+          </div>
+          <ul class="risk-list">
+            <li class="risk-item">
+              <span class="risk-dot risk-dot--high"></span>
+              Недостаток молодых исследователей
+            </li>
+            <li class="risk-item">
+              <span class="risk-dot"></span>
+              Недостаточный охват обучением по приоритетным программам
+            </li>
+            <li class="risk-item">
+              <span class="risk-dot"></span>
+              Ускоренный рост спроса в отдельных отраслях
+            </li>
+          </ul>
+          <div class="risk-legend">
+            <span class="legend"><span class="status-dot status-dot--red"></span> высокий риск</span>
+            <span class="legend"><span class="status-dot status-dot--yellow"></span> средний</span>
+            <span class="legend"><span class="status-dot status-dot--green"></span> низкий</span>
+          </div>
+        </aside>
+      </section>
+
+      <!-- Блок смысла группы и карточка подраздела -->
+      <section class="group-purpose">
+        <!-- Левый блок: смысл группы -->
+        <div class="group-purpose__text">
+          <h2 class="group-purpose__title">Что решает</h2>
+          <p class="group-purpose__description">
+            Группа анализирует кадровый потенциал, динамику занятости и результаты непрерывного образования для определения необходимых объемов КЦП по приоритетным направлениям подготовки инженеров и исследователей.
+          </p>
+          <h2 class="group-purpose__title" style="margin-top: var(--space-24);">Основной вопрос</h2>
+          <p class="group-purpose__description">
+            Насколько установленные КЦП обеспечивают отрасли и НПТЛ достаточным количеством подготовленных специалистов?
+          </p>
+        </div>
+
+        <!-- Правая карточка подраздела -->
+        <article class="subsection-card-large" data-code="3.12">
+          <div class="subsection-card-large__header">
+            <h2 class="subsection-card-large__title">Определение контрольных цифр приема</h2>
+            <p class="subsection-card-large__desc">Мониторинг кадровых и образовательных трендов для расчета КЦП.</p>
+          </div>
+          
+          <ul class="subsection-card-large__kpis">
+            <li class="subsection-card-large__kpi">
+              <span class="subsection-card-large__kpi-label">
+                <span class="subsection-card-large__kpi-icon">🌱</span>
+                Доля молодых учёных (%)
+              </span>
+              <strong class="subsection-card-large__kpi-value">24%</strong>
+            </li>
+            <li class="subsection-card-large__kpi">
+              <span class="subsection-card-large__kpi-label">
+                <span class="subsection-card-large__kpi-icon">🎓</span>
+                Охват НПО/ДПО (число обучившихся)
+              </span>
+              <strong class="subsection-card-large__kpi-value">86 тыс.</strong>
+            </li>
+            <li class="subsection-card-large__kpi">
+              <span class="subsection-card-large__kpi-label">
+                <span class="subsection-card-large__kpi-icon">📈</span>
+                Прирост занятости (%)
+              </span>
+              <strong class="subsection-card-large__kpi-value subsection-card-large__kpi-value--green">+3.4%</strong>
+            </li>
+          </ul>
+
+          <div class="subsection-card-large__risk">
+            <span class="risk-indicator risk-indicator--yellow"></span>
+            <span class="risk-text">Средний риск несоответствия КЦП кадровым потребностям</span>
+          </div>
+
+          <div style="margin-top: auto; padding-top: var(--space-16);">
+            <a href="chapter3-12-dashboard.html" class="btn btn--primary">Смотреть дашборд подраздела</a>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
+

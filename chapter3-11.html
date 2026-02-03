@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Группа 3.11 — Стратегия развития инженерных университетов</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: var(--space-4) 0 var(--space-6) 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    /* Карточки подразделов */
+    .subsection-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-24);
+      align-items: stretch;
+    }
+
+    @media (min-width: 768px) {
+      .subsection-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .subsection-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .subsection-card-large {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      min-height: 100%;
+    }
+
+    .subsection-card-large::before {
+      content: attr(data-code);
+      position: absolute;
+      top: var(--space-12);
+      right: var(--space-12);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      letter-spacing: var(--letter-spacing-caption);
+      text-transform: uppercase;
+    }
+
+    .subsection-card-large:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .subsection-card-large__header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .subsection-card-large__title {
+      font-family: var(--font-alt);
+      font-size: 28px;
+      line-height: 36px;
+      letter-spacing: -0.4px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+      max-width: 90%;
+    }
+
+    .subsection-card-large__number {
+      font-weight: 500;
+      margin-right: var(--space-4);
+    }
+
+    .subsection-card-large__desc {
+      margin: 0;
+      margin-top: var(--space-4);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .subsection-card-large__kpis {
+      list-style: none;
+      margin: 0;
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-10);
+      flex: 1;
+    }
+
+    .subsection-card-large__kpi {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-8);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .subsection-card-large__kpi-label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .subsection-card-large__kpi-value {
+      color: var(--material-neutral-content-primary);
+      font-weight: 600;
+    }
+
+    .subsection-card-large__kpi-value--green {
+      color: var(--color-positive-300);
+    }
+
+    .subsection-card-large__kpi-value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .subsection-card-large__kpi-value--red {
+      color: var(--color-negative-300);
+    }
+
+    .subsection-card-large__risk {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      margin-top: auto;
+      margin-bottom: 0;
+      flex-shrink: 0;
+    }
+
+    .risk-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .risk-indicator--green {
+      background-color: var(--color-positive-400);
+      box-shadow: 0 0 0 4px rgba(0, 201, 81, 0.15);
+    }
+
+    .risk-indicator--yellow {
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 185, 106, 0.15);
+    }
+
+    .risk-indicator--red {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.18);
+    }
+
+    .risk-text {
+      flex: 1;
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-primary);
+      font-weight: 500;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-6);
+      height: var(--control-height);
+      padding: 0 var(--space-16);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-family: var(--font-main);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      text-decoration: none;
+      cursor: pointer;
+      background-color: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-primary);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn--primary {
+      background-color: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Блок KPI карточек */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--space-20);
+      align-items: stretch;
+    }
+
+    @media (min-width: 1200px) {
+      .kpi-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-card__label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .kpi-card__value {
+      font-family: var(--font-alt);
+      font-size: 42px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 48px;
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+    }
+
+    .kpi-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-card__trend {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3.html">
+              <span class="back-link__icon"></span>
+              Назад к разделу 3
+            </a>
+            <span class="meta-pill">Группа 3.11</span>
+          </div>
+          <h1>3.11. Стратегия развития инженерных университетов</h1>
+          <p>Комплексный мониторинг кадровых потребностей НПТЛ, подготовки университетов, разработки стратегий и формирования управленческих кадров ("главных конструкторов").</p>
+          <div class="meta-row">
+            <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+            <span class="meta-pill">Источники: Минобрнауки, Росстат, ФОИВ</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Блок KPI карточек -->
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-card__label">Степень готовности образовательных программ по стране</div>
+          <div class="kpi-card__value kpi-card__value--green">72%</div>
+          <div class="kpi-card__trend">Агрегировано из подраздела 3.11.1</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Статус кадровой обеспеченности отраслей</div>
+          <div class="kpi-card__value kpi-card__value--yellow">68%</div>
+          <div class="kpi-card__trend">Агрегировано из подраздела 3.11.2</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Средняя готовность стратегий университетов</div>
+          <div class="kpi-card__value kpi-card__value--green">78%</div>
+          <div class="kpi-card__trend">Агрегировано из подраздела 3.11.3</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Суммарный уровень рисков группы</div>
+          <div style="flex: 1;"></div>
+          <div class="kpi-card__value kpi-card__value--yellow">Средний</div>
+          <div class="kpi-card__trend">Комплексная оценка всех подразделов</div>
+        </article>
+      </section>
+
+      <!-- Три большие карточки подразделов -->
+      <section class="subsection-cards-grid">
+        <!-- Карточка 1: Перечень программ подготовки кадров -->
+        <article class="subsection-card-large" data-code="3.11.1">
+          <div class="subsection-card-large__header">
+            <h2 class="subsection-card-large__title"><span class="subsection-card-large__number">3.11.1</span> Подготовка перечня программ подготовки кадров</h2>
+            <p class="subsection-card-large__desc">Отражает соответствие образовательных программ (СПО, ВО, ДПО) кадровым требованиям НПТЛ, уровень актуализации программ и охват студентов.</p>
+          </div>
+          
+          <ul class="subsection-card-large__kpis">
+            <li class="subsection-card-large__kpi">
+              <span class="subsection-card-large__kpi-label">Охват программами СПО и ВО</span>
+              <strong class="subsection-card-large__kpi-value subsection-card-large__kpi-value--green">72%</strong>
+            </li>
+            <li class="subsection-card-large__kpi">
+              <span class="subsection-card-large__kpi-label">Кадровая обеспеченность отраслей</span>
+              <strong class="subsection-card-large__kpi-value subsection-card-large__kpi-value--yellow">0.68</strong>
+            </li>
+            <li class="subsection-card-large__kpi">
+              <span class="subsection-card-large__kpi-label">Обучающиеся по новым/актуализированным программам</span>
+              <strong class="subsection-card-large__kpi-value subsection-card-large__kpi-value--green">145,2k</strong>
+            </li>
+            <li class="subsection-card-large__kpi">
+              <span class="subsection-card-large__kpi-label">Трудоустройство выпускников по профилю</span>
+              <strong class="subsection-card-large__kpi-value subsection-card-large__kpi-value--green">84%</strong>
+            </li>
+          </ul>
+
+          <div class="subsection-card-large__risk">
+            <span class="risk-indicator risk-indicator--yellow"></span>
+            <span class="risk-text">Есть частичные разрывы</span>
+          </div>
+        </article>
+
+        <!-- Карточка 2: Порядок назначения главных конструкторов -->
+        <article class="subsection-card-large" data-code="3.11.2">
+          <div class="subsection-card-large__header">
+            <h2 class="subsection-card-large__title"><span class="subsection-card-large__number">3.11.2</span> Порядок назначения главных конструкторов</h2>
+            <p class="subsection-card-large__desc">Мониторинг отбора и подготовки управленческих техно-лидеров: кадровый ресурс, кадровые разрывы, отраслевые компетенции.</p>
+          </div>
+          
+          <ul class="subsection-card-large__kpis">
+            <li class="subsection-card-large__kpi">
+              <span class="subsection-card-large__kpi-label">Доля молодых учёных</span>
+              <strong class="subsection-card-large__kpi-value subsection-card-large__kpi-value--green">38%</strong>
+            </li>
+            <li class="subsection-card-large__kpi">
+              <span class="subsection-card-large__kpi-label">Коэффициент восполнения кадров</span>
+              <strong class="subsection-card-large__kpi-value subsection-card-large__kpi-value--green">0.85</strong>
+            </li>
+            <li class="subsection-card-large__kpi">
+              <span class="subsection-card-large__kpi-label">Профессионально-квалификационная обеспеченность</span>
+              <strong class="subsection-card-large__kpi-value subsection-card-large__kpi-value--yellow">0.72</strong>
+            </li>
+            <li class="subsection-card-large__kpi">
+              <span class="subsection-card-large__kpi-label">Укомплектованность кадров в НПТЛ-отраслях</span>
+              <strong class="subsection-card-large__kpi-value subsection-card-large__kpi-value--green">78%</strong>
+            </li>
+          </ul>
+
+          <div class="subsection-card-large__risk">
+            <span class="risk-indicator risk-indicator--green"></span>
+            <span class="risk-text">Достаточный кадровый резерв</span>
+          </div>
+        </article>
+
+        <!-- Карточка 3: Стратегии развития инженерных университетов -->
+        <article class="subsection-card-large" data-code="3.11.3">
+          <div class="subsection-card-large__header">
+            <h2 class="subsection-card-large__title"><span class="subsection-card-large__number">3.11.3</span> Стратегии развития инженерных университетов</h2>
+            <p class="subsection-card-large__desc">Оценка качества, полноты и сроков подготовки университетских стратегий в соответствии с потребностями НПТЛ и отраслей.</p>
+          </div>
+          
+          <ul class="subsection-card-large__kpis">
+            <li class="subsection-card-large__kpi">
+              <span class="subsection-card-large__kpi-label">Университеты, представившие стратегии вовремя</span>
+              <strong class="subsection-card-large__kpi-value subsection-card-large__kpi-value--green">85%</strong>
+            </li>
+            <li class="subsection-card-large__kpi">
+              <span class="subsection-card-large__kpi-label">Кадровая обеспеченность университета</span>
+              <strong class="subsection-card-large__kpi-value subsection-card-large__kpi-value--green">0.78</strong>
+            </li>
+            <li class="subsection-card-large__kpi">
+              <span class="subsection-card-large__kpi-label">Качество образовательных программ</span>
+              <strong class="subsection-card-large__kpi-value subsection-card-large__kpi-value--yellow">68%</strong>
+            </li>
+            <li class="subsection-card-large__kpi">
+              <span class="subsection-card-large__kpi-label">Участие в НИОКР по ключевым направлениям</span>
+              <strong class="subsection-card-large__kpi-value subsection-card-large__kpi-value--green">72%</strong>
+            </li>
+          </ul>
+
+          <div class="subsection-card-large__risk">
+            <span class="risk-indicator risk-indicator--yellow"></span>
+            <span class="risk-text">Нужно уточнение отдельных блоков</span>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
+

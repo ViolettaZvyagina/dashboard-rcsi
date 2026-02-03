@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подраздел 6.4 — Взаимодействие с координационными и совещательными органами Правительства РФ</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .header-section {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-24);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: var(--space-4) 0 var(--space-6) 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .kpi-main-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-24);
+      margin-top: var(--space-24);
+    }
+
+    @media (max-width: 1200px) {
+      .kpi-main-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .kpi-main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-main {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .kpi-main__title {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      line-height: 26px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .kpi-main__value {
+      font-family: var(--font-alt);
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .kpi-main__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-main__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-main__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-main__trend {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      margin-top: var(--space-8);
+    }
+
+    .kpi-main__trend--positive {
+      color: var(--color-positive-500);
+    }
+
+    .kpi-main__trend--negative {
+      color: var(--color-negative-500);
+    }
+
+    .kpi-main__chart {
+      margin-top: var(--space-12);
+      height: 120px;
+      position: relative;
+    }
+
+    .section-block {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      margin-top: var(--space-24);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-16) 0;
+    }
+
+    .chart-container {
+      position: relative;
+      min-height: 300px;
+      padding: var(--space-16);
+    }
+
+    .chart-container canvas {
+      max-height: 300px;
+    }
+
+    .chart-container--small {
+      min-height: 200px;
+    }
+
+    .chart-container--small canvas {
+      max-height: 200px;
+    }
+
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-16);
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border-radius: var(--radius-md);
+    }
+
+    .controls-bar__filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      align-items: center;
+    }
+
+    .filter-select {
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-caption);
+      cursor: pointer;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--material-neutral-highlight-primary);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      margin-top: var(--space-8);
+    }
+
+    .progress-bar__fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-bar__fill--green {
+      background: linear-gradient(90deg, var(--color-positive-400), var(--color-positive-500));
+    }
+
+    .progress-bar__fill--yellow {
+      background: linear-gradient(90deg, var(--color-warning-400), var(--color-warning-500));
+    }
+
+    .progress-bar__fill--red {
+      background: linear-gradient(90deg, var(--color-negative-400), var(--color-negative-500));
+    }
+
+    .heatmap-container {
+      overflow-x: auto;
+      margin-top: var(--space-16);
+    }
+
+    .heatmap {
+      width: 100%;
+      min-width: 800px;
+      border-collapse: collapse;
+      font-size: var(--font-size-body);
+    }
+
+    .heatmap th,
+    .heatmap td {
+      padding: var(--space-8) var(--space-12);
+      text-align: center;
+      border: 1px solid var(--material-neutral-border-primary);
+    }
+
+    .heatmap th {
+      background: var(--material-neutral-highlight-primary);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-caption);
+    }
+
+    .heatmap td {
+      color: var(--material-neutral-content-primary);
+      font-weight: 500;
+    }
+
+    .heatmap-cell {
+      min-width: 60px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .heatmap-cell--high {
+      background: rgba(0, 201, 81, 0.6);
+    }
+
+    .heatmap-cell--medium {
+      background: rgba(255, 185, 106, 0.5);
+    }
+
+    .heatmap-cell--low {
+      background: rgba(255, 105, 0, 0.4);
+    }
+
+    .heatmap-cell--very-low {
+      background: rgba(200, 200, 200, 0.3);
+    }
+
+    .requests-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--font-size-body);
+    }
+
+    .requests-table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .requests-table th,
+    .requests-table td {
+      padding: var(--space-12) var(--space-16);
+      border-bottom: 1px solid var(--material-neutral-border-primary);
+      text-align: left;
+    }
+
+    .requests-table th {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label);
+    }
+
+    .requests-table td {
+      color: var(--material-neutral-content-primary);
+    }
+
+    .requests-table th:nth-child(1),
+    .requests-table td:nth-child(1) {
+      width: 120px;
+      min-width: 120px;
+      font-weight: 600;
+    }
+
+    .requests-table th:nth-child(3),
+    .requests-table td:nth-child(3) {
+      width: 200px;
+      min-width: 200px;
+    }
+
+    .requests-table th:nth-child(9),
+    .requests-table td:nth-child(9) {
+      width: 140px;
+      min-width: 140px;
+    }
+
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-8);
+      border-radius: 999px;
+      font-size: var(--font-size-caption);
+      background-color: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-secondary);
+      border: 1px solid var(--material-neutral-border-primary);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-8);
+      border-radius: 999px;
+      font-size: var(--font-size-caption);
+      font-weight: 500;
+    }
+
+    .status-badge--completed {
+      background: rgba(0, 201, 81, 0.1);
+      color: var(--color-positive-500);
+    }
+
+    .status-badge--partial {
+      background: rgba(255, 185, 106, 0.1);
+      color: var(--color-warning-500);
+    }
+
+    .status-badge--pending {
+      background: rgba(255, 185, 106, 0.1);
+      color: var(--color-warning-500);
+    }
+
+    .status-badge--overdue {
+      background: rgba(251, 44, 54, 0.1);
+      color: var(--color-negative-500);
+    }
+
+    .document-icon {
+      font-size: 20px;
+      cursor: pointer;
+      display: inline-block;
+      transition: transform 0.2s ease;
+    }
+
+    .document-icon:hover {
+      transform: scale(1.2);
+    }
+
+    .requests-table tr[style*="display: none"] {
+      display: none !important;
+    }
+
+    .org-card {
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-16);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .org-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .org-card__title {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .org-card__metrics {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .org-card__metric {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .org-card__metric strong {
+      color: var(--material-neutral-content-primary);
+      font-weight: 600;
+    }
+
+    .org-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--space-16);
+    }
+
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-16);
+      margin-top: var(--space-16);
+    }
+
+    @media (max-width: 1200px) {
+      .insights-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .insight-card {
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-16);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .insight-card__title {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .insight-card__list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .insight-card__item {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+      padding-left: var(--space-16);
+      position: relative;
+    }
+
+    .insight-card__item::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--material-neutral-content-tertiary);
+      font-weight: 600;
+    }
+
+    .alert-box {
+      background: linear-gradient(145deg, rgba(255, 105, 0, 0.08), rgba(251, 44, 54, 0.05));
+      border: 1px solid var(--color-warning-200);
+      border-radius: var(--radius-md);
+      padding: var(--space-16);
+      margin-top: var(--space-16);
+    }
+
+    .alert-box__text {
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+      margin: 0;
+    }
+
+    .gauge-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-8);
+    }
+
+    .gauge {
+      width: 200px;
+      height: 100px;
+      position: relative;
+    }
+
+    .bubble-chart-container {
+      position: relative;
+      min-height: 400px;
+      padding: var(--space-16);
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="header-section">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="chapter6.html">
+                <span class="back-link__icon"></span>
+                К разделу 6
+              </a>
+              <span class="meta-pill">Подраздел 6.4</span>
+            </div>
+            <h1>6.4 Взаимодействие с координационными и совещательными органами Правительства РФ</h1>
+            <p>Комиссия взаимодействует с рядом правительственных органов (межведомственные комиссии, подкомиссии, советы, рабочие группы), запрашивает у них материалы и получает информацию, необходимую для реализации задач НТР.</p>
+            <div class="meta-row">
+              <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+              <span class="meta-pill">Источники: Координационные органы Правительства РФ</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 1. Верхний KPI-блок -->
+      <section class="kpi-main-grid">
+        <!-- Карточка №1 — Общее количество запросов -->
+        <div class="kpi-main">
+          <div class="kpi-main__title">Общее количество запросов</div>
+          <div class="kpi-main__value kpi-main__value--green">342</div>
+          <div class="kpi-main__trend kpi-main__trend--positive">
+            <span>↗</span>
+            <span>+8.5% YoY</span>
+          </div>
+          <div class="kpi-main__chart">
+            <canvas id="requests-trend-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Карточка №2 — Степень закрытости запросов -->
+        <div class="kpi-main">
+          <div class="kpi-main__title">Степень закрытости запросов</div>
+          <div style="display: flex; flex-direction: column; gap: var(--space-12); margin-top: var(--space-8);">
+            <div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-4);">
+                <span style="font-size: var(--font-size-body); color: var(--material-neutral-content-secondary);">Выполнено</span>
+                <span style="font-size: var(--font-size-body); font-weight: 600; color: var(--color-positive-500);">72%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-bar__fill progress-bar__fill--green" style="width: 72%;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-4);">
+                <span style="font-size: var(--font-size-body); color: var(--material-neutral-content-secondary);">В срок</span>
+                <span style="font-size: var(--font-size-body); font-weight: 600; color: var(--color-positive-500);">68%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-bar__fill progress-bar__fill--green" style="width: 68%;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-4);">
+                <span style="font-size: var(--font-size-body); color: var(--material-neutral-content-secondary);">Просрочено</span>
+                <span style="font-size: var(--font-size-body); font-weight: 600; color: var(--color-negative-500);">14%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-bar__fill progress-bar__fill--red" style="width: 14%;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-4);">
+                <span style="font-size: var(--font-size-body); color: var(--material-neutral-content-secondary);">В работе</span>
+                <span style="font-size: var(--font-size-body); font-weight: 600; color: var(--color-warning-500);">14%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-bar__fill progress-bar__fill--yellow" style="width: 14%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Карточка №3 — Количество задействованных органов Правительства РФ -->
+        <div class="kpi-main">
+          <div class="kpi-main__title">Количество задействованных органов Правительства РФ</div>
+          <div class="kpi-main__value kpi-main__value--green">18</div>
+          <div class="kpi-main__trend kpi-main__trend--positive">
+            <span>↗</span>
+            <span>+2 новых взаимодействия</span>
+          </div>
+          <div style="margin-top: var(--space-12); padding: var(--space-12); background: var(--material-neutral-highlight-primary); border-radius: var(--radius-md);">
+            <div style="font-size: var(--font-size-body); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-8);">
+              Новые взаимодействия:
+            </div>
+            <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+              <div style="font-size: var(--font-size-caption); color: var(--color-positive-500);">• Комиссия по цифровой экономике</div>
+              <div style="font-size: var(--font-size-caption); color: var(--color-positive-500);">• Рабочая группа по климату</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Блок: Разрез по типам координационных органов -->
+      <section class="section-block">
+        <h2 class="section-block__title">Разрез по типам координационных органов</h2>
+        <div class="chart-container">
+          <canvas id="org-types-chart"></canvas>
+        </div>
+      </section>
+
+      <!-- 3. Блок: Топ-10 координационных органов по количеству запросов -->
+      <section class="section-block">
+        <h2 class="section-block__title">Топ-10 координационных органов по количеству запросов</h2>
+        <div class="org-cards-grid">
+          <div class="org-card">
+            <div class="org-card__title">Межведомственная комиссия по технологическому развитию</div>
+            <div class="org-card__metrics">
+              <div class="org-card__metric">
+                <span>Количество запросов:</span>
+                <strong>48</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Средний срок ответа:</span>
+                <strong>9 дней</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Статус:</span>
+                <span class="status-badge status-badge--completed">Выполнено</span>
+              </div>
+            </div>
+            <div class="tag-cloud">
+              <span class="tag">Технологическое развитие</span>
+              <span class="tag">Инновации</span>
+              <span class="tag">Цифровая экономика</span>
+            </div>
+          </div>
+
+          <div class="org-card">
+            <div class="org-card__title">Правительственная комиссия по цифровой экономике</div>
+            <div class="org-card__metrics">
+              <div class="org-card__metric">
+                <span>Количество запросов:</span>
+                <strong>42</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Средний срок ответа:</span>
+                <strong>7 дней</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Статус:</span>
+                <span class="status-badge status-badge--completed">Выполнено</span>
+              </div>
+            </div>
+            <div class="tag-cloud">
+              <span class="tag">Цифровая экономика</span>
+              <span class="tag">ИИ</span>
+              <span class="tag">Регуляторика</span>
+            </div>
+          </div>
+
+          <div class="org-card">
+            <div class="org-card__title">Подкомиссия по научно-технической политике</div>
+            <div class="org-card__metrics">
+              <div class="org-card__metric">
+                <span>Количество запросов:</span>
+                <strong>38</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Средний срок ответа:</span>
+                <strong>11 дней</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Статус:</span>
+                <span class="status-badge status-badge--completed">Выполнено</span>
+              </div>
+            </div>
+            <div class="tag-cloud">
+              <span class="tag">Научные исследования</span>
+              <span class="tag">Стратегическое планирование</span>
+            </div>
+          </div>
+
+          <div class="org-card">
+            <div class="org-card__title">Совещательный совет по инновациям</div>
+            <div class="org-card__metrics">
+              <div class="org-card__metric">
+                <span>Количество запросов:</span>
+                <strong>35</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Средний срок ответа:</span>
+                <strong>8 дней</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Статус:</span>
+                <span class="status-badge status-badge--completed">Выполнено</span>
+              </div>
+            </div>
+            <div class="tag-cloud">
+              <span class="tag">Инновации</span>
+              <span class="tag">Высокие технологии</span>
+            </div>
+          </div>
+
+          <div class="org-card">
+            <div class="org-card__title">Рабочая группа по кадровой политике</div>
+            <div class="org-card__metrics">
+              <div class="org-card__metric">
+                <span>Количество запросов:</span>
+                <strong>32</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Средний срок ответа:</span>
+                <strong>10 дней</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Статус:</span>
+                <span class="status-badge status-badge--partial">Частично</span>
+              </div>
+            </div>
+            <div class="tag-cloud">
+              <span class="tag">Кадровая политика</span>
+              <span class="tag">Образование</span>
+            </div>
+          </div>
+
+          <div class="org-card">
+            <div class="org-card__title">Межведомственный оперативный штаб по НТР</div>
+            <div class="org-card__metrics">
+              <div class="org-card__metric">
+                <span>Количество запросов:</span>
+                <strong>28</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Средний срок ответа:</span>
+                <strong>12 дней</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Статус:</span>
+                <span class="status-badge status-badge--completed">Выполнено</span>
+              </div>
+            </div>
+            <div class="tag-cloud">
+              <span class="tag">Технологическое развитие</span>
+              <span class="tag">Оперативное управление</span>
+            </div>
+          </div>
+
+          <div class="org-card">
+            <div class="org-card__title">Комиссия по экономическому прогнозированию</div>
+            <div class="org-card__metrics">
+              <div class="org-card__metric">
+                <span>Количество запросов:</span>
+                <strong>26</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Средний срок ответа:</span>
+                <strong>14 дней</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Статус:</span>
+                <span class="status-badge status-badge--pending">В работе</span>
+              </div>
+            </div>
+            <div class="tag-cloud">
+              <span class="tag">Экономическое прогнозирование</span>
+              <span class="tag">Статистика</span>
+            </div>
+          </div>
+
+          <div class="org-card">
+            <div class="org-card__title">Совещательный совет по атомной энергетике</div>
+            <div class="org-card__metrics">
+              <div class="org-card__metric">
+                <span>Количество запросов:</span>
+                <strong>24</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Средний срок ответа:</span>
+                <strong>6 дней</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Статус:</span>
+                <span class="status-badge status-badge--completed">Выполнено</span>
+              </div>
+            </div>
+            <div class="tag-cloud">
+              <span class="tag">Высокие технологии</span>
+              <span class="tag">Атомная энергетика</span>
+            </div>
+          </div>
+
+          <div class="org-card">
+            <div class="org-card__title">Рабочая группа по новым материалам</div>
+            <div class="org-card__metrics">
+              <div class="org-card__metric">
+                <span>Количество запросов:</span>
+                <strong>22</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Средний срок ответа:</span>
+                <strong>9 дней</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Статус:</span>
+                <span class="status-badge status-badge--completed">Выполнено</span>
+              </div>
+            </div>
+            <div class="tag-cloud">
+              <span class="tag">Высокие технологии</span>
+              <span class="tag">Новые материалы</span>
+            </div>
+          </div>
+
+          <div class="org-card">
+            <div class="org-card__title">Комиссия Госсовета по науке и технологиям</div>
+            <div class="org-card__metrics">
+              <div class="org-card__metric">
+                <span>Количество запросов:</span>
+                <strong>17</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Средний срок ответа:</span>
+                <strong>13 дней</strong>
+              </div>
+              <div class="org-card__metric">
+                <span>Статус:</span>
+                <span class="status-badge status-badge--overdue">Просрочено</span>
+              </div>
+            </div>
+            <div class="tag-cloud">
+              <span class="tag">Научные исследования</span>
+              <span class="tag">Стратегическое планирование</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Блок: Разрез по тематикам запросов -->
+      <section class="section-block">
+        <h2 class="section-block__title">Разрез по тематикам запросов</h2>
+        <div class="bubble-chart-container">
+          <canvas id="thematics-bubble-chart"></canvas>
+        </div>
+      </section>
+
+      <!-- 5. Блок: Разрез по типам запрашиваемых материалов -->
+      <section class="section-block">
+        <h2 class="section-block__title">Разрез по типам запрашиваемых материалов</h2>
+        <div class="heatmap-container">
+          <table class="heatmap">
+            <thead>
+              <tr>
+                <th>Координационный орган</th>
+                <th>Пояснительные записки</th>
+                <th>Меры/решения по поручениям</th>
+                <th>Проектные паспорта</th>
+                <th>Регуляторные предложения</th>
+                <th>Информационно-аналитические материалы</th>
+                <th>Прогнозы/оценки</th>
+                <th>Статистика</th>
+                <th>Отчёты о реализации мер</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Межведомственная комиссия по технологическому развитию</th>
+                <td><div class="heatmap-cell heatmap-cell--high">18</div></td>
+                <td><div class="heatmap-cell heatmap-cell--high">22</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">12</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">14</div></td>
+                <td><div class="heatmap-cell heatmap-cell--high">20</div></td>
+                <td><div class="heatmap-cell heatmap-cell--low">8</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">16</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">15</div></td>
+              </tr>
+              <tr>
+                <th>Правительственная комиссия по цифровой экономике</th>
+                <td><div class="heatmap-cell heatmap-cell--medium">14</div></td>
+                <td><div class="heatmap-cell heatmap-cell--high">18</div></td>
+                <td><div class="heatmap-cell heatmap-cell--low">10</div></td>
+                <td><div class="heatmap-cell heatmap-cell--high">24</div></td>
+                <td><div class="heatmap-cell heatmap-cell--high">19</div></td>
+                <td><div class="heatmap-cell heatmap-cell--low">6</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">12</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">13</div></td>
+              </tr>
+              <tr>
+                <th>Подкомиссия по научно-технической политике</th>
+                <td><div class="heatmap-cell heatmap-cell--high">16</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">12</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">14</div></td>
+                <td><div class="heatmap-cell heatmap-cell--low">8</div></td>
+                <td><div class="heatmap-cell heatmap-cell--high">22</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">10</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">11</div></td>
+                <td><div class="heatmap-cell heatmap-cell--low">9</div></td>
+              </tr>
+              <tr>
+                <th>Совещательный совет по инновациям</th>
+                <td><div class="heatmap-cell heatmap-cell--medium">12</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">14</div></td>
+                <td><div class="heatmap-cell heatmap-cell--high">18</div></td>
+                <td><div class="heatmap-cell heatmap-cell--low">8</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">16</div></td>
+                <td><div class="heatmap-cell heatmap-cell--low">6</div></td>
+                <td><div class="heatmap-cell heatmap-cell--low">9</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">12</div></td>
+              </tr>
+              <tr>
+                <th>Рабочая группа по кадровой политике</th>
+                <td><div class="heatmap-cell heatmap-cell--low">10</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">12</div></td>
+                <td><div class="heatmap-cell heatmap-cell--low">6</div></td>
+                <td><div class="heatmap-cell heatmap-cell--very-low">4</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">14</div></td>
+                <td><div class="heatmap-cell heatmap-cell--very-low">3</div></td>
+                <td><div class="heatmap-cell heatmap-cell--high">20</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">11</div></td>
+              </tr>
+              <tr>
+                <th>Межведомственный оперативный штаб по НТР</th>
+                <td><div class="heatmap-cell heatmap-cell--medium">11</div></td>
+                <td><div class="heatmap-cell heatmap-cell--high">16</div></td>
+                <td><div class="heatmap-cell heatmap-cell--low">8</div></td>
+                <td><div class="heatmap-cell heatmap-cell--low">6</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">13</div></td>
+                <td><div class="heatmap-cell heatmap-cell--low">5</div></td>
+                <td><div class="heatmap-cell heatmap-cell--medium">10</div></td>
+                <td><div class="heatmap-cell heatmap-cell--high">17</div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 6. Блок: Временная динамика запросов -->
+      <section class="section-block">
+        <h2 class="section-block__title">Временная динамика запросов</h2>
+        <div class="controls-bar">
+          <div class="controls-bar__filters">
+            <select class="filter-select" id="time-org-filter">
+              <option value="all">Все органы</option>
+              <option value="commission">Межведомственные комиссии</option>
+              <option value="subcommission">Подкомиссии</option>
+              <option value="council">Совещательные советы</option>
+              <option value="working-group">Рабочие группы</option>
+            </select>
+            <select class="filter-select" id="time-theme-filter">
+              <option value="all">Все тематики</option>
+              <option value="tech">Технологическое развитие</option>
+              <option value="digital">Цифровая экономика</option>
+              <option value="high-tech">Высокие технологии</option>
+              <option value="personnel">Кадровая политика</option>
+            </select>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="time-dynamics-chart"></canvas>
+        </div>
+      </section>
+
+      <!-- 7. Блок: Сроки исполнения и реакции -->
+      <section class="section-block" style="gap: var(--space-8);">
+        <h2 class="section-block__title" style="margin-bottom: var(--space-8);">Сроки исполнения и реакции</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: var(--space-8); margin-bottom: 0;">
+          <div>
+            <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 2px 0; color: var(--material-neutral-content-primary);">Средний срок ответа: <span style="color: var(--color-positive-500);">9.2 дня</span></h3>
+            <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 2px 0; color: var(--material-neutral-content-primary);">Медианный срок: <span style="color: var(--color-positive-500);">8 дней</span></h3>
+            <h3 style="font-size: 18px; font-weight: 600; margin: 0; color: var(--material-neutral-content-primary);">% ответов в срок: <span style="color: var(--color-positive-500);">68%</span></h3>
+          </div>
+        </div>
+        <div class="chart-container" style="min-height: 300px; margin-top: 0;">
+          <canvas id="response-time-boxplot"></canvas>
+        </div>
+        <div class="chart-container" style="margin-top: 0;">
+          <canvas id="response-time-scatter"></canvas>
+        </div>
+      </section>
+
+      <!-- 8. Реестр запросов -->
+      <section class="section-block">
+        <h2 class="section-block__title">Реестр запросов</h2>
+        <div class="controls-bar">
+          <div class="controls-bar__filters">
+            <input type="text" class="filter-select" id="requests-search" placeholder="Поиск по ID, тематике, органу..." style="min-width: 300px;">
+            <select class="filter-select" id="requests-status-filter">
+              <option value="all">Все статусы</option>
+              <option value="completed">Выполнено</option>
+              <option value="partial">Частично</option>
+              <option value="pending">В работе</option>
+              <option value="overdue">Просрочено</option>
+            </select>
+            <select class="filter-select" id="requests-theme-filter">
+              <option value="all">Все тематики</option>
+              <option value="tech">Технологическое развитие</option>
+              <option value="digital">Цифровая экономика</option>
+              <option value="high-tech">Высокие технологии</option>
+              <option value="personnel">Кадровая политика</option>
+              <option value="research">Научные исследования</option>
+              <option value="innovation">Инновации</option>
+              <option value="forecast">Экономическое прогнозирование</option>
+              <option value="strategy">Стратегическое планирование</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="requests-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Дата запроса</th>
+                <th>Кому направлен</th>
+                <th>Тематика</th>
+                <th>Тип материала</th>
+                <th>Статус</th>
+                <th>Срок ответа</th>
+                <th>Прикрепленные документы</th>
+                <th>Примечания</th>
+              </tr>
+            </thead>
+            <tbody id="requests-table-body">
+              <tr data-status="completed" data-theme="tech" data-search-text="REQ-2025-001 15.01.2025 Межведомственная комиссия по технологическому развитию Технологическое развитие Информационно-аналитические материалы">
+                <td>REQ-2025-001</td>
+                <td>15.01.2025</td>
+                <td>Межведомственная комиссия по технологическому развитию</td>
+                <td>Технологическое развитие</td>
+                <td>Информационно-аналитические материалы</td>
+                <td><span class="status-badge status-badge--completed">Выполнено</span></td>
+                <td>8 дней</td>
+                <td><span class="document-icon" title="Материалы получены">📄</span></td>
+                <td>Материалы получены в полном объёме</td>
+              </tr>
+              <tr data-status="completed" data-theme="digital" data-search-text="REQ-2025-002 18.01.2025 Правительственная комиссия по цифровой экономике Цифровая экономика Регуляторные предложения">
+                <td>REQ-2025-002</td>
+                <td>18.01.2025</td>
+                <td>Правительственная комиссия по цифровой экономике</td>
+                <td>Цифровая экономика</td>
+                <td>Регуляторные предложения</td>
+                <td><span class="status-badge status-badge--completed">Выполнено</span></td>
+                <td>6 дней</td>
+                <td>—</td>
+                <td>—</td>
+              </tr>
+              <tr data-status="completed" data-theme="research" data-search-text="REQ-2025-003 20.01.2025 Подкомиссия по научно-технической политике Научные исследования Пояснительные записки">
+                <td>REQ-2025-003</td>
+                <td>20.01.2025</td>
+                <td>Подкомиссия по научно-технической политике</td>
+                <td>Научные исследования</td>
+                <td>Пояснительные записки</td>
+                <td><span class="status-badge status-badge--completed">Выполнено</span></td>
+                <td>11 дней</td>
+                <td>—</td>
+                <td>—</td>
+              </tr>
+              <tr data-status="partial" data-theme="personnel" data-search-text="REQ-2025-004 22.01.2025 Рабочая группа по кадровой политике Кадровая политика Статистика">
+                <td>REQ-2025-004</td>
+                <td>22.01.2025</td>
+                <td>Рабочая группа по кадровой политике</td>
+                <td>Кадровая политика</td>
+                <td>Статистика</td>
+                <td><span class="status-badge status-badge--partial">Частично</span></td>
+                <td>12 дней</td>
+                <td>—</td>
+                <td>Требуется уточнение данных</td>
+              </tr>
+              <tr data-status="completed" data-theme="innovation" data-search-text="REQ-2025-005 25.01.2025 Совещательный совет по инновациям Инновации Проектные паспорта">
+                <td>REQ-2025-005</td>
+                <td>25.01.2025</td>
+                <td>Совещательный совет по инновациям</td>
+                <td>Инновации</td>
+                <td>Проектные паспорта</td>
+                <td><span class="status-badge status-badge--completed">Выполнено</span></td>
+                <td>7 дней</td>
+                <td>—</td>
+                <td>—</td>
+              </tr>
+              <tr data-status="pending" data-theme="forecast" data-search-text="REQ-2025-006 28.01.2025 Комиссия по экономическому прогнозированию Экономическое прогнозирование Прогнозы/оценки">
+                <td>REQ-2025-006</td>
+                <td>28.01.2025</td>
+                <td>Комиссия по экономическому прогнозированию</td>
+                <td>Экономическое прогнозирование</td>
+                <td>Прогнозы/оценки</td>
+                <td><span class="status-badge status-badge--pending">В работе</span></td>
+                <td>—</td>
+                <td>—</td>
+                <td>Ожидается ответ до 15.02.2025</td>
+              </tr>
+              <tr data-status="overdue" data-theme="strategy" data-search-text="REQ-2025-007 30.01.2025 Комиссия Госсовета по науке и технологиям Стратегическое планирование Информационно-аналитические материалы">
+                <td>REQ-2025-007</td>
+                <td>30.01.2025</td>
+                <td>Комиссия Госсовета по науке и технологиям</td>
+                <td>Стратегическое планирование</td>
+                <td>Информационно-аналитические материалы</td>
+                <td><span class="status-badge status-badge--overdue">Просрочено</span></td>
+                <td>15 дней</td>
+                <td>—</td>
+                <td>Превышен срок на 3 дня</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 9. Итоговый аналитический блок -->
+      <section class="section-block">
+        <h2 class="section-block__title">Выводы и рекомендации</h2>
+        <div class="insights-grid">
+          <div class="insight-card">
+            <h3 class="insight-card__title">Самые отзывчивые органы</h3>
+            <ul class="insight-card__list">
+              <li class="insight-card__item">Совещательный совет по атомной энергетике — средний срок 6 дней</li>
+              <li class="insight-card__item">Правительственная комиссия по цифровой экономике — средний срок 7 дней</li>
+              <li class="insight-card__item">Совещательный совет по инновациям — средний срок 8 дней</li>
+              <li class="insight-card__item">Межведомственная комиссия по технологическому развитию — средний срок 9 дней</li>
+            </ul>
+          </div>
+
+          <div class="insight-card">
+            <h3 class="insight-card__title">Органы с повышенным риском задержек</h3>
+            <ul class="insight-card__list">
+              <li class="insight-card__item">Комиссия по экономическому прогнозированию — средний срок 14 дней</li>
+              <li class="insight-card__item">Комиссия Госсовета по науке и технологиям — средний срок 13 дней, 2 просрочки</li>
+              <li class="insight-card__item">Межведомственный оперативный штаб по НТР — средний срок 12 дней</li>
+              <li class="insight-card__item">Рабочая группа по кадровой политике — средний срок 10 дней, частичные ответы</li>
+            </ul>
+          </div>
+
+          <div class="insight-card">
+            <h3 class="insight-card__title">Темы, по которым взаимодействие наиболее интенсивное</h3>
+            <ul class="insight-card__list">
+              <li class="insight-card__item">Технологическое развитие — 48 запросов</li>
+              <li class="insight-card__item">Цифровая экономика — 42 запроса</li>
+              <li class="insight-card__item">Научные исследования — 38 запросов</li>
+              <li class="insight-card__item">Инновации — 35 запросов</li>
+            </ul>
+          </div>
+
+          <div class="insight-card">
+            <h3 class="insight-card__title">Темы, требующие усиления межведомственного механизма</h3>
+            <ul class="insight-card__list">
+              <li class="insight-card__item">Экономическое прогнозирование — частые задержки</li>
+              <li class="insight-card__item">Стратегическое планирование — неполные ответы</li>
+              <li class="insight-card__item">Регуляторика — требуется уточнение процедур</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="alert-box">
+          <p class="alert-box__text">
+            <strong>Требуется усилить регламентацию взаимодействия по темам:</strong> Экономическое прогнозирование, Стратегическое планирование, Регуляторика. Рекомендуется провести совещание с представителями соответствующих координационных органов для уточнения процедур и сроков предоставления материалов.
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script>
+    // График тренда запросов (sparkline)
+    const requestsTrendCtx = document.getElementById('requests-trend-chart');
+    if (requestsTrendCtx) {
+      new Chart(requestsTrendCtx, {
+        type: 'line',
+        data: {
+          labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+          datasets: [{
+            label: 'Запросы',
+            data: [28, 32, 29, 35, 31, 38, 34, 36, 33, 40, 37, 42],
+            borderColor: '#0066ff',
+            backgroundColor: 'rgba(0, 102, 255, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            pointRadius: 0,
+            pointHoverRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: true }
+          },
+          scales: {
+            y: { display: false },
+            x: { display: false }
+          }
+        }
+      });
+    }
+
+    // Горизонтальная столбчатая диаграмма по типам органов
+    const orgTypesCtx = document.getElementById('org-types-chart');
+    if (orgTypesCtx) {
+      // Массив тематик для каждой категории органов
+      const orgThematics = [
+        'Технологическое развитие, Инновации, Цифровая экономика',
+        'Научные исследования, Стратегическое планирование',
+        'Инновации, Высокие технологии, Технологическое развитие',
+        'Кадровая политика, Образование, Экономическое прогнозирование',
+        'Технологическое развитие, Оперативное управление',
+        'Научные исследования, Стратегическое планирование',
+        'Различные тематики: Регуляторика, Прогнозы, Статистика'
+      ];
+
+      new Chart(orgTypesCtx, {
+        type: 'bar',
+        data: {
+          labels: [
+            'Межведомственные комиссии',
+            'Правительственные подкомиссии',
+            'Совещательные советы',
+            'Рабочие группы Правительства РФ',
+            'Межведомственные оперативные штабы',
+            'Комиссии Госсовета',
+            'Иные координационные образования'
+          ],
+          datasets: [{
+            label: 'Количество запросов',
+            data: [48, 38, 59, 54, 28, 17, 98],
+            backgroundColor: [
+              'rgba(0, 102, 255, 0.7)',
+              'rgba(0, 201, 81, 0.7)',
+              'rgba(255, 185, 106, 0.7)',
+              'rgba(255, 105, 0, 0.7)',
+              'rgba(81, 162, 255, 0.7)',
+              'rgba(251, 44, 54, 0.7)',
+              'rgba(128, 128, 128, 0.7)'
+            ],
+            borderColor: [
+              '#0066ff',
+              '#00c951',
+              '#ffb96a',
+              '#ff6900',
+              '#51a2ff',
+              '#fb2c36',
+              '#808080'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                afterLabel: function(context) {
+                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = ((context.parsed.x / total) * 100).toFixed(1);
+                  const thematics = orgThematics[context.dataIndex];
+                  return [
+                    `${percentage}% от общего объёма`,
+                    '',
+                    `Тематика: ${thematics}`
+                  ];
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 10
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Bubble chart по тематикам
+    const thematicsBubbleCtx = document.getElementById('thematics-bubble-chart');
+    if (thematicsBubbleCtx) {
+      new Chart(thematicsBubbleCtx, {
+        type: 'bubble',
+        data: {
+          datasets: [
+            {
+              label: 'Технологическое развитие',
+              data: [{x: 48, y: 9, r: 15}],
+              backgroundColor: 'rgba(0, 102, 255, 0.6)',
+              borderColor: '#0066ff'
+            },
+            {
+              label: 'Цифровая экономика',
+              data: [{x: 42, y: 7, r: 14}],
+              backgroundColor: 'rgba(0, 201, 81, 0.6)',
+              borderColor: '#00c951'
+            },
+            {
+              label: 'Высокие технологии',
+              data: [{x: 46, y: 8, r: 13}],
+              backgroundColor: 'rgba(255, 185, 106, 0.6)',
+              borderColor: '#ffb96a'
+            },
+            {
+              label: 'Кадровая политика',
+              data: [{x: 32, y: 10, r: 11}],
+              backgroundColor: 'rgba(255, 105, 0, 0.6)',
+              borderColor: '#ff6900'
+            },
+            {
+              label: 'Инновации',
+              data: [{x: 35, y: 8, r: 12}],
+              backgroundColor: 'rgba(81, 162, 255, 0.6)',
+              borderColor: '#51a2ff'
+            },
+            {
+              label: 'Экономическое прогнозирование',
+              data: [{x: 26, y: 14, r: 9}],
+              backgroundColor: 'rgba(251, 44, 54, 0.6)',
+              borderColor: '#fb2c36'
+            },
+            {
+              label: 'Стратегическое планирование',
+              data: [{x: 28, y: 11, r: 10}],
+              backgroundColor: 'rgba(128, 128, 128, 0.6)',
+              borderColor: '#808080'
+            },
+            {
+              label: 'Регуляторика',
+              data: [{x: 24, y: 9, r: 8}],
+              backgroundColor: 'rgba(200, 100, 200, 0.6)',
+              borderColor: '#c864c8'
+            },
+            {
+              label: 'Научные исследования',
+              data: [{x: 38, y: 11, r: 12}],
+              backgroundColor: 'rgba(100, 200, 100, 0.6)',
+              borderColor: '#64c864'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              right: 20,
+              left: 20,
+              top: 20,
+              bottom: 60
+            }
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'bottom',
+              align: 'center',
+              padding: 20,
+              labels: {
+                font: {
+                  size: 13,
+                  weight: '500'
+                },
+                padding: 15,
+                boxWidth: 15,
+                boxHeight: 15
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `${context.dataset.label}: ${context.raw.x} запросов, средний срок ${context.raw.y} дней`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Количество запросов'
+              },
+              beginAtZero: true
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Средний срок ответа (дни)'
+              },
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    // Временная динамика запросов с фильтрацией
+    const timeDynamicsCtx = document.getElementById('time-dynamics-chart');
+    const timeOrgFilter = document.getElementById('time-org-filter');
+    const timeThemeFilter = document.getElementById('time-theme-filter');
+    
+    if (timeDynamicsCtx) {
+      const labels = ['Янв 2024', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек', 'Янв 2025', 'Фев'];
+      
+      // Данные для разных комбинаций фильтров
+      const dataSets = {
+        // Все органы, все тематики
+        'all_all': [24, 28, 26, 32, 29, 35, 31, 38, 34, 36, 33, 40, 37, 42],
+        // Все органы, технологическое развитие
+        'all_tech': [8, 10, 9, 12, 10, 14, 12, 15, 13, 14, 12, 16, 14, 18],
+        // Все органы, цифровая экономика
+        'all_digital': [7, 8, 7, 9, 8, 10, 9, 11, 10, 11, 10, 12, 11, 13],
+        // Все органы, высокие технологии
+        'all_high-tech': [6, 7, 6, 8, 7, 9, 8, 10, 9, 9, 8, 10, 9, 11],
+        // Все органы, кадровая политика
+        'all_personnel': [3, 3, 4, 3, 4, 2, 2, 2, 2, 2, 3, 2, 3, 0],
+        // Межведомственные комиссии, все тематики
+        'commission_all': [4, 5, 4, 6, 5, 7, 6, 8, 7, 7, 6, 8, 7, 9],
+        // Межведомственные комиссии, технологическое развитие
+        'commission_tech': [2, 2, 2, 3, 2, 3, 3, 4, 3, 3, 3, 4, 3, 4],
+        // Подкомиссии, все тематики
+        'subcommission_all': [3, 4, 3, 5, 4, 6, 5, 6, 5, 6, 5, 7, 6, 7],
+        // Подкомиссии, научные исследования
+        'subcommission_tech': [1, 2, 1, 2, 2, 3, 2, 3, 2, 3, 2, 3, 3, 3],
+        // Совещательные советы, все тематики
+        'council_all': [5, 6, 5, 7, 6, 8, 7, 9, 8, 8, 7, 9, 8, 10],
+        // Совещательные советы, инновации
+        'council_tech': [2, 2, 2, 3, 2, 3, 3, 4, 3, 3, 3, 4, 3, 4],
+        // Рабочие группы, все тематики
+        'working-group_all': [4, 5, 4, 6, 5, 6, 5, 7, 6, 6, 5, 7, 6, 8],
+        // Рабочие группы, кадровая политика
+        'working-group_personnel': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+      };
+
+      // Функция для получения ключа данных на основе фильтров
+      function getDataKey(orgFilter, themeFilter) {
+        if (orgFilter === 'all' && themeFilter === 'all') return 'all_all';
+        if (orgFilter === 'all') return `all_${themeFilter}`;
+        if (themeFilter === 'all') return `${orgFilter}_all`;
+        return `${orgFilter}_${themeFilter}`;
+      }
+
+      // Функция для получения данных
+      function getData(orgFilter, themeFilter) {
+        const key = getDataKey(orgFilter, themeFilter);
+        return dataSets[key] || dataSets['all_all'];
+      }
+
+      // Создаём график
+      const timeDynamicsChart = new Chart(timeDynamicsCtx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Количество запросов',
+            data: getData('all', 'all'),
+            borderColor: '#0066ff',
+            backgroundColor: 'rgba(0, 102, 255, 0.2)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top'
+            },
+            tooltip: {
+              mode: 'index',
+              intersect: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 5
+              }
+            }
+          }
+        }
+      });
+
+      // Функция обновления графика
+      function updateChart() {
+        const orgValue = timeOrgFilter ? timeOrgFilter.value : 'all';
+        const themeValue = timeThemeFilter ? timeThemeFilter.value : 'all';
+        const newData = getData(orgValue, themeValue);
+        
+        timeDynamicsChart.data.datasets[0].data = newData;
+        
+        // Обновляем метку в зависимости от фильтров
+        let label = 'Количество запросов';
+        if (orgValue !== 'all' || themeValue !== 'all') {
+          const orgLabels = {
+            'commission': 'Межведомственные комиссии',
+            'subcommission': 'Подкомиссии',
+            'council': 'Совещательные советы',
+            'working-group': 'Рабочие группы'
+          };
+          const themeLabels = {
+            'tech': 'Технологическое развитие',
+            'digital': 'Цифровая экономика',
+            'high-tech': 'Высокие технологии',
+            'personnel': 'Кадровая политика'
+          };
+          
+          const parts = [];
+          if (orgValue !== 'all') parts.push(orgLabels[orgValue] || orgValue);
+          if (themeValue !== 'all') parts.push(themeLabels[themeValue] || themeValue);
+          if (parts.length > 0) {
+            label = parts.join(' • ');
+          }
+        }
+        timeDynamicsChart.data.datasets[0].label = label;
+        
+        timeDynamicsChart.update();
+      }
+
+      // Добавляем обработчики событий для фильтров
+      if (timeOrgFilter) {
+        timeOrgFilter.addEventListener('change', updateChart);
+      }
+      if (timeThemeFilter) {
+        timeThemeFilter.addEventListener('change', updateChart);
+      }
+    }
+
+    // Box plot для сроков ответа по каждому органу
+    const responseTimeBoxplotCtx = document.getElementById('response-time-boxplot');
+    if (responseTimeBoxplotCtx) {
+      // Данные для box plot по каждому органу: [min, Q1, median, Q3, max]
+      const orgBoxPlotData = {
+        'Межведомственная комиссия по технологическому развитию': [4, 6, 9, 12, 16],
+        'Правительственная комиссия по цифровой экономике': [3, 5, 7, 9, 12],
+        'Подкомиссия по научно-технической политике': [5, 8, 11, 14, 18],
+        'Совещательный совет по инновациям': [4, 6, 8, 10, 14],
+        'Рабочая группа по кадровой политике': [6, 8, 10, 13, 17],
+        'Межведомственный оперативный штаб по НТР': [7, 9, 12, 15, 20],
+        'Комиссия по экономическому прогнозированию': [8, 11, 14, 17, 22],
+        'Совещательный совет по атомной энергетике': [3, 4, 6, 8, 10],
+        'Рабочая группа по новым материалам': [5, 7, 9, 11, 15],
+        'Комиссия Госсовета по науке и технологиям': [9, 11, 13, 16, 20]
+      };
+
+      const orgLabels = Object.keys(orgBoxPlotData);
+      const colors = [
+        'rgba(0, 102, 255, 0.6)',
+        'rgba(0, 201, 81, 0.6)',
+        'rgba(255, 185, 106, 0.6)',
+        'rgba(255, 105, 0, 0.6)',
+        'rgba(81, 162, 255, 0.6)',
+        'rgba(251, 44, 54, 0.6)',
+        'rgba(128, 128, 128, 0.6)',
+        'rgba(200, 100, 200, 0.6)',
+        'rgba(100, 200, 100, 0.6)',
+        'rgba(200, 150, 50, 0.6)'
+      ];
+
+      const borderColors = [
+        '#0066ff',
+        '#00c951',
+        '#ffb96a',
+        '#ff6900',
+        '#51a2ff',
+        '#fb2c36',
+        '#808080',
+        '#c864c8',
+        '#64c864',
+        '#c89632'
+      ];
+
+      // Создаём график с кастомным плагином для box plot
+      // Используем scatter plot для позиционирования, но рисуем box plot кастомно
+      const boxPlotChart = new Chart(responseTimeBoxplotCtx, {
+        type: 'scatter',
+        data: {
+          datasets: orgLabels.map((org, index) => {
+            const [min, q1, median, q3, max] = orgBoxPlotData[org];
+            // Используем медиану как точку для позиционирования
+            return {
+              label: org.length > 35 ? org.substring(0, 35) + '...' : org,
+              data: [{ x: median, y: index }],
+              pointRadius: 0,
+              pointHoverRadius: 0
+            };
+          })
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              enabled: true,
+              callbacks: {
+                title: function(context) {
+                  return orgLabels[context[0].dataIndex];
+                },
+                label: function(context) {
+                  const org = orgLabels[context[0].dataIndex];
+                  const [min, q1, median, q3, max] = orgBoxPlotData[org];
+                  return [
+                    `Мин: ${min} дней`,
+                    `Q1 (25%): ${q1} дней`,
+                    `Медиана: ${median} дней`,
+                    `Q3 (75%): ${q3} дней`,
+                    `Макс: ${max} дней`,
+                    `IQR: ${q3 - q1} дней`
+                  ];
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Срок ответа (дни)'
+              },
+              ticks: {
+                stepSize: 2
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Координационные органы'
+              },
+              ticks: {
+                stepSize: 1,
+                callback: function(value, index) {
+                  if (index < orgLabels.length) {
+                    const org = orgLabels[index];
+                    return org.length > 30 ? org.substring(0, 30) + '...' : org;
+                  }
+                  return '';
+                }
+              }
+            }
+          }
+        },
+        plugins: [{
+          id: 'boxplotPlugin',
+          afterDatasetsDraw: (chart) => {
+            const ctx = chart.ctx;
+            const scale = chart.scales.x;
+            const yScale = chart.scales.y;
+
+            orgLabels.forEach((org, orgIndex) => {
+              const [min, q1, median, q3, max] = orgBoxPlotData[org];
+              const yPos = yScale.getPixelForValue(orgIndex);
+              const boxHeight = 25;
+              const whiskerLength = 12;
+
+              // Координаты для box plot
+              const minX = scale.getPixelForValue(min);
+              const q1X = scale.getPixelForValue(q1);
+              const medianX = scale.getPixelForValue(median);
+              const q3X = scale.getPixelForValue(q3);
+              const maxX = scale.getPixelForValue(max);
+
+              // Рисуем нижний whisker (ус от min до Q1)
+              ctx.strokeStyle = borderColors[orgIndex];
+              ctx.lineWidth = 1.5;
+              ctx.beginPath();
+              ctx.moveTo(minX, yPos);
+              ctx.lineTo(q1X, yPos);
+              ctx.moveTo(minX, yPos - whiskerLength / 2);
+              ctx.lineTo(minX, yPos + whiskerLength / 2);
+              ctx.stroke();
+
+              // Рисуем верхний whisker (ус от Q3 до max)
+              ctx.beginPath();
+              ctx.moveTo(q3X, yPos);
+              ctx.lineTo(maxX, yPos);
+              ctx.moveTo(maxX, yPos - whiskerLength / 2);
+              ctx.lineTo(maxX, yPos + whiskerLength / 2);
+              ctx.stroke();
+
+              // Рисуем box (ящик от Q1 до Q3)
+              ctx.fillStyle = colors[orgIndex];
+              ctx.fillRect(q1X, yPos - boxHeight / 2, q3X - q1X, boxHeight);
+              ctx.strokeStyle = borderColors[orgIndex];
+              ctx.lineWidth = 2;
+              ctx.strokeRect(q1X, yPos - boxHeight / 2, q3X - q1X, boxHeight);
+
+              // Рисуем медиану (линия внутри box)
+              ctx.strokeStyle = '#0066ff';
+              ctx.lineWidth = 2.5;
+              ctx.beginPath();
+              ctx.moveTo(medianX, yPos - boxHeight / 2);
+              ctx.lineTo(medianX, yPos + boxHeight / 2);
+              ctx.stroke();
+            });
+          }
+        }]
+      });
+    }
+
+    // Scatter plot: дата запроса vs время получения ответа
+    const responseTimeScatterCtx = document.getElementById('response-time-scatter');
+    if (responseTimeScatterCtx) {
+      const scatterData = [];
+      const startDate = new Date('2024-01-01');
+      for (let i = 0; i < 50; i++) {
+        const date = new Date(startDate);
+        date.setDate(date.getDate() + i * 7);
+        scatterData.push({
+          x: i,
+          y: Math.floor(Math.random() * 15) + 3
+        });
+      }
+
+      new Chart(responseTimeScatterCtx, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            label: 'Срок ответа',
+            data: scatterData,
+            backgroundColor: 'rgba(0, 102, 255, 0.5)',
+            borderColor: '#0066ff',
+            pointRadius: 5,
+            pointHoverRadius: 7
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top'
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `Срок ответа: ${context.parsed.y} дней`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Дата запроса (недели)'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Время получения ответа (дни)'
+              },
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    // Фильтрация таблицы реестра запросов
+    const requestsSearch = document.getElementById('requests-search');
+    const requestsStatusFilter = document.getElementById('requests-status-filter');
+    const requestsThemeFilter = document.getElementById('requests-theme-filter');
+    const requestsTableBody = document.getElementById('requests-table-body');
+
+    function filterRequestsTable() {
+      if (!requestsTableBody) return;
+
+      const searchText = requestsSearch ? requestsSearch.value.toLowerCase().trim() : '';
+      const statusFilter = requestsStatusFilter ? requestsStatusFilter.value : 'all';
+      const themeFilter = requestsThemeFilter ? requestsThemeFilter.value : 'all';
+
+      const rows = requestsTableBody.querySelectorAll('tr');
+
+      rows.forEach(row => {
+        const status = row.getAttribute('data-status');
+        const theme = row.getAttribute('data-theme');
+        const searchData = row.getAttribute('data-search-text') || '';
+
+        // Проверка поиска
+        const matchesSearch = !searchText || searchData.toLowerCase().includes(searchText);
+
+        // Проверка статуса
+        const matchesStatus = statusFilter === 'all' || status === statusFilter;
+
+        // Проверка тематики
+        const matchesTheme = themeFilter === 'all' || theme === themeFilter;
+
+        // Показываем/скрываем строку
+        if (matchesSearch && matchesStatus && matchesTheme) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    // Добавляем обработчики событий
+    if (requestsSearch) {
+      requestsSearch.addEventListener('input', filterRequestsTable);
+    }
+    if (requestsStatusFilter) {
+      requestsStatusFilter.addEventListener('change', filterRequestsTable);
+    }
+    if (requestsThemeFilter) {
+      requestsThemeFilter.addEventListener('change', filterRequestsTable);
+    }
+  </script>
+</body>
+</html>
+
+

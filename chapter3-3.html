@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подраздел 3.3 — Рассмотрение проектов перечней приоритетов НТР и ВНТ</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .section-block {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .section-block__description {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-20);
+    }
+
+    @media (max-width: 1200px) {
+      .kpi-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-card__label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .kpi-card__value {
+      font-family: var(--font-alt);
+      font-size: 42px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 48px;
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+    }
+
+    .kpi-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-card__trend {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .charts-grid--two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .charts-grid--three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .chart-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .chart-card__title {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .chart-card canvas {
+      width: 100% !important;
+      height: 260px !important;
+      display: block;
+    }
+
+    .inline-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+    }
+
+    @media (max-width: 1024px) {
+      .charts-grid--two,
+      .charts-grid--three {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3-1-4.html">
+              <span class="back-link__icon"></span>
+              Назад к группе 3.1–3.4
+            </a>
+            <span class="meta-pill">Подраздел 3.3</span>
+          </div>
+          <h1>3.3. Рассмотрение проектов перечней приоритетов НТР и ВНТ</h1>
+          <p style="margin: 0; color: var(--material-neutral-content-secondary); font-size: var(--font-size-body-lg); line-height: var(--line-height-body-lg); max-width: 1100px;">
+            Оценка качества представленных перечней по внедрениям и экономическому эффекту. Анализ технологической независимости и зрелости направлений.
+          </p>
+          <div class="meta-row">
+            <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+            <span class="meta-pill">Источники: Росстат, Минпромторг, Минобрнауки, ФОИВ</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="kpi-grid">
+          <article class="kpi-card">
+            <div class="kpi-card__label">Объём высокотехнологичной продукции</div>
+            <div class="kpi-card__value kpi-card__value--green">2.45 трлн</div>
+            <div class="kpi-card__trend">+4.1% YoY</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Технологический суверенитет</div>
+            <div class="kpi-card__value kpi-card__value--green">68%</div>
+            <div class="kpi-card__trend">+2.3 п.п. YoY</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Количество отечественных технологий</div>
+            <div class="kpi-card__value kpi-card__value--green">127</div>
+            <div class="kpi-card__trend">+8 за год</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Внедрений по приоритетам</div>
+            <div class="kpi-card__value kpi-card__value--green">1,240</div>
+            <div class="kpi-card__trend">+156 за год</div>
+          </article>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Экономические показатели</h2>
+        <p class="section-block__description">Объём высокотехнологичной продукции и динамика по отраслям.</p>
+        <div class="charts-grid charts-grid--two">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Динамика объёма высокотехнологичной продукции, млрд руб</h3>
+            <canvas id="chart-high-tech-dynamics"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Объём высокотехнологичной продукции по отраслям, млрд руб</h3>
+            <canvas id="chart-high-tech-sectors"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Экспорт высокотехнологичной продукции, млрд руб</h3>
+            <canvas id="chart-high-tech-export"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доля высокотехнологичной продукции в ВВП, %</h3>
+            <canvas id="chart-high-tech-gdp"></canvas>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Внедрения по блокам</h2>
+        <p class="section-block__description">Количество внедрений технологий и разработок по стратегическим блокам и отраслям.</p>
+        <div class="charts-grid charts-grid--two">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Внедрения по отраслям (топ-10)</h3>
+            <canvas id="chart-implementations-sectors"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Динамика внедрений по годам</h3>
+            <canvas id="chart-implementations-dynamics"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Внедрения по типам (НИОКР, инновации, патенты)</h3>
+            <canvas id="chart-implementations-types"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Экономический эффект от внедрений, млрд руб</h3>
+            <canvas id="chart-economic-effect"></canvas>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Технологическая независимость и зрелость</h2>
+        <p class="section-block__description">Оценка технологического суверенитета и зрелости направлений.</p>
+        <div class="charts-grid charts-grid--two">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Технологический суверенитет по отраслям, %</h3>
+            <canvas id="chart-sovereignty-sectors"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Зрелость направлений (TRL уровень)</h3>
+            <canvas id="chart-maturity-trl"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Отечественные vs импортные технологии</h3>
+            <canvas id="chart-domestic-vs-import"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Количество отечественных технологий (динамика)</h3>
+            <canvas id="chart-domestic-tech-dynamics"></canvas>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const colors = {
+      primary: '#1565FF',
+      secondary: '#00C951',
+      neutral: '#8A94A6',
+      warning: '#F5A524',
+      danger: '#F44336'
+    };
+
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+
+    // Динамика объёма высокотехнологичной продукции
+    new Chart(document.getElementById('chart-high-tech-dynamics'), {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Объём, млрд руб',
+          data: [2200, 2280, 2350, 2400, 2450],
+          borderColor: colors.primary,
+          backgroundColor: 'rgba(21, 101, 255, 0.1)',
+          tension: 0.4
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: false, min: 2000 }
+        }
+      }
+    });
+
+    // Объём высокотехнологичной продукции по отраслям
+    new Chart(document.getElementById('chart-high-tech-sectors'), {
+      type: 'bar',
+      data: {
+        labels: ['Энергетика', 'Авиастроение', 'Атом', 'Материалы', 'Связь и ИТ', 'Медицина', 'Химия'],
+        datasets: [{
+          label: 'Объём, млрд руб',
+          data: [520, 480, 420, 380, 350, 180, 120],
+          backgroundColor: colors.primary
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+
+    // Экспорт высокотехнологичной продукции
+    new Chart(document.getElementById('chart-high-tech-export'), {
+      type: 'bar',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Экспорт, млрд руб',
+          data: [680, 720, 750, 780, 820],
+          backgroundColor: colors.secondary
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+
+    // Доля высокотехнологичной продукции в ВВП
+    new Chart(document.getElementById('chart-high-tech-gdp'), {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Доля в ВВП, %',
+          data: [11.8, 12.1, 12.4, 12.6, 12.9],
+          borderColor: colors.warning,
+          backgroundColor: 'rgba(245, 165, 36, 0.1)',
+          tension: 0.4
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: false, min: 11 }
+        }
+      }
+    });
+
+    // Внедрения по отраслям
+    new Chart(document.getElementById('chart-implementations-sectors'), {
+      type: 'bar',
+      data: {
+        labels: ['Энергетика', 'Материалы', 'Связь', 'Атом', 'Авиастроение', 'Медицина', 'Химия', 'АПК', 'БАС', 'Квантовые'],
+        datasets: [{
+          label: 'Внедрений',
+          data: [240, 220, 200, 180, 160, 140, 120, 100, 80, 60],
+          backgroundColor: colors.secondary
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+
+    // Динамика внедрений
+    new Chart(document.getElementById('chart-implementations-dynamics'), {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Внедрений',
+          data: [1084, 1120, 1160, 1200, 1240],
+          borderColor: colors.secondary,
+          backgroundColor: 'rgba(0, 201, 81, 0.1)',
+          tension: 0.4
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: false, min: 1000 } }
+      }
+    });
+
+    // Внедрения по типам
+    new Chart(document.getElementById('chart-implementations-types'), {
+      type: 'doughnut',
+      data: {
+        labels: ['НИОКР', 'Инновации', 'Патенты'],
+        datasets: [{
+          data: [520, 480, 240],
+          backgroundColor: [colors.primary, colors.secondary, colors.warning]
+        }]
+      },
+      options: {
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+
+    // Экономический эффект от внедрений
+    new Chart(document.getElementById('chart-economic-effect'), {
+      type: 'bar',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Эффект, млрд руб',
+          data: [420, 450, 480, 510, 540],
+          backgroundColor: colors.primary
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+
+    // Технологический суверенитет по отраслям
+    new Chart(document.getElementById('chart-sovereignty-sectors'), {
+      type: 'bar',
+      data: {
+        labels: ['Атом', 'Авиастроение', 'Энергетика', 'Материалы', 'Связь', 'Медицина', 'Химия'],
+        datasets: [{
+          label: 'Суверенитет, %',
+          data: [85, 78, 72, 68, 62, 58, 54],
+          backgroundColor: colors.secondary
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, max: 100 }
+        }
+      }
+    });
+
+    // Зрелость направлений (TRL)
+    new Chart(document.getElementById('chart-maturity-trl'), {
+      type: 'bar',
+      data: {
+        labels: ['TRL 1-2', 'TRL 3-4', 'TRL 5-6', 'TRL 7-8', 'TRL 9'],
+        datasets: [{
+          label: 'Количество направлений',
+          data: [45, 38, 28, 12, 4],
+          backgroundColor: colors.warning
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+
+    // Отечественные vs импортные технологии
+    new Chart(document.getElementById('chart-domestic-vs-import'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Отечественные', 'Импортные'],
+        datasets: [{
+          data: [68, 32],
+          backgroundColor: [colors.secondary, colors.neutral]
+        }]
+      },
+      options: {
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+
+    // Количество отечественных технологий (динамика)
+    new Chart(document.getElementById('chart-domestic-tech-dynamics'), {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Отечественных технологий',
+          data: [119, 121, 123, 125, 127],
+          borderColor: colors.secondary,
+          backgroundColor: 'rgba(0, 201, 81, 0.1)',
+          tension: 0.4
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: false, min: 115 } }
+      }
+    });
+  </script>
+</body>
+</html>
+

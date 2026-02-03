@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подраздел 5.1 — Представление доклада об НТР в Совет при Президенте</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .header-section {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-24);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: var(--space-4) 0 var(--space-6) 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-6);
+      height: var(--control-height);
+      padding: 0 var(--space-16);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-family: var(--font-main);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      text-decoration: none;
+      cursor: pointer;
+      background-color: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-primary);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn--primary {
+      background-color: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .section-block {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      margin-top: var(--space-24);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-16) 0;
+    }
+
+    .kpi-main {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-32);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-20);
+      margin-top: var(--space-24);
+    }
+
+    .kpi-main__title {
+      font-family: var(--font-alt);
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .kpi-main__value {
+      font-family: var(--font-alt);
+      font-size: 64px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .kpi-main__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-main__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-main__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-main__status {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+      margin-top: var(--space-8);
+    }
+
+    .kpi-main__progress {
+      margin-top: var(--space-16);
+    }
+
+    .kpi-main__progress-bar {
+      width: 100%;
+      height: 16px;
+      background: var(--material-neutral-highlight-primary);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .kpi-main__progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.6s ease;
+      position: relative;
+    }
+
+    .kpi-main__progress-fill--yellow {
+      background: var(--color-warning-300);
+    }
+
+    .kpi-main__progress-fill--red {
+      background: var(--color-negative-300);
+    }
+
+    .kpi-main__progress-fill--green {
+      background: var(--color-positive-300);
+    }
+
+    .progress-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      padding: var(--space-16);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+    }
+
+    .progress-item__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .progress-item__label {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-primary);
+      font-weight: 500;
+      flex: 1;
+    }
+
+    .progress-item__value {
+      font-family: var(--font-alt);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+    }
+
+    .progress-item__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .progress-item__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .progress-item__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .progress-item__bar {
+      width: 100%;
+      height: 8px;
+      background: var(--material-neutral-surface-primary);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-item__fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.6s ease;
+    }
+
+    .progress-item__fill--yellow {
+      background: var(--color-warning-300);
+    }
+
+    .progress-item__fill--red {
+      background: var(--color-negative-300);
+    }
+
+    .progress-item__fill--green {
+      background: var(--color-positive-300);
+    }
+
+    .progress-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-16);
+    }
+
+    .table {
+      width: 100%;
+      max-width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-body);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table th,
+    .table td {
+      padding: var(--space-12) var(--space-16);
+      text-align: left;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .table th {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label-xl);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+    }
+
+    .table td {
+      color: var(--material-neutral-content-primary);
+      background-color: var(--material-neutral-surface-primary);
+    }
+
+    .table tbody tr:hover {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+    }
+
+    .status-badge--success {
+      background-color: rgba(0, 201, 81, 0.1);
+      color: var(--color-positive-500);
+    }
+
+    .status-badge--warning {
+      background-color: rgba(255, 185, 106, 0.1);
+      color: var(--color-warning-500);
+    }
+
+    .status-badge--progress {
+      background-color: rgba(81, 162, 255, 0.1);
+      color: var(--color-info-500);
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-20);
+      position: relative;
+      padding-left: var(--space-32);
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 8px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--material-neutral-border-primary);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: var(--space-24);
+    }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -24px;
+      top: 4px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--material-neutral-surface-primary);
+      border: 3px solid var(--material-neutral-border-primary);
+      z-index: 1;
+    }
+
+    .timeline-item--completed::before {
+      background: var(--color-positive-400);
+      border-color: var(--color-positive-400);
+    }
+
+    .timeline-item--in-progress::before {
+      background: var(--color-warning-400);
+      border-color: var(--color-warning-400);
+    }
+
+    .timeline-item--pending::before {
+      background: var(--material-neutral-content-tertiary);
+      border-color: var(--material-neutral-border-primary);
+    }
+
+    .timeline-item__period {
+      font-size: var(--font-size-label);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin-bottom: var(--space-4);
+    }
+
+    .timeline-item__description {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .documents-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .document-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-12);
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      color: var(--material-neutral-content-primary);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .document-item:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .document-item__icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .document-item__text {
+      flex: 1;
+      font-size: var(--font-size-body);
+    }
+
+    .risk-table {
+      width: 100%;
+    }
+
+    .risk-table th:nth-child(2),
+    .risk-table td:nth-child(2),
+    .risk-table th:nth-child(3),
+    .risk-table td:nth-child(3) {
+      text-align: center;
+    }
+
+    .risk-level {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+    }
+
+    .risk-level--high {
+      background-color: rgba(251, 44, 54, 0.1);
+      color: var(--color-negative-500);
+    }
+
+    .risk-level--medium {
+      background-color: rgba(255, 185, 106, 0.1);
+      color: var(--color-warning-500);
+    }
+
+    .risk-level--low {
+      background-color: rgba(0, 201, 81, 0.1);
+      color: var(--color-positive-500);
+    }
+
+    .data-types {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      align-items: center;
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      margin-top: var(--space-24);
+    }
+
+    .data-type {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    @media (max-width: 900px) {
+      .header-section {
+        grid-template-columns: 1fr;
+      }
+
+      .progress-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="header-section">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="chapter5.html">
+                <span class="back-link__icon"></span>
+                К разделу 5
+              </a>
+              <span class="meta-pill">Подраздел 5.1</span>
+            </div>
+            <h1>5.1. Представление доклада об НТР в Совет при Президенте</h1>
+            <p>Мониторинг подготовки и актуальности ежегодного доклада об основных результатах, направлениях, мерах и инструментах государственной политики в области НТР, представляемого в Совет при Президенте.</p>
+            <div class="meta-row">
+              <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+              <span class="meta-pill">Источники: КНТР, ФОИВ, Росстат</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Основной KPI -->
+      <section class="kpi-main">
+        <h2 class="kpi-main__title">Готовность доклада об НТР (%)</h2>
+        <div class="kpi-main__value kpi-main__value--yellow">62%</div>
+        <div class="kpi-main__status">Текущий статус: 62% — Доклад находится в стадии согласования</div>
+        <div class="kpi-main__progress">
+          <div class="kpi-main__progress-bar">
+            <div class="kpi-main__progress-fill kpi-main__progress-fill--yellow" style="width: 62%;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Структура готовности доклада -->
+      <section class="section-block">
+        <h2 class="section-block__title">Структура готовности доклада</h2>
+        <div class="progress-grid">
+          <div class="progress-item">
+            <div class="progress-item__header">
+              <span class="progress-item__label">Аналитический блок результативности НТР</span>
+              <span class="progress-item__value progress-item__value--green">80%</span>
+            </div>
+            <div class="progress-item__bar">
+              <div class="progress-item__fill progress-item__fill--green" style="width: 80%;"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-item__header">
+              <span class="progress-item__label">Раздел «Меры и инструменты государственной политики»</span>
+              <span class="progress-item__value progress-item__value--yellow">55%</span>
+            </div>
+            <div class="progress-item__bar">
+              <div class="progress-item__fill progress-item__fill--yellow" style="width: 55%;"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-item__header">
+              <span class="progress-item__label">Раздел «Приоритеты и технологические направления»</span>
+              <span class="progress-item__value progress-item__value--yellow">70%</span>
+            </div>
+            <div class="progress-item__bar">
+              <div class="progress-item__fill progress-item__fill--yellow" style="width: 70%;"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-item__header">
+              <span class="progress-item__label">Раздел «Кадры и образование»</span>
+              <span class="progress-item__value progress-item__value--yellow">60%</span>
+            </div>
+            <div class="progress-item__bar">
+              <div class="progress-item__fill progress-item__fill--yellow" style="width: 60%;"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-item__header">
+              <span class="progress-item__label">Инфографика и иллюстрации</span>
+              <span class="progress-item__value progress-item__value--red">40%</span>
+            </div>
+            <div class="progress-item__bar">
+              <div class="progress-item__fill progress-item__fill--red" style="width: 40%;"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-item__header">
+              <span class="progress-item__label">Внешние согласования с ФОИВ</span>
+              <span class="progress-item__value progress-item__value--yellow">50%</span>
+            </div>
+            <div class="progress-item__bar">
+              <div class="progress-item__fill progress-item__fill--yellow" style="width: 50%;"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-item__header">
+              <span class="progress-item__label">Подготовка презентационной версии доклада</span>
+              <span class="progress-item__value progress-item__value--red">30%</span>
+            </div>
+            <div class="progress-item__bar">
+              <div class="progress-item__fill progress-item__fill--red" style="width: 30%;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Карта источников данных -->
+      <section class="section-block">
+        <h2 class="section-block__title">Карта источников данных для доклада</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ФОИВ</th>
+              <th>Передано данных</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Минобрнауки</td>
+              <td>12/12</td>
+              <td><span class="status-badge status-badge--success">✔️ завершено</span></td>
+            </tr>
+            <tr>
+              <td>Минфин</td>
+              <td>7/10</td>
+              <td><span class="status-badge status-badge--warning">⚠️ требуется уточнение</span></td>
+            </tr>
+            <tr>
+              <td>Минпромторг</td>
+              <td>8/8</td>
+              <td><span class="status-badge status-badge--success">✔️ завершено</span></td>
+            </tr>
+            <tr>
+              <td>Минцифры</td>
+              <td>3/6</td>
+              <td><span class="status-badge status-badge--progress">⏳ в работе</span></td>
+            </tr>
+            <tr>
+              <td>Росстат</td>
+              <td>5/5</td>
+              <td><span class="status-badge status-badge--success">✔️ завершено</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Календарь подготовки -->
+      <section class="section-block">
+        <h2 class="section-block__title">Календарь подготовки и контрольные точки</h2>
+        <div class="timeline">
+          <div class="timeline-item timeline-item--completed">
+            <div class="timeline-item__period">I квартал</div>
+            <div class="timeline-item__description">Сбор данных от ФОИВ</div>
+          </div>
+          <div class="timeline-item timeline-item--completed">
+            <div class="timeline-item__period">II квартал</div>
+            <div class="timeline-item__description">Аналитическая обработка</div>
+          </div>
+          <div class="timeline-item timeline-item--in-progress">
+            <div class="timeline-item__period">III квартал</div>
+            <div class="timeline-item__description">Формирование предваренной версии</div>
+          </div>
+          <div class="timeline-item timeline-item--pending">
+            <div class="timeline-item__period">IV квартал</div>
+            <div class="timeline-item__description">Согласование и представление доклада</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Зона рисков -->
+      <section class="section-block">
+        <h2 class="section-block__title">Зона рисков (управленческие риски)</h2>
+        <table class="table risk-table">
+          <thead>
+            <tr>
+              <th>Риск</th>
+              <th>Вероятность</th>
+              <th>Влияние</th>
+              <th>Митигирующие меры</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Задержка данных ФОИВ</td>
+              <td><span class="risk-level risk-level--high">высокая</span></td>
+              <td><span class="risk-level risk-level--high">значительное</span></td>
+              <td>Ускоренное согласование</td>
+            </tr>
+            <tr>
+              <td>Корректировка методики расчёта показателей</td>
+              <td><span class="risk-level risk-level--medium">средняя</span></td>
+              <td><span class="risk-level risk-level--medium">среднее</span></td>
+              <td>Взаимодействие с Росстатом</td>
+            </tr>
+            <tr>
+              <td>Недостаточность визуальных материалов</td>
+              <td><span class="risk-level risk-level--medium">средняя</span></td>
+              <td><span class="risk-level risk-level--low">низкое</span></td>
+              <td>Подключение дизайн-команд</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Документы -->
+      <section class="section-block">
+        <h2 class="section-block__title">Документы</h2>
+        <div class="documents-list">
+          <a href="#" class="document-item">
+            <span class="document-item__icon">📄</span>
+            <span class="document-item__text">Проект доклада (версия 0.3)</span>
+          </a>
+          <a href="#" class="document-item">
+            <span class="document-item__icon">📘</span>
+            <span class="document-item__text">Методика подготовки</span>
+          </a>
+          <a href="#" class="document-item">
+            <span class="document-item__icon">📊</span>
+            <span class="document-item__text">Набор данных, использованных в докладе</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Кнопка действий -->
+      <section style="margin-top: var(--space-24);">
+        <a href="#" class="btn btn--primary" style="width: 100%; max-width: 400px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+          Сформировать аналитическую записку
+        </a>
+      </section>
+
+      <!-- Типы данных -->
+      <div class="data-types">
+        <span class="data-type">📊 KPI</span>
+        <span class="data-type">📈 Тренд выполнения</span>
+        <span class="data-type">🗂 Таблица (ФОИВ, источники)</span>
+        <span class="data-type">🕒 Таймлайн</span>
+        <span class="data-type">📝 Документы</span>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
+

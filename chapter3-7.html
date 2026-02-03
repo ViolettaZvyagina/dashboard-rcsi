@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Группа 3.7 — НП и ФП по соц-эконом развитию</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .kpi-mini-line {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-20);
+      margin-top: var(--space-16);
+    }
+
+    @media (max-width: 1200px) {
+      .kpi-mini-line {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+    }
+
+    .kpi-mini-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-16);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .kpi-mini-card__label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .kpi-mini-card__sparkline {
+      width: 100%;
+      height: 60px;
+    }
+
+    .kpi-mini-card__value {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 1.2;
+    }
+
+    .kpi-mini-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-mini-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-mini-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-mini-card__trend {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      align-items: center;
+      justify-content: flex-end;
+      margin-top: var(--space-12);
+      position: relative;
+      z-index: 1;
+    }
+
+    .filter-select {
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-caption);
+      cursor: pointer;
+    }
+
+    .subsection-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-24);
+    }
+
+    @media (max-width: 1200px) {
+      .subsection-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      }
+    }
+
+    .subsection-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .subsection-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .subsection-card--empty {
+      background: var(--material-neutral-highlight-primary);
+      border: 2px dashed var(--material-neutral-border-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+      opacity: 0.6;
+    }
+
+    .subsection-card--empty p {
+      color: var(--material-neutral-content-tertiary);
+      font-size: var(--font-size-body);
+      text-align: center;
+      font-style: italic;
+      margin: 0;
+      max-width: 280px;
+    }
+
+    .subsection-card__header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .subsection-card__title {
+      font-family: var(--font-alt);
+      font-size: 20px;
+      line-height: 28px;
+      letter-spacing: -0.2px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .subsection-card__desc {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .mini-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-12);
+    }
+
+    .mini-metric {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      padding: var(--space-10);
+      border-radius: var(--radius-md);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+    }
+
+    .mini-metric__label {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      line-height: 1.4;
+    }
+
+    .mini-metric__value {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 1.2;
+    }
+
+    .mini-metric__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .mini-metric__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .mini-metric__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .mini-metric__sparkline {
+      width: 100%;
+      height: 40px;
+      margin-top: var(--space-4);
+    }
+
+    .tags-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      margin-top: var(--space-8);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-md);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .status-info {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      margin-top: auto;
+    }
+
+    .status-info__item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .subsection-card__footer {
+      margin-top: var(--space-12);
+      padding-top: var(--space-12);
+      border-top: 1px solid var(--material-neutral-border-primary);
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-6);
+      height: var(--control-height);
+      padding: 0 var(--space-16);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-family: var(--font-main);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      text-decoration: none;
+      cursor: pointer;
+      background-color: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-primary);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn--primary {
+      background-color: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .section-block {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .section-block__description {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3.html">
+              <span class="back-link__icon"></span>
+              Назад к разделу 3
+            </a>
+            <span class="meta-pill">Группа 3.7</span>
+          </div>
+          <h1>3.7. Национальные и федеральные проекты (социально-экономическое развитие)</h1>
+          <p>Мониторинг производственных, кадровых и технологических условий, обеспечивающих реализацию нацпроектов и ФП в части кадрового и научного обеспечения.</p>
+          <div class="meta-row">
+            <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+            <span class="meta-pill">Источники: Росстат, Минобрнауки, Минпромторг</span>
+          </div>
+          <div class="filter-bar">
+            <select class="filter-select">
+              <option>Период: год</option>
+              <option>Период: квартал</option>
+            </select>
+            <select class="filter-select">
+              <option>Уровень: страна</option>
+              <option>Уровень: отрасли</option>
+              <option>Уровень: регионы</option>
+            </select>
+            <select class="filter-select">
+              <option>Тип: все показатели</option>
+              <option>Тип: экономические</option>
+              <option>Тип: кадровые</option>
+              <option>Тип: технологические</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="kpi-mini-line">
+          <article class="kpi-mini-card">
+            <div class="kpi-mini-card__label">Индекс промышленного производства</div>
+            <div class="kpi-mini-card__sparkline">
+              <canvas id="sparkline-ipp"></canvas>
+            </div>
+            <div class="kpi-mini-card__value kpi-mini-card__value--green">+3.2%</div>
+            <div class="kpi-mini-card__trend">YoY</div>
+          </article>
+          <article class="kpi-mini-card">
+            <div class="kpi-mini-card__label">Темп роста производительности труда</div>
+            <div class="kpi-mini-card__sparkline">
+              <canvas id="sparkline-productivity"></canvas>
+            </div>
+            <div class="kpi-mini-card__value kpi-mini-card__value--green">+2.8%</div>
+            <div class="kpi-mini-card__trend">YoY</div>
+          </article>
+          <article class="kpi-mini-card">
+            <div class="kpi-mini-card__label">Индекс технологической независимости</div>
+            <div class="kpi-mini-card__sparkline">
+              <canvas id="sparkline-independence"></canvas>
+            </div>
+            <div class="kpi-mini-card__value kpi-mini-card__value--yellow">0.68</div>
+            <div class="kpi-mini-card__trend">Интегральный</div>
+          </article>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Подразделы группы</h2>
+        <p class="section-block__description">Раздел содержит показатели, отражающие состояние экономики, кадрового потенциала и уровень технологической независимости, необходимые для утверждения и корректировки паспортов национальных и федеральных проектов.</p>
+        <div class="subsection-grid">
+          <article class="subsection-card">
+            <div class="subsection-card__header">
+              <h3 class="subsection-card__title">3.7.1. Утверждение паспортов НП и ФП (кадровое и научное обеспечение)</h3>
+              <p class="subsection-card__desc">Мониторинг производственных, кадровых и технологических условий, влияющих на формирование паспортов национальных и федеральных проектов. Отслеживание зависимости НП/ФП от импортных технологий и кадровых дефицитов.</p>
+            </div>
+            <div class="mini-metrics">
+              <div class="mini-metric">
+                <div class="mini-metric__label">Индекс промышленного производства</div>
+                <div class="mini-metric__value mini-metric__value--green">+3.2%</div>
+                <div class="mini-metric__sparkline">
+                  <canvas id="metric-ipp"></canvas>
+                </div>
+              </div>
+              <div class="mini-metric">
+                <div class="mini-metric__label">Коэффициент восполнения кадров</div>
+                <div class="mini-metric__value mini-metric__value--green">0.85</div>
+                <div class="mini-metric__sparkline">
+                  <canvas id="metric-staff"></canvas>
+                </div>
+              </div>
+              <div class="mini-metric">
+                <div class="mini-metric__label">Уровень технологической независимости</div>
+                <div class="mini-metric__value mini-metric__value--yellow">68%</div>
+                <div class="mini-metric__sparkline">
+                  <canvas id="metric-tech"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="tags-row">
+              <span class="tag">🏭 Производство</span>
+              <span class="tag">👥 Кадры</span>
+              <span class="tag">🧪 Технологический суверенитет</span>
+              <span class="tag">📊 Эффективность</span>
+              <span class="tag">⚠ Риски</span>
+            </div>
+            <div class="status-info">
+              <div class="status-info__item">
+                <span>Обновлено:</span>
+                <strong>3 дня назад</strong>
+              </div>
+              <div class="status-info__item">
+                <span>Источник:</span>
+                <strong>Росстат / Минобрнауки / Минпромторг</strong>
+              </div>
+            </div>
+            <div class="subsection-card__footer">
+              <a href="chapter3-7-1.html" class="btn btn--primary">Открыть подраздел</a>
+            </div>
+          </article>
+
+          <article class="subsection-card subsection-card--empty">
+            <p>Новые подразделы могут быть добавлены при расширении функций КНТР</p>
+          </article>
+
+          <article class="subsection-card subsection-card--empty">
+            <p>Новые подразделы могут быть добавлены при расширении функций КНТР</p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const colors = {
+      primary: '#1565FF',
+      secondary: '#00C951',
+      neutral: '#8A94A6',
+      warning: '#F5A524',
+      danger: '#F44336'
+    };
+
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+
+    const years = ['2021', '2022', '2023', '2024', '2025'];
+
+    // Спарклайн: Индекс промышленного производства
+    new Chart(document.getElementById('sparkline-ipp'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{
+          data: [98, 100, 102, 103, 105],
+          borderColor: colors.primary,
+          backgroundColor: 'transparent',
+          tension: 0.3,
+          pointRadius: 0,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { display: false },
+          y: { display: false }
+        }
+      }
+    });
+
+    // Спарклайн: Темп роста производительности труда
+    new Chart(document.getElementById('sparkline-productivity'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{
+          data: [100, 101.5, 102.8, 103.5, 105.2],
+          borderColor: colors.secondary,
+          backgroundColor: 'transparent',
+          tension: 0.3,
+          pointRadius: 0,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { display: false },
+          y: { display: false }
+        }
+      }
+    });
+
+    // Спарклайн: Индекс технологической независимости
+    new Chart(document.getElementById('sparkline-independence'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{
+          data: [0.62, 0.64, 0.66, 0.67, 0.68],
+          borderColor: colors.warning,
+          backgroundColor: 'transparent',
+          tension: 0.3,
+          pointRadius: 0,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { display: false },
+          y: { display: false }
+        }
+      }
+    });
+
+    // Мини-метрика: Индекс промышленного производства
+    new Chart(document.getElementById('metric-ipp'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{
+          data: [98, 100, 102, 103, 105],
+          borderColor: colors.primary,
+          backgroundColor: 'rgba(21, 101, 255, 0.1)',
+          tension: 0.3,
+          pointRadius: 2,
+          borderWidth: 1.5,
+          fill: true
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { display: false },
+          y: { display: false }
+        }
+      }
+    });
+
+    // Мини-метрика: Коэффициент восполнения кадров
+    new Chart(document.getElementById('metric-staff'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{
+          data: [0.78, 0.80, 0.82, 0.83, 0.85],
+          borderColor: colors.secondary,
+          backgroundColor: 'rgba(0, 201, 81, 0.1)',
+          tension: 0.3,
+          pointRadius: 2,
+          borderWidth: 1.5,
+          fill: true
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { display: false },
+          y: { display: false }
+        }
+      }
+    });
+
+    // Мини-метрика: Уровень технологической независимости
+    new Chart(document.getElementById('metric-tech'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{
+          data: [62, 64, 66, 67, 68],
+          borderColor: colors.warning,
+          backgroundColor: 'rgba(245, 165, 36, 0.1)',
+          tension: 0.3,
+          pointRadius: 2,
+          borderWidth: 1.5,
+          fill: true
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { display: false },
+          y: { display: false }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+

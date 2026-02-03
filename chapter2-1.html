@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подраздел 2.1 — Планирование бюджетных расходов на НИР</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-20);
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-card__label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .kpi-card__value {
+      font-family: var(--font-alt);
+      font-size: 42px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 48px;
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+    }
+
+    .kpi-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-card__trend {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .section-block {
+      padding: var(--space-20) 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .section-block--highlighted {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .section-block__description {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .charts-grid--2cols {
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    }
+
+    .chart-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .chart-card canvas {
+      width: 100% !important;
+      height: 260px !important;
+      display: block;
+    }
+
+    /* Фиксированная квадратная форма для круговой диаграммы */
+    #chart-donut {
+      width: 260px !important;
+      height: 260px !important;
+      max-width: 260px;
+      max-height: 260px;
+      margin: 0 auto;
+    }
+
+    .chart-card__title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .chart-placeholder {
+      height: 220px;
+      border: 1px dashed var(--material-neutral-border-secondary);
+      border-radius: var(--radius-md);
+      background: var(--material-neutral-highlight-primary);
+      display: grid;
+      place-items: center;
+      color: var(--material-neutral-content-tertiary);
+      font-size: var(--font-size-label);
+    }
+
+    .map-card {
+      height: 320px;
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--material-neutral-highlight-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .map-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: saturate(1.05);
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--space-20);
+      align-items: stretch;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-body);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table th,
+    .table td {
+      padding: var(--space-16) var(--space-16);
+      text-align: left;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .table th {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label-xl);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+    }
+
+    .table td {
+      color: var(--material-neutral-content-primary);
+      background-color: var(--material-neutral-surface-primary);
+    }
+
+    .table tbody tr:hover {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    @media (max-width: 1024px) {
+      .split-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter2.html">
+              <span class="back-link__icon"></span>
+              Назад к разделу 2
+            </a>
+            <span class="meta-pill">Подраздел 2.1</span>
+          </div>
+          <h1>2.1. Планирование бюджетных расходов на НИР</h1>
+          <p class="ty-body-lg ty-muted">
+            Управленческий взгляд КНТР: сколько и как тратится на НИОКР, как это влияет на результаты и приоритеты, есть ли дисбалансы по регионам и отраслям.
+          </p>
+          <div class="meta-row">
+            <span class="meta-pill">Последнее обновление: <strong>12.11.2025</strong></span>
+            <span class="meta-pill">Источники: Минфин, Минобрнауки, ФОИВ, Росстат</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="kpi-grid">
+          <article class="kpi-card">
+            <div class="kpi-card__label">НИОКР (% ВВП)</div>
+            <div class="kpi-card__value kpi-card__value--yellow">1.15%</div>
+            <div class="kpi-card__trend">Цель 1.2%, факт 0.96% → требуется ускорение</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Удельный вес внебюджетных источников</div>
+            <div class="kpi-card__value kpi-card__value--yellow">38%</div>
+            <div class="kpi-card__trend">Цель 42% — прирост замедлился</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">ФНИ / ПНИ / ОКР структура</div>
+            <div class="kpi-card__value kpi-card__value--green">30 / 34 / 36</div>
+            <div class="kpi-card__trend">Баланс смещён в ОКР</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Доля бюджета регионов</div>
+            <div class="kpi-card__value kpi-card__value--yellow">27%</div>
+            <div class="kpi-card__trend">Рост YoY +1.3 п.п., есть дисбалансы</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Индекс эффективности расходов</div>
+            <div class="kpi-card__value kpi-card__value--yellow">62/100</div>
+            <div class="kpi-card__trend">Композит: экспорт + налоги + выручка</div>
+          </article>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Структура финансирования НИОКР</h2>
+        <p class="section-block__description">Баланс источников и типов исследований, вклад федерального бюджета в приоритеты.</p>
+        <div class="charts-grid">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Источники НИОКР (бюджет / внебюджет), 2015–2026</h3>
+            <canvas id="chart-sources"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">ФНИ / ПНИ / ОКР — динамика структуры</h3>
+            <canvas id="chart-fni"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доля федерального бюджета в приоритетных направлениях</h3>
+            <canvas id="chart-donut"></canvas>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Эффективность финансирования (результаты)</h2>
+        <p class="section-block__description">Связка расходов с экспортом, выручкой и налоговыми поступлениями.</p>
+        <div class="charts-grid charts-grid--2cols">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Прирост выручки малых технологических компаний</h3>
+            <canvas id="chart-revenue"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Налоговые поступления от high-tech продукции</h3>
+            <canvas id="chart-taxes"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Корреляция финансирования НИОКР ↔ экспорт high-tech</h3>
+            <canvas id="chart-scatter"></canvas>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Региональная карта бюджетов НИОКР</h2>
+        <p class="section-block__description">Распределение средств и динамика по субъектам РФ, контроль дисбалансов.</p>
+        <div class="split-grid">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доля бюджетных средств, поступающих регионам (YoY)</h3>
+            <div class="map-card">
+              <img src="vecteezy_states-map-of-russia-with-detailed-borders_25845202.svg" alt="Карта распределения бюджетов НИОКР по регионам">
+            </div>
+          </article>
+          <div class="chart-card" style="gap: var(--space-16);">
+            <h3 class="chart-card__title">Регионы — лидеры и аутсайдеры</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Регион</th>
+                  <th>Доля средств</th>
+                  <th>Рост YoY</th>
+                  <th>Комментарий</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Москва</td>
+                  <td>18%</td>
+                  <td>+0.8 п.п.</td>
+                  <td>Стабильный прирост</td>
+                </tr>
+                <tr>
+                  <td>СПб</td>
+                  <td>11%</td>
+                  <td>+0.4 п.п.</td>
+                  <td>Рост по ОКР</td>
+                </tr>
+                <tr>
+                  <td>Татарстан</td>
+                  <td>6%</td>
+                  <td>+1.2 п.п.</td>
+                  <td>Ускорение внебюджета</td>
+                </tr>
+                <tr>
+                  <td>ДФО (среднее)</td>
+                  <td>2.3%</td>
+                  <td>-0.3 п.п.</td>
+                  <td>Риск недофинансирования</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Десагрегация по отраслям (контекст)</h2>
+        <p class="section-block__description">Отраслевые сигналы для управленческих решений.</p>
+        <div class="charts-grid charts-grid--2cols">
+          <article class="chart-card">
+            <h3 class="chart-card__title">НИОКР в обрабатывающей промышленности</h3>
+            <canvas id="chart-industry"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доля расходов на НИОКР в судостроении</h3>
+            <canvas id="chart-ship"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Инновационная активность предприятий (%)</h3>
+            <canvas id="chart-innovation"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Зарплаты и темп роста (регионально)</h3>
+            <canvas id="chart-salary"></canvas>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Табличный аналитический слой</h2>
+        <p class="section-block__description">Отрасль × финансирование × инновации × зарплата — для drill-down.</p>
+        <div class="chart-card" style="padding: 0;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Отрасль</th>
+                <th>Инвестиции</th>
+                <th>НИОКР</th>
+                <th>Инновации</th>
+                <th>Зарплата</th>
+                <th>Темп роста</th>
+                <th>Комментарий</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>ИТ / электроника</td>
+                <td>+14%</td>
+                <td>+12%</td>
+                <td>Высокая</td>
+                <td>125 тыс.</td>
+                <td>+6%</td>
+                <td>Лидеры экспорта</td>
+              </tr>
+              <tr>
+                <td>Машиностроение</td>
+                <td>+9%</td>
+                <td>+7%</td>
+                <td>Средняя</td>
+                <td>97 тыс.</td>
+                <td>+4%</td>
+                <td>Нужны меры по ПНИ</td>
+              </tr>
+              <tr>
+                <td>Химия</td>
+                <td>+6%</td>
+                <td>+5%</td>
+                <td>Средняя</td>
+                <td>92 тыс.</td>
+                <td>+3%</td>
+                <td>Умеренный рост</td>
+              </tr>
+              <tr>
+                <td>Судостроение</td>
+                <td>+4%</td>
+                <td>+3%</td>
+                <td>Низкая</td>
+                <td>88 тыс.</td>
+                <td>+2%</td>
+                <td>Недостаток НИОКР</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script>
+    const colors = {
+      primary: '#1565FF',
+      secondary: '#00C951',
+      neutral: '#8A94A6',
+      warning: '#F5A524',
+      danger: '#F44336'
+    };
+
+    // Общие дефолты для стабильной высоты
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+    
+    // Для круговых диаграмм используем maintainAspectRatio: true
+
+    const years = ['2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+
+    const chartSources = new Chart(document.getElementById('chart-sources'), {
+      type: 'bar',
+      data: {
+        labels: years,
+        datasets: [
+          { label: 'Бюджет', data: [62, 61, 63, 64, 63, 62, 61, 60], backgroundColor: colors.primary, stack: 'sources' },
+          { label: 'Внебюджет', data: [38, 39, 37, 36, 37, 38, 39, 40], backgroundColor: colors.secondary, stack: 'sources' }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } },
+        scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: v => v + '%' } } }
+      }
+    });
+
+    const chartFni = new Chart(document.getElementById('chart-fni'), {
+      type: 'bar',
+      data: {
+        labels: years,
+        datasets: [
+          { label: 'ФНИ', data: [32, 31, 30, 29, 30, 30, 30, 30], backgroundColor: '#5C6BC0', stack: 'fni' },
+          { label: 'ПНИ', data: [34, 34, 33, 33, 34, 34, 34, 34], backgroundColor: '#42A5F5', stack: 'fni' },
+          { label: 'ОКР', data: [34, 35, 37, 38, 36, 36, 36, 36], backgroundColor: '#26C6DA', stack: 'fni' }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } },
+        scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: v => v + '%' } } }
+      }
+    });
+
+    const chartDonut = new Chart(document.getElementById('chart-donut'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Приоритеты НТР', 'Прочие'],
+        datasets: [{
+          data: [61, 39],
+          backgroundColor: [colors.primary, colors.neutral],
+          borderWidth: 0,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: false,
+        maintainAspectRatio: false,
+        cutout: '65%',
+        layout: {
+          padding: {
+            bottom: 0
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels: {
+              usePointStyle: true,
+              padding: 20,
+              font: {
+                family: 'system-ui, -apple-system, sans-serif',
+                size: 12,
+                weight: '500'
+              }
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            padding: 12,
+            titleFont: { size: 13, weight: '600' },
+            bodyFont: { size: 12 },
+            cornerRadius: 8,
+            displayColors: true,
+            borderColor: '#e2e8f0',
+            borderWidth: 1
+          }
+        },
+        animation: {
+          duration: 800,
+          easing: 'easeOutQuart'
+        }
+      }
+    });
+
+    const chartRevenue = new Chart(document.getElementById('chart-revenue'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{ label: 'Выручка малых техно-компаний', data: [6, 7, 8, 8.5, 9.2, 9.8, 10.4, 11], borderColor: colors.primary, tension: 0.3, fill: false }]
+      },
+      options: { plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => '+' + v + '%' } } } }
+    });
+
+    const chartTaxes = new Chart(document.getElementById('chart-taxes'), {
+      type: 'bar',
+      data: {
+        labels: years,
+        datasets: [{ label: 'Налоговые поступления (high-tech)', data: [4.2, 4.4, 4.6, 4.9, 5.1, 5.5, 5.9, 6.3], backgroundColor: colors.secondary }]
+      },
+      options: { plugins: { legend: { display: false } } }
+    });
+
+    const chartScatter = new Chart(document.getElementById('chart-scatter'), {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: 'Финансирование → экспорт',
+          data: [
+            { x: 60, y: 3.1 }, { x: 62, y: 3.4 }, { x: 64, y: 3.6 },
+            { x: 65, y: 3.9 }, { x: 66, y: 4.2 }, { x: 67, y: 4.5 },
+            { x: 68, y: 4.7 }, { x: 69, y: 5.0 }
+          ],
+          backgroundColor: colors.primary
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { title: { display: true, text: '% бюджета в НИОКР' } },
+          y: { title: { display: true, text: 'Экспорт high-tech, % ВВП' } }
+        }
+      }
+    });
+
+    const chartIndustry = new Chart(document.getElementById('chart-industry'), {
+      type: 'bar',
+      data: {
+        labels: ['Обрабатывающая', 'Химия', 'Машиностроение', 'Электроника'],
+        datasets: [{ label: 'НИОКР, % к выручке', data: [3.2, 2.4, 1.8, 4.1], backgroundColor: colors.primary }]
+      },
+      options: { plugins: { legend: { display: false } } }
+    });
+
+    const chartShip = new Chart(document.getElementById('chart-ship'), {
+      type: 'bar',
+      data: {
+        labels: ['Судостроение', 'Авиастроение', 'Транспорт'],
+        datasets: [{ label: 'НИОКР, % к выручке', data: [1.2, 2.1, 1.0], backgroundColor: colors.warning }]
+      },
+      options: { plugins: { legend: { display: false } } }
+    });
+
+    const chartInnovation = new Chart(document.getElementById('chart-innovation'), {
+      type: 'bar',
+      data: {
+        labels: ['ИТ', 'Промышленность', 'ТЭК', 'Агро'],
+        datasets: [{ label: 'Инновационная активность', data: [42, 28, 18, 15], backgroundColor: colors.secondary }]
+      },
+      options: { plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => v + '%' } } } }
+    });
+
+    const chartSalary = new Chart(document.getElementById('chart-salary'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [
+          { label: 'Средняя зарплата (тыс.)', data: [72, 75, 78, 82, 86, 90, 95, 99], borderColor: colors.primary, tension: 0.35, fill: false, yAxisID: 'y' },
+          { label: 'Темп роста реальной зарплаты', data: [2.5, 3.1, 2.8, 3.4, 3.8, 4.0, 4.2, 4.5], borderColor: colors.secondary, tension: 0.35, fill: false, yAxisID: 'y1' }
+        ]
+      },
+      options: {
+        plugins: { legend: { position: 'bottom' } },
+        scales: {
+          y: { position: 'left', ticks: { callback: v => v + 'k' }, title: { display: true, text: 'тыс. ₽' } },
+          y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { callback: v => v + '%' }, title: { display: true, text: '% к прошлому году' } }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+

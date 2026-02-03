@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Дашборд координации — Раздел 1</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .top-bar {
+      display: none;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .management-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-20);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      grid-column: span 2;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(255, 105, 0, 0.04));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: var(--space-12);
+      margin-bottom: var(--space-6);
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      letter-spacing: var(--letter-spacing-caption);
+      text-transform: uppercase;
+      color: var(--material-neutral-content-tertiary);
+      margin: 0;
+      font-weight: var(--font-weight-caption);
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+    }
+
+    .filter-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-10);
+      position: relative;
+      z-index: 1;
+    }
+
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: var(--radius-md);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-chip:hover {
+      border-color: var(--color-accent-400);
+      color: var(--material-neutral-content-primary);
+    }
+
+    .filter-chip--active {
+      background: linear-gradient(135deg, var(--color-accent-700), var(--color-accent-500));
+      border-color: var(--color-accent-500);
+      color: var(--color-neutral-0);
+      box-shadow: 0 12px 24px rgba(21, 85, 255, 0.35);
+    }
+
+    .risk-card {
+      background: linear-gradient(165deg, rgba(255, 105, 0, 0.12), rgba(0, 102, 255, 0.12));
+      border: 1px solid var(--color-warning-200);
+      color: var(--material-neutral-content-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .risk-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-8);
+      font-family: var(--font-alt);
+      font-weight: var(--font-weight-label-xl);
+      font-size: var(--font-size-label-xl);
+      line-height: var(--line-height-label-xl);
+      letter-spacing: var(--letter-spacing-label-xl);
+    }
+
+    .risk-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: var(--space-10);
+    }
+
+    .risk-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-8);
+      align-items: center;
+      font-size: var(--font-size-body);
+    }
+
+    .risk-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 105, 0, 0.1);
+    }
+
+    .risk-dot--high {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.12);
+    }
+
+    .risk-dot--progress {
+      background-color: var(--color-info-300);
+      box-shadow: 0 0 0 4px rgba(81, 162, 255, 0.12);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-24);
+      row-gap: var(--space-24);
+      grid-auto-rows: auto;
+      align-items: stretch;
+    }
+
+    @media (min-width: 1200px) {
+      .dashboard-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .section-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-card::before {
+      content: attr(data-code);
+      position: absolute;
+      top: var(--space-12);
+      right: var(--space-12);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      letter-spacing: var(--letter-spacing-caption);
+      text-transform: uppercase;
+    }
+
+    .section-card__title {
+      font-family: var(--font-alt);
+      font-size: 28px;
+      line-height: 36px;
+      letter-spacing: -0.4px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+      max-width: 90%;
+    }
+
+    .section-card__kpi {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-12);
+      flex-wrap: nowrap;
+    }
+
+    .section-card__kpi-info {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .section-card__kpi-label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .section-card__kpi-value {
+      font-family: var(--font-alt);
+      font-size: 34px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 40px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .section-card__kpi-value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .section-card__kpi-value--green {
+      color: var(--color-positive-300);
+    }
+
+    .section-card__kpi-value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-hint {
+      color: var(--material-neutral-content-tertiary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+    }
+
+    .micro-metrics {
+      list-style: none;
+      margin: 0;
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-10);
+    }
+
+    .micro-metric {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-8);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .micro-metric strong {
+      color: var(--material-neutral-content-primary);
+      font-weight: 600;
+    }
+
+    .section-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-8);
+      margin-top: auto;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+      white-space: nowrap;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.12);
+    }
+
+    .status-dot--green {
+      background-color: var(--color-positive-400);
+      box-shadow: 0 0 0 4px rgba(0, 201, 81, 0.15);
+    }
+
+    .status-dot--yellow {
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 185, 106, 0.15);
+    }
+
+    .status-dot--red {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.18);
+    }
+
+    .method-card {
+      background: linear-gradient(150deg, rgba(0, 102, 255, 0.1), rgba(255, 105, 0, 0.08));
+      border: 1px solid var(--color-accent-200);
+    }
+
+    .method-list {
+      list-style: decimal;
+      margin: 0;
+      padding-left: var(--space-20);
+      color: var(--material-neutral-content-primary);
+      display: grid;
+      gap: var(--space-8);
+    }
+
+    .method-list li {
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+      font-weight: var(--font-weight-body);
+    }
+
+    .btn--ghost {
+      padding: 0 var(--space-24);
+    }
+
+    a.btn {
+      text-decoration: none;
+      display: inline-flex;
+    }
+
+    .section-card[data-code="риски"] .section-card__footer {
+      padding-top: var(--space-4);
+      justify-content: flex-end;
+    }
+
+    .section-card[data-code="риски"] .btn--ghost {
+      padding: 0 var(--space-24);
+      white-space: nowrap;
+      line-height: 1.5;
+    }
+
+    .legend {
+      display: flex;
+      gap: var(--space-8);
+      align-items: center;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+    }
+
+    .risk-legend {
+      display: flex;
+      gap: var(--space-12);
+      flex-wrap: wrap;
+      align-items: center;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      margin-top: auto;
+      padding-top: var(--space-8);
+    }
+
+    @media (max-width: 640px) {
+      .section-card__kpi {
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .management-bar {
+        grid-template-columns: 1fr;
+      }
+
+      .section-card__kpi {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .section-card__footer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-bar">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="index.html">
+                <span class="back-link__icon"></span>
+                На главный дашборд
+              </a>
+            </div>
+            <h1>Раздел 1. Координация деятельности органов государственной власти</h1>
+            <p class="ty-body-lg ty-muted">
+              Обзор ключевых показателей исполнения поручений, состояния инфраструктуры и прогресса по приоритетным
+              проектам.
+            </p>
+          </div>
+          <div class="meta-row">
+            <span class="meta-pill">Последнее обновление: <strong>12.11.2025</strong></span>
+            <span class="meta-pill">Каналы данных: ФОИВ, РНТР, ВИП ГЗ</span>
+          </div>
+        </div>
+        <aside class="risk-card">
+          <div class="risk-title">
+            Краткая сводка рисков
+          </div>
+          <ul class="risk-list">
+            <li class="risk-item">
+              <span class="risk-dot risk-dot--high"></span>
+              Риск задержек по ВИП ГЗ: высокий
+            </li>
+            <li class="risk-item">
+              <span class="risk-dot"></span>
+              Недостаточная обновляемость оборудования: средний
+            </li>
+            <li class="risk-item">
+              <span class="risk-dot risk-dot--high"></span>
+              Низкий приток молодых исследователей: высокий
+            </li>
+            <li class="risk-item">
+              <span class="risk-dot risk-dot--progress"></span>
+              Цифровизация статистики: прогресс
+            </li>
+          </ul>
+          <div class="risk-legend">
+            <span class="legend"><span class="status-dot status-dot--red"></span> высокий риск</span>
+            <span class="legend"><span class="status-dot status-dot--yellow"></span> средний</span>
+            <span class="legend"><span class="status-dot status-dot--green"></span> низкий</span>
+          </div>
+        </aside>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="section-card" data-code="1.1">
+          <h2 class="section-card__title">Координация ФОИВ по НТР, ВНТ, ГП НТР</h2>
+          <div class="section-card__kpi">
+            <div class="section-card__kpi-info">
+              <div class="section-card__kpi-label">Выполнение поручений КНТР в срок, %</div>
+              <div class="kpi-hint">Зелёный при выполнении &gt; 85%</div>
+            </div>
+            <div class="section-card__kpi-value section-card__kpi-value--green">92%</div>
+          </div>
+          <ul class="micro-metrics">
+            <li class="micro-metric"><span>НИОКР % ВВП</span><strong>1.08%</strong></li>
+            <li class="micro-metric"><span>Исследования по направлениям ВНТ</span><strong>1,245</strong></li>
+            <li class="micro-metric"><span>Индекс технологической зависимости</span><strong>0.72</strong></li>
+          </ul>
+          <div class="section-card__footer">
+            <span class="status-pill"><span class="status-dot status-dot--green"></span>Зелёный · &gt; 85%</span>
+            <a href="chapter1-1.html" class="btn btn--primary">Перейти в подраздел</a>
+          </div>
+        </article>
+
+        <article class="section-card" data-code="1.2">
+          <h2 class="section-card__title">Координация по ВИП ГЗ</h2>
+          <div class="section-card__kpi">
+            <div class="section-card__kpi-info">
+              <div class="section-card__kpi-label">Своевременность выполнения этапов проектов, %</div>
+              <div class="kpi-hint">Жёлтый при 60–80%, красный ниже 60%</div>
+            </div>
+            <div class="section-card__kpi-value section-card__kpi-value--yellow">76%</div>
+          </div>
+          <ul class="micro-metrics">
+            <li class="micro-metric"><span>Среднее отклонение сроков</span><strong>8 дней</strong></li>
+            <li class="micro-metric"><span>Межвед. проекты, достигшие этапов</span><strong>68%</strong></li>
+            <li class="micro-metric"><span>Срок подготовки отчётов</span><strong>9 дней</strong></li>
+          </ul>
+          <div class="section-card__footer">
+            <span class="status-pill"><span class="status-dot status-dot--yellow"></span>Жёлтый · 60–80%</span>
+            <a href="chapter1-2.html" class="btn btn--primary">Перейти в подраздел</a>
+          </div>
+        </article>
+
+        <article class="section-card" data-code="1.3">
+          <h2 class="section-card__title">Организация и совершенствование деятельности ФОИВ</h2>
+          <div class="section-card__kpi">
+            <div class="section-card__kpi-info">
+              <div class="section-card__kpi-label">Индекс готовности научно-техн. инфраструктуры</div>
+              <div class="kpi-hint">Зелёный при индексе &gt; 70</div>
+            </div>
+            <div class="section-card__kpi-value section-card__kpi-value--yellow">64</div>
+          </div>
+          <ul class="micro-metrics">
+            <li class="micro-metric"><span>Доля молодых учёных</span><strong>28%</strong></li>
+            <li class="micro-metric"><span>Доля big data в статистике</span><strong>42%</strong></li>
+            <li class="micro-metric"><span>Количество граждан в НПО</span><strong>1.9 млн</strong></li>
+          </ul>
+          <div class="section-card__footer">
+            <span class="status-pill"><span class="status-dot status-dot--yellow"></span>Жёлтый · 50–70</span>
+            <a href="chapter1-3.html" class="btn btn--primary">Перейти в подраздел</a>
+          </div>
+        </article>
+
+        <article class="section-card" data-code="1.5">
+          <h2 class="section-card__title">Координация деятельности РНТР</h2>
+          <div class="section-card__kpi">
+            <div class="section-card__kpi-info">
+              <div class="section-card__kpi-label">Индекс технологического развития РФ</div>
+              <div class="kpi-hint">Зелёный при индексе &gt; 65</div>
+            </div>
+            <div class="section-card__kpi-value section-card__kpi-value--yellow">58</div>
+          </div>
+          <ul class="micro-metrics">
+            <li class="micro-metric"><span>Доля high-tech в ВВП</span><strong>12.4%</strong></li>
+            <li class="micro-metric"><span>Удельный вес отечественных high-tech товаров</span><strong>47%</strong></li>
+            <li class="micro-metric"><span>Место РФ в рейтинге талантов</span><strong>23</strong></li>
+          </ul>
+          <div class="section-card__footer">
+            <span class="status-pill"><span class="status-dot status-dot--yellow"></span>Жёлтый · 45–65</span>
+            <a href="chapter1-5.html" class="btn btn--primary">Перейти в подраздел</a>
+          </div>
+        </article>
+
+        <article class="section-card" data-code="риски">
+          <h2 class="section-card__title">Сводка рисков раздела 1</h2>
+          <div class="micro-metrics" style="gap: var(--space-12);">
+            <div class="micro-metric"><span>ВИП ГЗ · задержки этапов</span><strong class="ty-strong"
+                style="color: var(--color-negative-300);">Высокий</strong></div>
+            <div class="micro-metric"><span>Обновляемость оборудования</span><strong class="ty-strong"
+                style="color: var(--color-warning-300);">Средний</strong></div>
+            <div class="micro-metric"><span>Приток молодых исследователей</span><strong class="ty-strong"
+                style="color: var(--color-negative-300);">Высокий риск</strong></div>
+            <div class="micro-metric"><span>Цифровизация статистики</span><strong class="ty-strong"
+                style="color: var(--color-info-300);">Прогресс</strong></div>
+          </div>
+          <div class="section-card__footer">
+            <button class="btn btn--ghost">Перейти к рискам</button>
+          </div>
+        </article>
+
+        <article class="section-card method-card" data-code="методика">
+          <h2 class="section-card__title">Методика отбора показателей</h2>
+          <p class="ty-body ty-muted">
+            Используем взвешенную композитную модель: стратегические приоритеты × контроль сроков × вклад в
+            технологическую независимость.
+          </p>
+          <ol class="method-list">
+            <li>Фильтр по критичности: НТР, ВИП ГЗ, ФНТП, НПТЛ.</li>
+            <li>Требование к трассируемости: данные ФОИВ + ведомственные отчёты.</li>
+            <li>Нормирование по квартилям и порогам (зелёный/жёлтый/красный).</li>
+            <li>Предиктивный слой: динамика за 4 квартала для ранних сигналов.</li>
+          </ol>
+          <div class="section-card__footer">
+            <span class="status-pill"><span class="status-dot status-dot--green"></span>Метод обновлён</span>
+            <button class="btn btn--ghost">Открыть методику</button>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+</body>
+
+</html>

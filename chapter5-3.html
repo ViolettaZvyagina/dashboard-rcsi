@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подраздел 5.3 — Формирование предложений для РАН по итогам анализа годового отчёта и итогового доклада ФНИ</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .header-section {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-24);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: var(--space-4) 0 var(--space-6) 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-6);
+      height: var(--control-height);
+      padding: 0 var(--space-16);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-family: var(--font-main);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      text-decoration: none;
+      cursor: pointer;
+      background-color: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-primary);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn--primary {
+      background-color: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn--small {
+      height: 32px;
+      padding: 0 var(--space-12);
+      font-size: var(--font-size-caption);
+    }
+
+    .section-block {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      margin-top: var(--space-24);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-16) 0;
+    }
+
+    .kpi-main-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-24);
+      margin-top: var(--space-24);
+    }
+
+    .kpi-main {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .kpi-main__title {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      line-height: 26px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .kpi-main__value {
+      font-family: var(--font-alt);
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .kpi-main__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-main__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-main__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-main__progress {
+      margin-top: var(--space-8);
+    }
+
+    .kpi-main__progress-bar {
+      width: 100%;
+      height: 12px;
+      background: var(--material-neutral-highlight-primary);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .kpi-main__progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.6s ease;
+      position: relative;
+    }
+
+    .kpi-main__progress-fill--yellow {
+      background: var(--color-warning-300);
+    }
+
+    .kpi-main__progress-fill--red {
+      background: var(--color-negative-300);
+    }
+
+    .kpi-main__progress-fill--green {
+      background: var(--color-positive-300);
+    }
+
+    .cluster {
+      margin-top: var(--space-24);
+    }
+
+    .cluster__title {
+      font-family: var(--font-alt);
+      font-size: 22px;
+      line-height: 30px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-20) 0;
+      padding-bottom: var(--space-12);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-card__title {
+      font-size: var(--font-size-body);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .kpi-card__value {
+      font-family: var(--font-alt);
+      font-size: 32px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 1;
+    }
+
+    .kpi-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-card__trend {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .kpi-card__trend--positive {
+      color: var(--color-positive-500);
+    }
+
+    .kpi-card__trend--negative {
+      color: var(--color-negative-500);
+    }
+
+    .kpi-card__deviation {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      padding: var(--space-8);
+      background: var(--material-neutral-highlight-primary);
+      border-radius: var(--radius-sm);
+      margin-top: var(--space-8);
+    }
+
+    .kpi-card__deviation--warning {
+      background: rgba(255, 185, 106, 0.1);
+      color: var(--color-warning-600);
+    }
+
+    .kpi-card__action {
+      margin-top: auto;
+      display: flex;
+      justify-content: center;
+    }
+
+    .kpi-card__sparkline {
+      height: 40px;
+      margin-top: var(--space-8);
+    }
+
+    .kpi-card__sparkline canvas {
+      width: 100% !important;
+      height: 40px !important;
+    }
+
+    .kpi-card__analysis {
+      margin-top: var(--space-12);
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .kpi-card__analysis-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .kpi-card__analysis-label {
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+      color: var(--material-neutral-content-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .kpi-card__analysis-text {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-primary);
+      line-height: 1.5;
+    }
+
+    .kpi-card__analysis-draft {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-primary);
+      line-height: 1.5;
+      padding: var(--space-8);
+      background: var(--material-neutral-surface-primary);
+      border-left: 3px solid var(--color-accent-400);
+      border-radius: var(--radius-sm);
+      margin-top: var(--space-4);
+    }
+
+    .table {
+      width: 100%;
+      max-width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-body);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table th,
+    .table td {
+      padding: var(--space-12) var(--space-16);
+      text-align: left;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .table th {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label-xl);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+    }
+
+    .table td {
+      color: var(--material-neutral-content-primary);
+      background-color: var(--material-neutral-surface-primary);
+    }
+
+    .table tbody tr:hover {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+    }
+
+    .status-badge--success {
+      background-color: rgba(0, 201, 81, 0.1);
+      color: var(--color-positive-500);
+    }
+
+    .status-badge--warning {
+      background-color: rgba(255, 185, 106, 0.1);
+      color: var(--color-warning-500);
+    }
+
+    .status-badge--progress {
+      background-color: rgba(81, 162, 255, 0.1);
+      color: var(--color-info-500);
+    }
+
+    .proposal-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      margin-top: var(--space-16);
+    }
+
+    .proposal-card__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-12);
+    }
+
+    .proposal-card__number {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+    }
+
+    .proposal-card__actions {
+      display: flex;
+      gap: var(--space-8);
+    }
+
+    .proposal-card__field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .proposal-card__field-label {
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+      color: var(--material-neutral-content-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .proposal-card__field-value {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-primary);
+      line-height: 1.5;
+    }
+
+    .proposal-card__field-value--draft {
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border-left: 3px solid var(--color-accent-400);
+      border-radius: var(--radius-sm);
+    }
+
+    .ai-suggestion {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.05), rgba(0, 201, 81, 0.03));
+      border: 1px solid var(--color-info-200);
+      border-radius: var(--radius-lg);
+      padding: var(--space-16);
+      margin-top: var(--space-16);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .ai-suggestion__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      background: rgba(81, 162, 255, 0.1);
+      color: var(--color-info-600);
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+      width: fit-content;
+    }
+
+    .ai-suggestion__text {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-primary);
+      line-height: 1.6;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-20);
+      position: relative;
+      padding-left: var(--space-32);
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 8px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--material-neutral-border-primary);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: var(--space-24);
+    }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -24px;
+      top: 4px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--material-neutral-surface-primary);
+      border: 3px solid var(--material-neutral-border-primary);
+      z-index: 1;
+    }
+
+    .timeline-item--completed::before {
+      background: var(--color-positive-400);
+      border-color: var(--color-positive-400);
+    }
+
+    .timeline-item--in-progress::before {
+      background: var(--color-warning-400);
+      border-color: var(--color-warning-400);
+    }
+
+    .timeline-item--pending::before {
+      background: var(--material-neutral-content-tertiary);
+      border-color: var(--material-neutral-border-primary);
+    }
+
+    .timeline-item__label {
+      font-size: var(--font-size-label);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin-bottom: var(--space-4);
+    }
+
+    .data-types {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      align-items: center;
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      margin-top: var(--space-24);
+    }
+
+    .data-type {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .checkbox {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      cursor: pointer;
+    }
+
+    .checkbox input {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .chart-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-12);
+      margin-top: var(--space-12);
+    }
+
+    .chart-card canvas {
+      width: 100% !important;
+      height: 180px !important;
+      display: block;
+    }
+
+    .proposal-options {
+      display: none;
+      position: absolute;
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      padding: var(--space-12);
+      margin-top: var(--space-8);
+      z-index: 10;
+      min-width: 300px;
+    }
+
+    .proposal-options--visible {
+      display: block;
+    }
+
+    .proposal-options__list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .proposal-options__item {
+      padding: var(--space-8);
+      background: var(--material-neutral-highlight-primary);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-primary);
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .proposal-options__item:hover {
+      background: var(--material-neutral-border-primary);
+    }
+
+    .kpi-card__action {
+      position: relative;
+    }
+
+    @media (max-width: 900px) {
+      .header-section {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="header-section">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="chapter5.html">
+                <span class="back-link__icon"></span>
+                К разделу 5
+              </a>
+              <span class="meta-pill">Подраздел 5.3</span>
+            </div>
+            <h1>5.3. Формирование предложений для РАН по итогам анализа годового отчёта и итогового доклада ФНИ</h1>
+            <p>Раздел формирует рациональные предложения по корректировке выполнения Программы ФНИ (2021–2030), опираясь на KPI вкладов ФНИ в национальные цели НТР и международную научную конкурентоспособность Российской Федерации.</p>
+            <div class="meta-row">
+              <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+              <span class="meta-pill">Источники: РАН, подраздел 5.2, KPI НТР</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Статусная панель KPI -->
+      <div class="kpi-main-grid">
+        <section class="kpi-main">
+          <h2 class="kpi-main__title">Готовность предложений (%)</h2>
+          <div class="kpi-main__value kpi-main__value--yellow">67%</div>
+          <div class="kpi-main__progress">
+            <div class="kpi-main__progress-bar">
+              <div class="kpi-main__progress-fill kpi-main__progress-fill--yellow" style="width: 67%;"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="kpi-main">
+          <h2 class="kpi-main__title">Готовность годового отчёта ФНИ (%)</h2>
+          <div class="kpi-main__value kpi-main__value--green">92%</div>
+          <div class="kpi-main__progress">
+            <div class="kpi-main__progress-bar">
+              <div class="kpi-main__progress-fill kpi-main__progress-fill--green" style="width: 92%;"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="kpi-main">
+          <h2 class="kpi-main__title">Готовность итогового доклада (%)</h2>
+          <div class="kpi-main__value kpi-main__value--green">88%</div>
+          <div class="kpi-main__progress">
+            <div class="kpi-main__progress-bar">
+              <div class="kpi-main__progress-fill kpi-main__progress-fill--green" style="width: 88%;"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Кластер A: Международная публикационная конкурентоспособность -->
+      <section class="cluster">
+        <h2 class="cluster__title">Кластер А — Международная публикационная конкурентоспособность РФ</h2>
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Вклад ФНИ в место РФ по числу исследователей FTE среди ведущих стран (OECD)</h3>
+            <div class="kpi-card__value kpi-card__value--green">9-е</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ Стабильно</div>
+            <div class="kpi-card__deviation">Отклонение от траектории: в пределах нормы</div>
+            <div class="kpi-card__action">
+              <button class="btn btn--primary btn--small">Добавить предложение по улучшению</button>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Вклад ФНИ в удельный вес статей РФ по приоритетам НТР (Web of Science)</h3>
+            <div class="kpi-card__value kpi-card__value--green">4.2%</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ +0.3 п.п. YoY</div>
+            <div class="kpi-card__deviation kpi-card__deviation--warning">Отклонение: -0.5 п.п. от целевой траектории</div>
+            <div class="kpi-card__sparkline">
+              <canvas id="sparkline-wos-contrib"></canvas>
+            </div>
+            <div class="kpi-card__action">
+              <button class="btn btn--primary btn--small">Добавить предложение по улучшению</button>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Вклад ФНИ в удельный вес статей РФ по приоритетам НТР (Scopus)</h3>
+            <div class="kpi-card__value kpi-card__value--green">4.5%</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ +0.2 п.п. YoY</div>
+            <div class="kpi-card__deviation">Отклонение от траектории: в пределах нормы</div>
+            <div class="kpi-card__sparkline">
+              <canvas id="sparkline-scopus-contrib"></canvas>
+            </div>
+            <div class="kpi-card__action">
+              <button class="btn btn--primary btn--small">Добавить предложение по улучшению</button>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Доля совместных статей с иностранными исследователями</h3>
+            <div class="kpi-card__value kpi-card__value--green">42%</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ +2 п.п. YoY</div>
+            <div class="kpi-card__deviation">Отклонение от траектории: в пределах нормы</div>
+            <div class="kpi-card__sparkline">
+              <canvas id="sparkline-collab-contrib"></canvas>
+            </div>
+            <div class="kpi-card__action">
+              <button class="btn btn--primary btn--small">Добавить предложение по улучшению</button>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Доля публикаций в национальных журналах среди статей, вошедших в международные базы</h3>
+            <div class="kpi-card__value kpi-card__value--yellow">68%</div>
+            <div class="kpi-card__trend">→ Без изменений</div>
+            <div class="kpi-card__sparkline">
+              <canvas id="sparkline-national-contrib"></canvas>
+            </div>
+            <div class="kpi-card__action">
+              <button class="btn btn--primary btn--small">Добавить предложение по улучшению</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Кластер B: Кадровая политика -->
+      <section class="cluster">
+        <h2 class="cluster__title">Кластер B — Кадровая политика в фундаментальной науке</h2>
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Доля исследователей до 39 лет</h3>
+            <div class="kpi-card__value kpi-card__value--green">42%</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ +1.5 п.п. YoY</div>
+            <div class="kpi-card__analysis">
+              <div class="kpi-card__analysis-item">
+                <div class="kpi-card__analysis-label">Сигнал</div>
+                <div class="kpi-card__analysis-text">Доля молодых учёных ниже целевого ориентира на 8 п.п.</div>
+              </div>
+              <div class="kpi-card__analysis-item">
+                <div class="kpi-card__analysis-label">Причина</div>
+                <div class="kpi-card__analysis-text">Высокая текучесть кадров; отсутствие программ удержания</div>
+              </div>
+              <div class="kpi-card__analysis-item">
+                <div class="kpi-card__analysis-label">Черновик предложения</div>
+                <div class="kpi-card__analysis-draft">Усиление механизмов поддержки молодых исследователей через мини-гранты; корректировка распределений по институтам; усиление карьерных траекторий</div>
+              </div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Доля молодых кандидатов наук</h3>
+            <div class="kpi-card__value kpi-card__value--green">28%</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ +0.8 п.п. YoY</div>
+            <div class="kpi-card__analysis">
+              <div class="kpi-card__analysis-item">
+                <div class="kpi-card__analysis-label">Сигнал</div>
+                <div class="kpi-card__analysis-text">Доля молодых кандидатов наук ниже целевого ориентира на 12 п.п.</div>
+              </div>
+              <div class="kpi-card__analysis-item">
+                <div class="kpi-card__analysis-label">Причина</div>
+                <div class="kpi-card__analysis-text">Недостаточная поддержка на этапе защиты диссертаций</div>
+              </div>
+              <div class="kpi-card__analysis-item">
+                <div class="kpi-card__analysis-label">Черновик предложения</div>
+                <div class="kpi-card__analysis-draft">Расширение программ поддержки аспирантов и соискателей; увеличение стипендий и грантов для молодых кандидатов наук</div>
+              </div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Доля исследователей с публикациями Q1/Q2</h3>
+            <div class="kpi-card__value kpi-card__value--green">58%</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ +3 п.п. YoY</div>
+            <div class="kpi-card__analysis">
+              <div class="kpi-card__analysis-item">
+                <div class="kpi-card__analysis-label">Сигнал</div>
+                <div class="kpi-card__analysis-text">Показатель растёт, но требуется ускорение для достижения целевых значений</div>
+              </div>
+              <div class="kpi-card__analysis-item">
+                <div class="kpi-card__analysis-label">Причина</div>
+                <div class="kpi-card__analysis-text">Недостаточная поддержка публикационной активности в высокорейтинговых журналах</div>
+              </div>
+              <div class="kpi-card__analysis-item">
+                <div class="kpi-card__analysis-label">Черновик предложения</div>
+                <div class="kpi-card__analysis-draft">Усиление программ поддержки публикаций в Q1/Q2 журналах; создание специальных грантов для публикационной активности</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Кластер C: Финансирование -->
+      <section class="cluster">
+        <h2 class="cluster__title">Кластер C — Финансирование фундаментальных исследований</h2>
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Вклад ФНИ в удельный вес бюджетных расходов на фундаментальные исследования в ВВП</h3>
+            <div class="kpi-card__value kpi-card__value--yellow">0.28%</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ +0.02 п.п. YoY</div>
+            <div class="kpi-card__deviation">Отклонение от траектории: в пределах нормы</div>
+            <div class="kpi-card__action">
+              <button class="btn btn--primary btn--small" onclick="toggleProposalOptions(event)">Сформировать предложение</button>
+              <div class="proposal-options" id="proposal-options">
+                <ul class="proposal-options__list">
+                  <li class="proposal-options__item" onclick="addProposal('Увеличение финансирования направлений X и Y')">Увеличение финансирования направлений X и Y</li>
+                  <li class="proposal-options__item" onclick="addProposal('Перераспределение средств по институтам')">Перераспределение средств по институтам</li>
+                  <li class="proposal-options__item" onclick="addProposal('Уточнение методик расчёта')">Уточнение методик расчёта</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Динамика расходов</h3>
+            <div class="chart-card">
+              <canvas id="chart-finance-dynamics"></canvas>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Сравнение с странами-лидерами</h3>
+            <div class="chart-card">
+              <canvas id="chart-finance-comparison"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Кластер D: Качество отчётных документов -->
+      <section class="cluster">
+        <h2 class="cluster__title">Кластер D — Качество и содержание отчётных документов РАН</h2>
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Готовность годового отчёта ФНИ (%)</h3>
+            <div class="kpi-card__value kpi-card__value--green">92%</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ В работе</div>
+          </div>
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Готовность итогового доклада (%)</h3>
+            <div class="kpi-card__value kpi-card__value--green">88%</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ В работе</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Чек-лист проблем -->
+      <section class="section-block">
+        <h2 class="section-block__title">Чек-лист проблем, найденных в отчётах</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Тип проблемы</th>
+              <th>Пример</th>
+              <th>Статус</th>
+              <th>Предлагаемая рекомендация</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Недостаточность данных</td>
+              <td>Не представлены данные по направлению «приоритет Х»</td>
+              <td><span class="status-badge status-badge--warning">Требуется уточнение</span></td>
+              <td>Усилить требования к полноте представления данных по всем приоритетным направлениям</td>
+            </tr>
+            <tr>
+              <td>Несоответствие методик</td>
+              <td>Методика расчёта публикаций Q1/Q2 противоречит методике Росстата</td>
+              <td><span class="status-badge status-badge--progress">На согласовании</span></td>
+              <td>Унифицировать методики расчёта показателей публикационной активности</td>
+            </tr>
+            <tr>
+              <td>Несвоевременность</td>
+              <td>Раздел кадров задержан</td>
+              <td><span class="status-badge status-badge--progress">В работе</span></td>
+              <td>Установить жёсткие сроки представления разделов отчёта</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Конструктор предложений -->
+      <section class="section-block">
+        <h2 class="section-block__title">Черновики предложений</h2>
+        
+        <div class="proposal-card">
+          <div class="proposal-card__header">
+            <div class="proposal-card__number">Предложение №1</div>
+            <div class="proposal-card__actions">
+              <button class="btn btn--small">✏️ Редактировать</button>
+              <button class="btn btn--small">📎 Приложить аналитику</button>
+              <label class="checkbox">
+                <input type="checkbox" checked>
+                <span>Включить в итоговый пакет</span>
+              </label>
+            </div>
+          </div>
+          <div class="proposal-card__field">
+            <div class="proposal-card__field-label">Тема</div>
+            <div class="proposal-card__field-value">Увеличение доли молодых исследователей</div>
+          </div>
+          <div class="proposal-card__field">
+            <div class="proposal-card__field-label">KPI</div>
+            <div class="proposal-card__field-value">Доля исследователей ≤39 лет</div>
+          </div>
+          <div class="proposal-card__field">
+            <div class="proposal-card__field-label">Источник проблемы</div>
+            <div class="proposal-card__field-value">Отчёт ФНИ, данные за 2024</div>
+          </div>
+          <div class="proposal-card__field">
+            <div class="proposal-card__field-label">Суть предложения</div>
+            <div class="proposal-card__field-value proposal-card__field-value--draft">Усилить кадровые программы для молодых исследователей, увеличить грантовую поддержку в институтах с наибольшими потерями кадров.</div>
+          </div>
+        </div>
+
+        <div class="proposal-card">
+          <div class="proposal-card__header">
+            <div class="proposal-card__number">Предложение №2</div>
+            <div class="proposal-card__actions">
+              <button class="btn btn--small">✏️ Редактировать</button>
+              <button class="btn btn--small">📎 Приложить аналитику</button>
+              <label class="checkbox">
+                <input type="checkbox" checked>
+                <span>Включить в итоговый пакет</span>
+              </label>
+            </div>
+          </div>
+          <div class="proposal-card__field">
+            <div class="proposal-card__field-label">Тема</div>
+            <div class="proposal-card__field-value">Унификация методик расчёта публикационной активности</div>
+          </div>
+          <div class="proposal-card__field">
+            <div class="proposal-card__field-label">KPI</div>
+            <div class="proposal-card__field-value">Публикации Q1/Q2, WoS, Scopus</div>
+          </div>
+          <div class="proposal-card__field">
+            <div class="proposal-card__field-label">Источник проблемы</div>
+            <div class="proposal-card__field-value">Итоговый доклад ФНИ, раздел 3</div>
+          </div>
+          <div class="proposal-card__field">
+            <div class="proposal-card__field-label">Суть предложения</div>
+            <div class="proposal-card__field-value proposal-card__field-value--draft">Привести методики расчёта публикационной активности в соответствие с методиками Росстата и международными стандартами.</div>
+          </div>
+        </div>
+
+        <div class="proposal-card">
+          <div class="proposal-card__header">
+            <div class="proposal-card__number">Предложение №3</div>
+            <div class="proposal-card__actions">
+              <button class="btn btn--small">✏️ Редактировать</button>
+              <button class="btn btn--small">📎 Приложить аналитику</button>
+              <label class="checkbox">
+                <input type="checkbox">
+                <span>Включить в итоговый пакет</span>
+              </label>
+            </div>
+          </div>
+          <div class="proposal-card__field">
+            <div class="proposal-card__field-label">Тема</div>
+            <div class="proposal-card__field-value">Усиление международной кооперации</div>
+          </div>
+          <div class="proposal-card__field">
+            <div class="proposal-card__field-label">KPI</div>
+            <div class="proposal-card__field-value">Доля статей в соавторстве с иностранными учёными</div>
+          </div>
+          <div class="proposal-card__field">
+            <div class="proposal-card__field-label">Источник проблемы</div>
+            <div class="proposal-card__field-value">Годовой отчёт ФНИ, кластер А</div>
+          </div>
+          <div class="proposal-card__field">
+            <div class="proposal-card__field-label">Суть предложения</div>
+            <div class="proposal-card__field-value proposal-card__field-value--draft">Разработать программы поддержки международных коллабораций, увеличить финансирование совместных проектов с зарубежными партнёрами.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Автоматически генерируемые рекомендации -->
+      <section class="section-block">
+        <h2 class="section-block__title">Автоматически генерируемые рекомендации</h2>
+        <div class="ai-suggestion">
+          <div class="ai-suggestion__badge">Сгенерировано на основе отклонений KPI</div>
+          <div class="ai-suggestion__text">Предложить РАН корректировать распределение внутренних ресурсов, так как вклад в публикации WoS отстаёт от траектории на 2,4 п.п.</div>
+          <button class="btn btn--primary btn--small" style="width: fit-content; margin-top: var(--space-8);">Добавить в черновики</button>
+        </div>
+        <div class="ai-suggestion">
+          <div class="ai-suggestion__badge">Сгенерировано на основе отклонений KPI</div>
+          <div class="ai-suggestion__text">Усилить инструменты междисциплинарных проектов, так как доля молодых кандидатов наук падает третий год подряд.</div>
+          <button class="btn btn--primary btn--small" style="width: fit-content; margin-top: var(--space-8);">Добавить в черновики</button>
+        </div>
+        <div class="ai-suggestion">
+          <div class="ai-suggestion__badge">Сгенерировано на основе отклонений KPI</div>
+          <div class="ai-suggestion__text">Рекомендовать обновление национальных журналов для повышения видимости публикаций РФ.</div>
+          <button class="btn btn--primary btn--small" style="width: fit-content; margin-top: var(--space-8);">Добавить в черновики</button>
+        </div>
+      </section>
+
+      <!-- История предложений прошлых лет -->
+      <section class="section-block">
+        <h2 class="section-block__title">Сравнение: какие предложения были в прошлом году</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Предложение</th>
+              <th>Исполнено</th>
+              <th>Частично</th>
+              <th>Не исполнено</th>
+              <th>Комментарий</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Усиление программ поддержки молодых исследователей</td>
+              <td><span class="status-badge status-badge--success">✔</span></td>
+              <td></td>
+              <td></td>
+              <td>Реализовано через увеличение грантовой поддержки на 15%</td>
+            </tr>
+            <tr>
+              <td>Унификация методик расчёта публикационной активности</td>
+              <td></td>
+              <td><span class="status-badge status-badge--warning">⚠</span></td>
+              <td></td>
+              <td>Частично реализовано, требуется доработка</td>
+            </tr>
+            <tr>
+              <td>Увеличение финансирования направлений X и Y</td>
+              <td><span class="status-badge status-badge--success">✔</span></td>
+              <td></td>
+              <td></td>
+              <td>Финансирование увеличено на 8%</td>
+            </tr>
+            <tr>
+              <td>Усиление международной кооперации</td>
+              <td></td>
+              <td></td>
+              <td><span class="status-badge status-badge--progress">✗</span></td>
+              <td>Не реализовано из-за внешнеполитических ограничений</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Таймлайн подготовки -->
+      <section class="section-block">
+        <h2 class="section-block__title">Трекинг формирования итогового пакета предложений</h2>
+        <div class="timeline">
+          <div class="timeline-item timeline-item--completed">
+            <div class="timeline-item__label">Сбор KPI</div>
+          </div>
+          <div class="timeline-item timeline-item--completed">
+            <div class="timeline-item__label">Анализ отчётов РАН</div>
+          </div>
+          <div class="timeline-item timeline-item--completed">
+            <div class="timeline-item__label">Генерация сигнальных зон</div>
+          </div>
+          <div class="timeline-item timeline-item--in-progress">
+            <div class="timeline-item__label">Подготовка черновиков</div>
+          </div>
+          <div class="timeline-item timeline-item--pending">
+            <div class="timeline-item__label">Финальное согласование</div>
+          </div>
+          <div class="timeline-item timeline-item--pending">
+            <div class="timeline-item__label">Передача в РАН</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Финальный блок -->
+      <section class="section-block">
+        <h2 class="section-block__title">Итоговый пакет предложений</h2>
+        <div style="display: flex; flex-direction: column; gap: var(--space-16);">
+          <a href="#" class="btn btn--primary" style="width: 100%; max-width: 400px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+            📄 Сформировать документ (.pdf/.docx)
+          </a>
+          <div style="display: flex; flex-wrap: wrap; gap: var(--space-12); justify-content: center; margin-top: var(--space-16);">
+            <button class="btn btn--small">Структура по приоритетам НТР</button>
+            <button class="btn btn--small">Структура по KPI</button>
+            <button class="btn btn--small">Структура по институтам РАН</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Типы данных -->
+      <div class="data-types">
+        <span class="data-type">📊 KPI</span>
+        <span class="data-type">📈 Тренды</span>
+        <span class="data-type">📉 Sparklines</span>
+        <span class="data-type">🗂 Таблицы</span>
+        <span class="data-type">🕒 Таймлайн</span>
+        <span class="data-type">📝 Предложения</span>
+        <span class="data-type">🤖 AI-рекомендации</span>
+      </div>
+    </main>
+  </div>
+  <script>
+    // Sparkline конфигурация
+    const sparklineOptions = {
+      type: 'line',
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false }
+        },
+        scales: {
+          x: { display: false },
+          y: { display: false }
+        },
+        elements: {
+          point: { radius: 0 },
+          line: { borderWidth: 2, tension: 0.4 }
+        }
+      }
+    };
+
+    // Sparklines для кластера A
+    const sparklineData = {
+      'wos-contrib': [3.8, 3.9, 4.0, 4.1, 4.2],
+      'scopus-contrib': [4.2, 4.3, 4.3, 4.4, 4.5],
+      'collab-contrib': [38, 39, 40, 41, 42],
+      'national-contrib': [68, 68, 68, 68, 68],
+      'finance-contrib': [0.24, 0.25, 0.26, 0.27, 0.28]
+    };
+
+    Object.keys(sparklineData).forEach((key) => {
+      const canvas = document.getElementById(`sparkline-${key}`);
+      if (canvas) {
+        new Chart(canvas, {
+          ...sparklineOptions,
+          data: {
+            labels: ['2021', '2022', '2023', '2024', '2025'],
+            datasets: [{
+              data: sparklineData[key],
+              borderColor: '#0066ff',
+              backgroundColor: 'transparent'
+            }]
+          }
+        });
+      }
+    });
+
+    // График динамики расходов
+    const financeDynamicsCanvas = document.getElementById('chart-finance-dynamics');
+    if (financeDynamicsCanvas) {
+      new Chart(financeDynamicsCanvas, {
+        type: 'line',
+        data: {
+          labels: ['2021', '2022', '2023', '2024', '2025'],
+          datasets: [{
+            label: '% ВВП',
+            data: [0.24, 0.25, 0.26, 0.27, 0.28],
+            borderColor: '#0066ff',
+            backgroundColor: 'rgba(0, 102, 255, 0.1)',
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: false }
+          }
+        }
+      });
+    }
+
+    // График сравнения с странами-лидерами
+    const financeComparisonCanvas = document.getElementById('chart-finance-comparison');
+    if (financeComparisonCanvas) {
+      new Chart(financeComparisonCanvas, {
+        type: 'bar',
+        data: {
+          labels: ['США', 'Китай', 'Германия', 'Япония', 'РФ', 'Франция'],
+          datasets: [{
+            label: '% ВВП',
+            data: [0.45, 0.38, 0.35, 0.32, 0.28, 0.25],
+            backgroundColor: ['#0066ff', '#0066ff', '#0066ff', '#0066ff', '#ff9900', '#0066ff']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    // Функция для показа/скрытия вариантов предложений
+    function toggleProposalOptions(event) {
+      event.stopPropagation();
+      const options = document.getElementById('proposal-options');
+      if (options) {
+        options.classList.toggle('proposal-options--visible');
+      }
+    }
+
+    // Закрытие меню при клике вне его
+    document.addEventListener('click', function(event) {
+      const options = document.getElementById('proposal-options');
+      if (options && !options.contains(event.target) && !event.target.closest('.kpi-card__action button')) {
+        options.classList.remove('proposal-options--visible');
+      }
+    });
+
+    // Функция для добавления предложения
+    function addProposal(text) {
+      alert('Предложение "' + text + '" добавлено в черновики');
+      const options = document.getElementById('proposal-options');
+      if (options) {
+        options.classList.remove('proposal-options--visible');
+      }
+    }
+  </script>
+</body>
+</html>
+

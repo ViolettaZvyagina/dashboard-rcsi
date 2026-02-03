@@ -1,0 +1,4760 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Дашборд координации — Подраздел 1.3</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .management-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-20);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      grid-column: span 2;
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(255, 105, 0, 0.04));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: var(--space-12);
+      margin-bottom: var(--space-6);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-20);
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-card__label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .kpi-card__value {
+      font-family: var(--font-alt);
+      font-size: 42px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 48px;
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+    }
+
+    .kpi-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-card__trend {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .section-block {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 28px;
+      line-height: 36px;
+      letter-spacing: -0.4px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .section-block__subtitle {
+      font-family: var(--font-alt);
+      font-size: 22px;
+      line-height: 30px;
+      letter-spacing: -0.3px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+      margin-top: var(--space-8);
+    }
+
+    .chart-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .chart-card__title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .chart-container {
+      flex: 1;
+      min-height: 200px;
+      max-height: 300px;
+      position: relative;
+      padding: var(--space-12);
+      overflow: visible;
+    }
+
+    .chart-container--medium {
+      min-height: 200px;
+      max-height: 250px;
+    }
+
+    .chart-container canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .chart-container--small {
+      min-height: 150px;
+      max-height: 200px;
+    }
+
+    .chart-container canvas + canvas {
+      display: block;
+      margin: var(--space-8) auto 0;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-20);
+    }
+
+    .charts-grid--3cols {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-body);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table th,
+    .table td {
+      padding: var(--space-16) var(--space-24);
+      text-align: left;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .table th {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label-xl);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+    }
+
+    .table th:not(:last-child) {
+      border-right: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .table td {
+      color: var(--material-neutral-content-primary);
+      background-color: var(--material-neutral-surface-primary);
+    }
+
+    .table tbody tr {
+      transition: background-color 0.15s ease;
+    }
+
+    .table tbody tr:hover {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .table td:not(:last-child) {
+      border-right: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-4) var(--space-8);
+      border-radius: 999px;
+      font-size: var(--font-size-caption);
+      font-weight: 500;
+    }
+
+    .status-badge--success {
+      background: var(--material-lite-positive-surface);
+      color: var(--material-lite-positive-content-primary);
+    }
+
+    .status-badge--warning {
+      background: var(--material-lite-warning-surface);
+      color: var(--material-lite-warning-content-primary);
+    }
+
+    .status-badge--danger {
+      background: var(--material-lite-negative-surface);
+      color: var(--material-lite-negative-content-primary);
+    }
+
+    .progress-bar-container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: var(--material-neutral-highlight-primary);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar__fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #0066ff, #51a2ff);
+      transition: width 0.6s ease;
+    }
+
+    .progress-bar__fill--warning {
+      background: linear-gradient(90deg, #ffb96a, #ff9900);
+    }
+
+    .progress-bar__fill--danger {
+      background: linear-gradient(90deg, #fb2c36, #d91e2a);
+    }
+
+    .progress-bar__label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-primary);
+    }
+
+    .heatmap-container {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-12);
+      overflow-x: auto;
+      align-items: start;
+    }
+
+    .heatmap-labels {
+      display: grid;
+      gap: var(--space-4);
+      grid-template-rows: auto repeat(7, 50px);
+    }
+
+    .heatmap-label-spacer {
+      height: calc(var(--space-8) + 1em);
+    }
+
+    .heatmap-label {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      padding: 0;
+      text-align: right;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      height: 50px;
+      box-sizing: border-box;
+    }
+
+    .heatmap-grid {
+      display: grid;
+      gap: var(--space-4);
+      grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: repeat(7, 50px);
+      min-width: 600px;
+    }
+
+    .heatmap-cell {
+      width: 100%;
+      height: 100%;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      transition: transform 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .heatmap-cell:hover {
+      transform: scale(1.1);
+    }
+
+    .heatmap-cell--low {
+      background: var(--material-lite-positive-surface);
+      color: var(--material-lite-positive-content-primary);
+    }
+
+    .heatmap-cell--medium {
+      background: var(--material-lite-warning-surface);
+      color: var(--material-lite-warning-content-primary);
+    }
+
+    .heatmap-cell--high {
+      background: var(--material-lite-negative-surface);
+      color: var(--material-lite-negative-content-primary);
+    }
+
+    .signals-card {
+      background: linear-gradient(165deg, rgba(255, 105, 0, 0.12), rgba(0, 102, 255, 0.12));
+      border: 1px solid var(--color-warning-200);
+      color: var(--material-neutral-content-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .signals-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .signals-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-8);
+      font-family: var(--font-alt);
+      font-weight: var(--font-weight-label-xl);
+      font-size: var(--font-size-label-xl);
+      line-height: var(--line-height-label-xl);
+      letter-spacing: var(--letter-spacing-label-xl);
+      position: relative;
+      z-index: 1;
+    }
+
+    .signals-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: var(--space-10);
+      position: relative;
+      z-index: 1;
+    }
+
+    .signal-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-8);
+      align-items: center;
+      font-size: var(--font-size-body);
+    }
+
+    .signal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 105, 0, 0.1);
+    }
+
+    .signal-dot--high {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.12);
+    }
+
+    .signal-dot--warning {
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 185, 106, 0.15);
+    }
+
+    @media (max-width: 1200px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .charts-grid--3cols {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .management-bar {
+        grid-template-columns: 1fr;
+      }
+
+      .management-panel {
+        grid-column: span 1;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .charts-grid--3cols {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-bar">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="chapter1.html">
+                <span class="back-link__icon"></span>
+                К разделу 1
+              </a>
+            </div>
+            <h1>1.3. Организация и совершенствование деятельности ФОИВ</h1>
+            <p class="ty-body-lg ty-muted">
+              Мониторинг научной инфраструктуры, кадрового потенциала, образовательных программ и цифровизации статистики в рамках реализации политики НТР.
+            </p>
+          </div>
+          <div class="meta-row">
+            <span class="meta-pill">Последнее обновление: <strong>12.11.2025</strong></span>
+            <span class="meta-pill">Каналы данных: ФОИВ, РНТР, образовательные организации</span>
+          </div>
+        </div>
+        <aside class="signals-card">
+          <div class="signals-title">
+            Сигналы и риски
+          </div>
+          <ul class="signals-list">
+            <li class="signal-item">
+              <span class="signal-dot signal-dot--warning"></span>
+              Индекс готовности научно-техн. инфраструктуры ниже целевого значения
+            </li>
+            <li class="signal-item">
+              <span class="signal-dot signal-dot--warning"></span>
+              Доля молодых исследователей требует внимания
+            </li>
+            <li class="signal-item">
+              <span class="signal-dot signal-dot--high"></span>
+              Дефицит кадров в приоритетных отраслях НТР
+            </li>
+            <li class="signal-item">
+              <span class="signal-dot signal-dot--warning"></span>
+              Цифровизация статистики на среднем уровне
+            </li>
+          </ul>
+        </aside>
+      </section>
+
+      <!-- БЛОК 1: Стратегический контур НТР -->
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-card__label">Внутренние затраты на НИОКР (% ВВП)</div>
+          <div class="kpi-card__value kpi-card__value--green">
+            1.08<span style="font-size: 24px; font-weight: 400;">%</span>
+          </div>
+          <div class="kpi-card__trend">
+            <span>↗</span>
+            <span>+0.12% к прошлому году</span>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-card__label">Место РФ в рейтинге конкурентоспособности талантов</div>
+          <div class="kpi-card__value kpi-card__value--yellow">
+            23
+          </div>
+          <div class="kpi-card__trend">
+            <span>→</span>
+            <span>Без изменений</span>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-card__label">Индекс доступности и востребованности научной инфраструктуры</div>
+          <div class="kpi-card__value kpi-card__value--yellow">
+            64
+          </div>
+          <div class="kpi-card__trend">
+            <span>↗</span>
+            <span>+2 пункта к прошлому кварталу</span>
+          </div>
+        </article>
+      </section>
+
+      <!-- БЛОК 2: Научная инфраструктура -->
+      <section class="section-block">
+        <h2 class="section-block__title">Научная инфраструктура</h2>
+        <div class="charts-grid charts-grid--3cols">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Техническая вооруженность сектора НИОКР</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-equipment"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доля оборудования в возрасте до 5 лет</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-equipment-age"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Коэффициент загрузки дорогостоящего оборудования</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-equipment-load"></canvas>
+            </div>
+          </article>
+        </div>
+        <div class="charts-grid">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Объем бюджетного финансирования ЦКП, УНУ, млрд руб.</h3>
+            <div class="chart-container">
+              <canvas id="chart-funding"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доля инфраструктурных объектов</h3>
+            <div class="chart-container">
+              <canvas id="chart-infrastructure"></canvas>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- БЛОК 3: Кадры в науке -->
+      <section class="section-block">
+        <h2 class="section-block__title">Кадры в науке</h2>
+        <div class="charts-grid">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доля молодых исследователей, %</h3>
+            <div class="chart-container">
+              <canvas id="chart-young-researchers"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Возрастная структура исследователей</h3>
+            <div class="chart-container">
+              <canvas id="chart-age-structure"></canvas>
+            </div>
+          </article>
+        </div>
+        <div class="charts-grid">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Коэффициент восполнения кадров</h3>
+            <div class="chart-container">
+              <canvas id="chart-staff-replenishment"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Численность исследователей по областям</h3>
+            <div class="chart-container">
+              <canvas id="chart-researchers-by-field"></canvas>
+            </div>
+          </article>
+        </div>
+        <div class="charts-grid">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доля сотрудников научных учреждений с учеными степенями</h3>
+            <div class="chart-container">
+              <canvas id="chart-degrees"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Тепловая карта дефицита кадров</h3>
+            <div class="chart-container">
+              <canvas id="chart-staff-deficit"></canvas>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- БЛОК 4: Образовательный контур НТР -->
+      <section class="section-block">
+        <h2 class="section-block__title">Образовательный контур НТР</h2>
+        
+        <h3 class="section-block__subtitle">4.1. Химические технологии</h3>
+        <div class="charts-grid">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доля выпускников, трудоустроившихся в организации НТР-отраслей, %</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-employment-chem"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Дефицит кадров по годам, %</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-deficit-chem"></canvas>
+            </div>
+          </article>
+        </div>
+        <div class="charts-grid" style="margin-top: var(--space-16);">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Количество специалистов в химической отрасли</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-chem-specialists"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Программы в цифровом реестре химической отрасли</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-chem-programs"></canvas>
+            </div>
+          </article>
+        </div>
+        <div class="charts-grid" style="margin-top: var(--space-16);">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Количество учащихся в химической отрасли</h3>
+            <div class="chart-container chart-container--small">
+              <canvas id="chart-chem-organizations"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Образовательные организации химической отрасли</h3>
+            <div class="chart-container chart-container--small">
+              <canvas id="chart-chem-organizations-count"></canvas>
+            </div>
+          </article>
+        </div>
+        <table class="table" style="margin-top: var(--space-16);">
+          <thead>
+            <tr>
+              <th>Образовательная программа</th>
+              <th>Количество обучающихся</th>
+              <th>Охват</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Химические технологии</td>
+              <td>1,245</td>
+              <td>85%</td>
+              <td><span class="status-badge status-badge--success">Активно</span></td>
+            </tr>
+            <tr>
+              <td>Материаловедение</td>
+              <td>892</td>
+              <td>72%</td>
+              <td><span class="status-badge status-badge--success">Активно</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="section-block__subtitle">4.2. Производство средств производства</h3>
+        <div class="charts-grid">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доля выпускников, трудоустроившихся в организации НТР-отраслей, %</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-employment-manufacturing"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Дефицит кадров по годам, %</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-deficit-manufacturing"></canvas>
+            </div>
+          </article>
+        </div>
+        <div class="charts-grid" style="margin-top: var(--space-16);">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Количество специалистов в производстве средств производства</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-manufacturing-specialists"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Программы в цифровом реестре производства средств производства</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-manufacturing-programs"></canvas>
+            </div>
+          </article>
+        </div>
+        <div class="charts-grid" style="margin-top: var(--space-16);">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Количество учащихся в производстве средств производства</h3>
+            <div class="chart-container chart-container--small">
+              <canvas id="chart-manufacturing-organizations"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Образовательные организации производства средств производства</h3>
+            <div class="chart-container chart-container--small">
+              <canvas id="chart-manufacturing-organizations-count"></canvas>
+            </div>
+          </article>
+        </div>
+        <table class="table" style="margin-top: var(--space-16);">
+          <thead>
+            <tr>
+              <th>Образовательная программа</th>
+              <th>Количество обучающихся</th>
+              <th>Охват</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Машиностроение</td>
+              <td>1,180</td>
+              <td>82%</td>
+              <td><span class="status-badge status-badge--success">Активно</span></td>
+            </tr>
+            <tr>
+              <td>Приборостроение</td>
+              <td>945</td>
+              <td>75%</td>
+              <td><span class="status-badge status-badge--success">Активно</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="section-block__subtitle">4.3. Авиа- и судостроение</h3>
+        <div class="charts-grid">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доля выпускников, трудоустроившихся в организации НТР-отраслей, %</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-employment-aviation"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Дефицит кадров по годам, %</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-deficit-aviation"></canvas>
+            </div>
+          </article>
+        </div>
+        <div class="charts-grid" style="margin-top: var(--space-16);">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Количество специалистов в авиа- и судостроении</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-aviation-specialists"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Программы в цифровом реестре авиа- и судостроения</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-aviation-programs"></canvas>
+            </div>
+          </article>
+        </div>
+        <div class="charts-grid" style="margin-top: var(--space-16);">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Количество учащихся в авиа- и судостроении</h3>
+            <div class="chart-container chart-container--small">
+              <canvas id="chart-aviation-organizations"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Образовательные организации авиа- и судостроения</h3>
+            <div class="chart-container chart-container--small">
+              <canvas id="chart-aviation-organizations-count"></canvas>
+            </div>
+          </article>
+        </div>
+        <table class="table" style="margin-top: var(--space-16);">
+          <thead>
+            <tr>
+              <th>Образовательная программа</th>
+              <th>Количество обучающихся</th>
+              <th>Охват</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Авиастроение</td>
+              <td>980</td>
+              <td>78%</td>
+              <td><span class="status-badge status-badge--success">Активно</span></td>
+            </tr>
+            <tr>
+              <td>Судостроение</td>
+              <td>720</td>
+              <td>68%</td>
+              <td><span class="status-badge status-badge--success">Активно</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="section-block__subtitle">4.4. Агропром и БАС</h3>
+        <div class="charts-grid">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доля выпускников, трудоустроившихся в организации НТР-отраслей, %</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-employment-bas"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Дефицит кадров по годам, %</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-deficit-bas"></canvas>
+            </div>
+          </article>
+        </div>
+        <div class="charts-grid" style="margin-top: var(--space-16);">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Количество специалистов в сфере БАС</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-bas-specialists"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Программы в цифровом реестре БАС</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-bas-programs"></canvas>
+            </div>
+          </article>
+        </div>
+        <div class="charts-grid" style="margin-top: var(--space-16);">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Количество учащихся в сфере БАС</h3>
+            <div class="chart-container chart-container--small">
+              <canvas id="chart-bas-organizations"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Образовательные организации БАС</h3>
+            <div class="chart-container chart-container--small">
+              <canvas id="chart-bas-organizations-count"></canvas>
+            </div>
+          </article>
+        </div>
+        <table class="table" style="margin-top: var(--space-16);">
+          <thead>
+            <tr>
+              <th>Образовательная программа</th>
+              <th>Количество обучающихся</th>
+              <th>Охват</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Биотехнологии</td>
+              <td>1,150</td>
+              <td>80%</td>
+              <td><span class="status-badge status-badge--success">Активно</span></td>
+            </tr>
+            <tr>
+              <td>Агроинженерия</td>
+              <td>890</td>
+              <td>70%</td>
+              <td><span class="status-badge status-badge--success">Активно</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- БЛОК 5: Цифровизация отчётности -->
+      <section class="section-block">
+        <h2 class="section-block__title">Цифровизация отчётности</h2>
+        <div class="charts-grid">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доля показателей на основе big data, %</h3>
+            <div class="progress-bar-container">
+              <div class="progress-bar">
+                <div class="progress-bar__fill" style="width: 42%"></div>
+              </div>
+              <div class="progress-bar__label">
+                <span>42%</span>
+                <span>Цель: 60%</span>
+              </div>
+            </div>
+            <div style="margin-top: var(--space-16);">
+              <div class="chart-container chart-container--medium">
+                <canvas id="chart-bigdata-trend"></canvas>
+              </div>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Сокращение сроков обработки первичных данных</h3>
+            <div class="chart-container">
+              <canvas id="chart-processing-time"></canvas>
+            </div>
+          </article>
+        </div>
+        <div class="charts-grid charts-grid--3cols">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доля показателей в ДАП</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-dap"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доля показателей, соответствующих международным стандартам</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-standards"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Снижение нагрузки на объекты статистики</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-statistics-load"></canvas>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- БЛОК 6: Координация поручений -->
+      <section class="section-block">
+        <h2 class="section-block__title">Координация поручений КНТР</h2>
+        <div class="charts-grid">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Статус поручений КНТР</h3>
+            <div class="chart-container">
+              <canvas id="chart-assignments-status"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Средний срок исполнения поручений по ФОИВ, дней</h3>
+            <div class="chart-container">
+              <canvas id="chart-assignments-timing"></canvas>
+            </div>
+          </article>
+        </div>
+        <div class="charts-grid">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доля межведомственных проектов</h3>
+            <div class="chart-container">
+              <canvas id="chart-interagency-projects"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Среднее отклонение сроков реализации, дней</h3>
+            <div class="chart-container">
+              <canvas id="chart-deviations"></canvas>
+            </div>
+          </article>
+        </div>
+        <div style="margin-top: var(--space-24);">
+          <h3 class="chart-card__title" style="margin-bottom: var(--space-16);">Межведомственные взаимодействия</h3>
+          <div class="heatmap-container">
+            <div class="heatmap-labels">
+              <div class="heatmap-label-spacer"></div>
+              <div class="heatmap-label">Минобрнауки</div>
+              <div class="heatmap-label">Минцифры</div>
+              <div class="heatmap-label">Росатом</div>
+              <div class="heatmap-label">Роскосмос</div>
+              <div class="heatmap-label">Минэнерго</div>
+              <div class="heatmap-label">Минздрав</div>
+              <div class="heatmap-label">Минпромторг</div>
+            </div>
+            <div>
+              <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--space-4); margin-bottom: var(--space-8); min-width: 600px;">
+                <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); text-align: center;">Минобрнауки</div>
+                <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); text-align: center;">Минцифры</div>
+                <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); text-align: center;">Росатом</div>
+                <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); text-align: center;">Роскосмос</div>
+                <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); text-align: center;">Минэнерго</div>
+                <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); text-align: center;">Минздрав</div>
+                <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); text-align: center;">Минпромторг</div>
+              </div>
+              <div class="heatmap-grid">
+                <div class="heatmap-cell heatmap-cell--low" title="Минобрнауки ↔ Минобрнауки">—</div>
+                <div class="heatmap-cell heatmap-cell--medium" title="Минобрнауки ↔ Минцифры">3</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минобрнауки ↔ Росатом">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минобрнауки ↔ Роскосмос">2</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минобрнауки ↔ Минэнерго">1</div>
+                <div class="heatmap-cell heatmap-cell--medium" title="Минобрнауки ↔ Минздрав">2</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минобрнауки ↔ Минпромторг">1</div>
+                
+                <div class="heatmap-cell heatmap-cell--medium" title="Минцифры ↔ Минобрнауки">3</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минцифры ↔ Минцифры">—</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минцифры ↔ Росатом">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минцифры ↔ Роскосмос">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минцифры ↔ Минэнерго">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минцифры ↔ Минздрав">1</div>
+                <div class="heatmap-cell heatmap-cell--medium" title="Минцифры ↔ Минпромторг">2</div>
+                
+                <div class="heatmap-cell heatmap-cell--low" title="Росатом ↔ Минобрнауки">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Росатом ↔ Минцифры">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Росатом ↔ Росатом">—</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Росатом ↔ Роскосмос">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Росатом ↔ Минэнерго">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Росатом ↔ Минздрав">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Росатом ↔ Минпромторг">1</div>
+                
+                <div class="heatmap-cell heatmap-cell--low" title="Роскосмос ↔ Минобрнауки">2</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Роскосмос ↔ Минцифры">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Роскосмос ↔ Росатом">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Роскосмос ↔ Роскосмос">—</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Роскосмос ↔ Минэнерго">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Роскосмос ↔ Минздрав">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Роскосмос ↔ Минпромторг">1</div>
+                
+                <div class="heatmap-cell heatmap-cell--low" title="Минэнерго ↔ Минобрнауки">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минэнерго ↔ Минцифры">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минэнерго ↔ Росатом">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минэнерго ↔ Роскосмос">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минэнерго ↔ Минэнерго">—</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минэнерго ↔ Минздрав">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минэнерго ↔ Минпромторг">1</div>
+                
+                <div class="heatmap-cell heatmap-cell--medium" title="Минздрав ↔ Минобрнауки">2</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минздрав ↔ Минцифры">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минздрав ↔ Росатом">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минздрав ↔ Роскосмос">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минздрав ↔ Минэнерго">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минздрав ↔ Минздрав">—</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минздрав ↔ Минпромторг">1</div>
+                
+                <div class="heatmap-cell heatmap-cell--low" title="Минпромторг ↔ Минобрнауки">1</div>
+                <div class="heatmap-cell heatmap-cell--medium" title="Минпромторг ↔ Минцифры">2</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минпромторг ↔ Росатом">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минпромторг ↔ Роскосмос">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минпромторг ↔ Минэнерго">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минпромторг ↔ Минздрав">1</div>
+                <div class="heatmap-cell heatmap-cell--low" title="Минпромторг ↔ Минпромторг">—</div>
+              </div>
+              <div style="display: flex; gap: var(--space-16); margin-top: var(--space-16); font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);">
+                <span>Легенда: <span style="display: inline-block; width: 16px; height: 16px; background: var(--material-lite-positive-surface); border-radius: 4px; vertical-align: middle; margin-left: 4px;"></span> Низкая нагрузка</span>
+                <span><span style="display: inline-block; width: 16px; height: 16px; background: var(--material-lite-warning-surface); border-radius: 4px; vertical-align: middle; margin-left: 4px;"></span> Средняя нагрузка</span>
+                <span><span style="display: inline-block; width: 16px; height: 16px; background: var(--material-lite-negative-surface); border-radius: 4px; vertical-align: middle; margin-left: 4px;"></span> Высокая нагрузка</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script>
+    Chart.defaults.color = '#64748b';
+    Chart.defaults.borderColor = '#f1f5f9';
+    Chart.defaults.font.family = 'system-ui, -apple-system, sans-serif';
+    Chart.defaults.font.size = 12;
+    
+    const commonOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          labels: {
+            usePointStyle: true,
+            padding: 15,
+            font: { size: 12, weight: '500' }
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(15, 23, 42, 0.95)',
+          padding: 12,
+          titleFont: { size: 13, weight: '600' },
+          bodyFont: { size: 12 },
+          cornerRadius: 8,
+          displayColors: true,
+          borderColor: '#e2e8f0',
+          borderWidth: 1
+        }
+      },
+      animation: {
+        duration: 800,
+        easing: 'easeOutQuart'
+      },
+      scales: {
+        x: {
+          grid: {
+            color: '#f1f5f9',
+            drawBorder: false,
+            lineWidth: 1
+          },
+          ticks: {
+            font: { size: 11 },
+            color: '#64748b',
+            padding: 8
+          }
+        },
+        y: {
+          grid: {
+            color: '#f1f5f9',
+            drawBorder: false,
+            lineWidth: 1
+          },
+          ticks: {
+            font: { size: 11 },
+            color: '#64748b',
+            padding: 8
+          }
+        }
+      }
+    };
+
+    // Плагин для максимизации высоты графика
+    const maximizeHeightPlugin = {
+      id: 'maximizeHeight',
+      afterLayout: function(chart) {
+        const chartArea = chart.chartArea;
+        const height = chart.height;
+        if (chartArea && chartArea.bottom < height - 10) {
+          chart.chartArea.bottom = height - 10;
+        }
+      }
+    };
+
+    // Плагин для отображения значений на вертикальных столбцах
+    const datalabelsPlugin = {
+      id: 'datalabels',
+      afterDatasetsDraw: function(chart) {
+        const ctx = chart.ctx;
+        const isStacked = chart.options.scales?.x?.stacked || chart.options.scales?.y?.stacked;
+        
+        ctx.save();
+        ctx.font = '600 12px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        
+        // Для stacked bar показываем сумму всех datasets
+        if (isStacked && chart.data.datasets.length > 1) {
+          const firstMeta = chart.getDatasetMeta(0);
+          firstMeta.data.forEach((bar, index) => {
+            // Вычисляем сумму всех значений для этого индекса
+            let total = 0;
+            chart.data.datasets.forEach((dataset) => {
+              total += dataset.data[index] || 0;
+            });
+            
+            // Находим последний dataset для получения цвета
+            const lastMeta = chart.getDatasetMeta(chart.data.datasets.length - 1);
+            const lastBar = lastMeta.data[index];
+            const lastDataset = chart.data.datasets[chart.data.datasets.length - 1];
+            
+            const x = bar.x;
+            const y = lastBar.y - 5; // Отступ сверху от последнего сегмента
+            
+            // Используем цвет последнего бара
+            let color = '#0066ff';
+            if (typeof lastDataset.backgroundColor === 'function') {
+              color = lastDataset.backgroundColor({parsed: {y: lastDataset.data[index]}, dataIndex: index});
+            } else if (Array.isArray(lastDataset.backgroundColor)) {
+              color = lastDataset.backgroundColor[index] || lastDataset.backgroundColor[0] || '#0066ff';
+            } else {
+              color = lastDataset.backgroundColor || '#0066ff';
+            }
+            
+            ctx.fillStyle = color;
+            
+            // Форматируем значение
+            let text = total;
+            if (typeof total === 'number') {
+              // Если значение от 0 до 1, показываем как процент
+              if (total >= 0 && total <= 1 && total < 10) {
+                const percentage = total * 100;
+                if (percentage % 1 === 0) {
+                  text = percentage.toString() + '%';
+                } else {
+                  text = percentage.toFixed(1) + '%';
+                }
+              } else if (total >= 0 && total <= 100 && total % 1 === 0) {
+                // Если целое число от 0 до 100, это процент
+                text = total.toString() + '%';
+              } else if (total >= 0 && total <= 100 && total < 1000) {
+                // Если число с одним знаком после запятой от 0 до 100, это процент
+                text = total.toFixed(1) + '%';
+              } else if (total % 1 === 0) {
+                text = total.toString();
+              } else {
+                text = total.toFixed(1);
+              }
+            }
+            
+            ctx.fillText(text, x, y);
+          });
+        } else {
+          // Для обычных bar показываем значения первого dataset
+          const meta = chart.getDatasetMeta(0);
+          const dataset = chart.data.datasets[0];
+          
+          meta.data.forEach((bar, index) => {
+            const value = dataset.data[index];
+            const x = bar.x;
+            const y = bar.y - 5; // Отступ сверху от столбца
+            
+            // Используем цвет бара из dataset
+            let color = '#0066ff';
+            if (typeof dataset.backgroundColor === 'function') {
+              color = dataset.backgroundColor({parsed: {y: value}, dataIndex: index});
+            } else if (Array.isArray(dataset.backgroundColor)) {
+              color = dataset.backgroundColor[index] || dataset.backgroundColor[0] || '#0066ff';
+            } else {
+              color = dataset.backgroundColor || '#0066ff';
+            }
+            
+            ctx.fillStyle = color;
+            
+            // Форматируем значение
+            let text = value;
+            if (typeof value === 'number') {
+              // Если значение от 0 до 1, показываем как процент
+              if (value >= 0 && value <= 1 && value < 10) {
+                const percentage = value * 100;
+                if (percentage % 1 === 0) {
+                  text = percentage.toString() + '%';
+                } else {
+                  text = percentage.toFixed(1) + '%';
+                }
+              } else if (value >= 0 && value <= 100 && value % 1 === 0) {
+                // Если целое число от 0 до 100, это процент
+                text = value.toString() + '%';
+              } else if (value >= 0 && value <= 100 && value < 1000) {
+                // Если число с одним знаком после запятой от 0 до 100, это процент
+                text = value.toFixed(1) + '%';
+              } else if (value % 1 === 0) {
+                text = value.toString();
+              } else {
+                text = value.toFixed(1);
+              }
+            }
+            
+            ctx.fillText(text, x, y);
+          });
+        }
+        
+        ctx.restore();
+      }
+    };
+
+    // Плагин для отображения значений в днях (без процентов)
+    const daysLabelsPlugin = {
+      id: 'daysLabels',
+      afterDatasetsDraw: function(chart) {
+        const ctx = chart.ctx;
+        const meta = chart.getDatasetMeta(0);
+        const dataset = chart.data.datasets[0];
+        
+        ctx.save();
+        ctx.font = '600 12px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        
+        meta.data.forEach((bar, index) => {
+          const value = dataset.data[index];
+          const x = bar.x;
+          const y = bar.y - 5; // Отступ сверху от столбца
+          
+          // Используем цвет бара из dataset
+          let color = '#0066ff';
+          if (typeof dataset.backgroundColor === 'function') {
+            color = dataset.backgroundColor({parsed: {y: value}, dataIndex: index});
+          } else if (Array.isArray(dataset.backgroundColor)) {
+            color = dataset.backgroundColor[index] || dataset.backgroundColor[0] || '#0066ff';
+          } else {
+            color = dataset.backgroundColor || '#0066ff';
+          }
+          
+          ctx.fillStyle = color;
+          
+          // Форматируем значение как дни (без процентов)
+          let text = value;
+          if (typeof value === 'number') {
+            if (value % 1 === 0) {
+              text = value.toString() + ' дн.';
+            } else {
+              text = value.toFixed(1) + ' дн.';
+            }
+          }
+          
+          ctx.fillText(text, x, y);
+        });
+        
+        ctx.restore();
+      }
+    };
+
+    // Плагин для отображения значений на горизонтальных столбцах
+    const horizontalBarLabelsPlugin = {
+      id: 'horizontalBarLabels',
+      afterDatasetsDraw: function(chart) {
+        const ctx = chart.ctx;
+        const meta = chart.getDatasetMeta(0);
+        const dataset = chart.data.datasets[0];
+        
+        ctx.save();
+        ctx.font = '600 12px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        
+        meta.data.forEach((bar, index) => {
+          const value = dataset.data[index];
+          const x = bar.x + 8; // Отступ справа от бара
+          const y = bar.y;
+          
+          // Используем цвет бара из dataset
+          let color = '#0066ff';
+          if (typeof dataset.backgroundColor === 'function') {
+            color = dataset.backgroundColor({parsed: {x: value}, dataIndex: index});
+          } else if (Array.isArray(dataset.backgroundColor)) {
+            color = dataset.backgroundColor[index] || dataset.backgroundColor[0] || '#0066ff';
+          } else {
+            color = dataset.backgroundColor || '#0066ff';
+          }
+          
+          ctx.fillStyle = color;
+          
+          // Форматируем значение
+          let text = value;
+          if (typeof value === 'number') {
+            // Если значение от 0 до 1, показываем как процент
+            if (value >= 0 && value <= 1 && value < 10) {
+              const percentage = value * 100;
+              if (percentage % 1 === 0) {
+                text = percentage.toString() + '%';
+              } else {
+                text = percentage.toFixed(1) + '%';
+              }
+            } else if (value >= 0 && value <= 100 && value % 1 === 0) {
+              // Если целое число от 0 до 100, это процент
+              text = value.toString() + '%';
+            } else if (value >= 0 && value <= 100 && value < 1000) {
+              // Если число с одним знаком после запятой от 0 до 100, это процент
+              text = value.toFixed(1) + '%';
+            } else if (value % 1 === 0) {
+              text = value.toString();
+            } else {
+              text = value.toFixed(1);
+            }
+          }
+          
+          ctx.fillText(text, x, y);
+        });
+        
+        ctx.restore();
+      }
+    };
+
+    // Плагин для отображения значений на горизонтальных столбцах без процентов
+    const horizontalBarLabelsNoPercentPlugin = {
+      id: 'horizontalBarLabelsNoPercent',
+      afterDatasetsDraw: function(chart) {
+        const ctx = chart.ctx;
+        const meta = chart.getDatasetMeta(0);
+        const dataset = chart.data.datasets[0];
+        const isHorizontal = chart.options.indexAxis === 'y';
+        
+        ctx.save();
+        ctx.font = '600 12px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        
+        meta.data.forEach((bar, index) => {
+          const value = dataset.data[index];
+          const x = bar.x + 8; // Отступ справа от бара
+          const y = bar.y;
+          
+          // Используем цвет бара из dataset
+          let color = '#0066ff';
+          if (typeof dataset.backgroundColor === 'function') {
+            // Для горизонтальных баров (indexAxis: 'y') Chart.js использует parsed.x для значения данных
+            // Функция backgroundColor в конфигурации теперь использует parsed.x для горизонтальных баров
+            try {
+              // Используем parsed.x для горизонтальных баров
+              const result = dataset.backgroundColor({
+                parsed: { x: value },
+                dataIndex: index
+              });
+              if (result && typeof result === 'string' && result.length > 0) {
+                color = result;
+              }
+            } catch (e) {
+              color = '#0066ff';
+            }
+          } else if (Array.isArray(dataset.backgroundColor)) {
+            color = dataset.backgroundColor[index] || dataset.backgroundColor[0] || '#0066ff';
+          } else if (dataset.backgroundColor) {
+            color = dataset.backgroundColor;
+          }
+          
+          if (!color || typeof color !== 'string' || color.length === 0) {
+            color = '#0066ff';
+          }
+          
+          ctx.fillStyle = color;
+          
+          // Форматируем значение без процентов
+          let text = value;
+          if (typeof value === 'number') {
+            if (value % 1 === 0) {
+              text = value.toString();
+            } else {
+              text = value.toFixed(1);
+            }
+          }
+          
+          ctx.fillText(text, x, y);
+        });
+        
+        ctx.restore();
+      }
+    };
+
+    // Плагин для отображения процентных значений на doughnut чартах
+    const doughnutLabelsPlugin = {
+      id: 'doughnutLabels',
+      afterDatasetsDraw: function(chart) {
+        const ctx = chart.ctx;
+        const meta = chart.getDatasetMeta(0);
+        const dataset = chart.data.datasets[0];
+        
+        // Вычисляем сумму всех значений
+        const total = dataset.data.reduce((sum, value) => sum + value, 0);
+        
+        ctx.save();
+        ctx.font = '600 13px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        meta.data.forEach((arc, index) => {
+          const value = dataset.data[index];
+          const percentage = ((value / total) * 100).toFixed(0);
+          
+          // Пропускаем очень маленькие сегменты
+          if (percentage < 5) return;
+          
+          // Вычисляем центр сегмента
+          const startAngle = arc.startAngle;
+          const endAngle = arc.endAngle;
+          const angle = (startAngle + endAngle) / 2;
+          
+          // Получаем внутренний и внешний радиусы сегмента
+          const innerRadius = arc.innerRadius;
+          const outerRadius = arc.outerRadius;
+          // Размещаем текст на середине сегмента (между внутренним и внешним радиусом)
+          const radius = (innerRadius + outerRadius) / 2;
+          
+          const x = arc.x + Math.cos(angle) * radius;
+          const y = arc.y + Math.sin(angle) * radius;
+          
+          // Используем белый цвет для всех подписей с темной тенью для лучшей читаемости
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+          ctx.shadowBlur = 4;
+          ctx.shadowOffsetX = 1;
+          ctx.shadowOffsetY = 1;
+          ctx.fillStyle = '#ffffff'; // Белый цвет для всех подписей
+          
+          ctx.fillText(percentage + '%', x, y);
+        });
+        
+        ctx.restore();
+      }
+    };
+
+    // Плагин для отображения процентных значений учащихся на doughnut чартах
+    const doughnutStudentsLabelsPlugin = {
+      id: 'doughnutStudentsLabels',
+      afterDatasetsDraw: function(chart) {
+        const ctx = chart.ctx;
+        const meta = chart.getDatasetMeta(0);
+        const dataset = chart.data.datasets[0];
+        
+        // Вычисляем сумму всех значений
+        const total = dataset.data.reduce((sum, value) => sum + value, 0);
+        
+        ctx.save();
+        ctx.font = '600 13px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        meta.data.forEach((arc, index) => {
+          const value = dataset.data[index];
+          const percentage = ((value / total) * 100).toFixed(0);
+          
+          // Пропускаем очень маленькие сегменты
+          if (percentage < 5) return;
+          
+          // Вычисляем центр сегмента
+          const startAngle = arc.startAngle;
+          const endAngle = arc.endAngle;
+          const angle = (startAngle + endAngle) / 2;
+          
+          // Получаем внутренний и внешний радиусы сегмента
+          const innerRadius = arc.innerRadius;
+          const outerRadius = arc.outerRadius;
+          // Размещаем текст на середине сегмента (между внутренним и внешним радиусом)
+          const radius = (innerRadius + outerRadius) / 2;
+          
+          const x = arc.x + Math.cos(angle) * radius;
+          const y = arc.y + Math.sin(angle) * radius;
+          
+          // Используем белый цвет для всех подписей с темной тенью для лучшей читаемости
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+          ctx.shadowBlur = 4;
+          ctx.shadowOffsetX = 1;
+          ctx.shadowOffsetY = 1;
+          ctx.fillStyle = '#ffffff';
+          
+          ctx.fillText(percentage + '%', x, y);
+        });
+        
+        ctx.restore();
+      }
+    };
+
+    // Плагин для отображения значений на line chart
+    const lineChartLabelsPlugin = {
+      id: 'lineChartLabels',
+      afterDatasetsDraw: function(chart) {
+        const ctx = chart.ctx;
+        
+        // Обрабатываем все datasets
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+          const meta = chart.getDatasetMeta(datasetIndex);
+          
+          ctx.save();
+          ctx.font = '500 12px system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          
+          // Используем цвет линии из dataset
+          ctx.fillStyle = dataset.borderColor || '#0066ff';
+          
+          meta.data.forEach((point, index) => {
+            const value = dataset.data[index];
+            const x = point.x;
+            const y = point.y - 10; // Отступ сверху от точки
+            
+            // Форматируем значение
+            let text = value;
+            if (typeof value === 'number') {
+              // Если значение от 0 до 1, показываем как процент
+              if (value >= 0 && value <= 1 && value < 10) {
+                const percentage = value * 100;
+                if (percentage % 1 === 0) {
+                  text = percentage.toString() + '%';
+                } else {
+                  text = percentage.toFixed(1) + '%';
+                }
+              } else if (value >= 0 && value <= 100 && value % 1 === 0) {
+                // Если целое число от 0 до 100, это процент
+                text = value.toString() + '%';
+              } else if (value >= 0 && value <= 100 && value < 1000) {
+                // Если число с одним знаком после запятой от 0 до 100, это процент
+                text = value.toFixed(1) + '%';
+              } else if (value % 1 === 0) {
+                text = value.toString();
+              } else {
+                text = value.toFixed(1);
+              }
+            }
+            
+            ctx.fillText(text, x, y);
+          });
+          
+          ctx.restore();
+        });
+      }
+    };
+
+    // Плагин для отображения значений на line chart без процентов
+    const lineChartLabelsNoPercentPlugin = {
+      id: 'lineChartLabelsNoPercent',
+      afterDatasetsDraw: function(chart) {
+        const ctx = chart.ctx;
+        
+        // Обрабатываем все datasets
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+          const meta = chart.getDatasetMeta(datasetIndex);
+          
+          ctx.save();
+          ctx.font = '500 12px system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          
+          // Используем цвет линии из dataset
+          ctx.fillStyle = dataset.borderColor || '#0066ff';
+          
+          meta.data.forEach((point, index) => {
+            const value = dataset.data[index];
+            const x = point.x;
+            const y = point.y - 10; // Отступ сверху от точки
+            
+            // Форматируем значение без процентов
+            let text = value;
+            if (typeof value === 'number') {
+              if (value % 1 === 0) {
+                text = value.toString();
+              } else {
+                text = value.toFixed(1);
+              }
+            }
+            
+            ctx.fillText(text, x, y);
+          });
+          
+          ctx.restore();
+        });
+      }
+    };
+
+    // Техническая вооруженность сектора НИОКР
+    new Chart(document.getElementById('chart-equipment'), {
+      type: 'bar',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Техническая вооруженность',
+          data: [2.8, 3.1, 3.4, 3.6, 3.8],
+          backgroundColor: '#0066ff',
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 60
+        }]
+      },
+      plugins: [maximizeHeightPlugin, datalabelsPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            padding: 12,
+            titleFont: { size: 13, weight: '600' },
+            bodyFont: { size: 12 },
+            cornerRadius: 8,
+            displayColors: true,
+            borderColor: '#e2e8f0',
+            borderWidth: 1
+          }
+        },
+        layout: {
+          padding: {
+            top: 20,
+            right: 0,
+            bottom: 0,
+            left: 0
+          }
+        },
+        animation: {
+          duration: 800,
+          easing: 'easeOutQuart'
+        },
+        scales: {
+          x: {
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            },
+            ticks: {
+              font: { size: 11 },
+              color: '#64748b',
+              padding: 8
+            }
+          },
+          y: { 
+            display: false,
+            beginAtZero: true,
+            max: 5
+          }
+        }
+      }
+    });
+
+    // Доля оборудования в возрасте до 5 лет
+    new Chart(document.getElementById('chart-equipment-age'), {
+      type: 'doughnut',
+      data: {
+        labels: ['До 5 лет', '5-10 лет', 'Свыше 10 лет'],
+        datasets: [{
+          data: [42, 35, 23],
+          backgroundColor: ['#00c951', '#ffb96a', '#fb2c36'],
+          borderWidth: 0,
+          spacing: 2
+        }]
+      },
+      plugins: [doughnutLabelsPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+          legend: { 
+            position: 'bottom',
+            align: 'center',
+            labels: { 
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              boxWidth: 8,
+              boxHeight: 8,
+              font: {
+                size: 12,
+                weight: '500'
+              },
+              color: '#64748b'
+            }
+          },
+          tooltip: {
+            ...commonOptions.plugins.tooltip,
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                return label + ': ' + value + '%';
+              }
+            }
+          }
+        },
+        animation: {
+          animateRotate: true,
+          animateScale: false,
+          duration: 1000,
+          easing: 'easeOutQuart'
+        }
+      }
+    });
+
+    // Плагин для отображения значений на вертикальных барах
+    const verticalBarLabelsPlugin = {
+      id: 'verticalBarLabels',
+      afterDatasetsDraw: function(chart) {
+        const ctx = chart.ctx;
+        const meta = chart.getDatasetMeta(0);
+        
+        ctx.save();
+        ctx.font = '600 12px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        
+        meta.data.forEach((bar, index) => {
+          const value = chart.data.datasets[0].data[index];
+          const percentage = (value * 100).toFixed(0) + '%';
+          const x = bar.x;
+          const y = bar.y - 5; // Отступ сверху от бара
+          
+          // Цвет текста в зависимости от значения
+          if (value >= 0.75) {
+            ctx.fillStyle = '#00c951';
+          } else if (value >= 0.6) {
+            ctx.fillStyle = '#ffb96a';
+          } else {
+            ctx.fillStyle = '#fb2c36';
+          }
+          
+          ctx.fillText(percentage, x, y);
+        });
+        
+        ctx.restore();
+      }
+    };
+
+    // Коэффициент загрузки дорогостоящего оборудования
+    new Chart(document.getElementById('chart-equipment-load'), {
+      type: 'bar',
+      data: {
+        labels: [
+          'УНУ',
+          'ЦКП',
+          ['Испытательные', 'центры'],
+          ['Лаборатории']
+        ],
+        datasets: [{
+          label: 'Коэффициент загрузки',
+          data: [0.82, 0.78, 0.71, 0.65],
+          backgroundColor: function(context) {
+            const value = context.parsed.y;
+            if (value >= 0.75) return '#00c951';
+            if (value >= 0.6) return '#ffb96a';
+            return '#fb2c36';
+          },
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 60
+        }]
+      },
+      plugins: [datalabelsPlugin],
+      options: {
+        ...commonOptions,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          },
+          tooltip: {
+            ...commonOptions.plugins.tooltip,
+            callbacks: {
+              title: function(context) {
+                const label = context[0].label;
+                return Array.isArray(label) ? label.join(' ') : label;
+              },
+              label: function(context) {
+                const value = context.parsed.y;
+                return 'Коэффициент загрузки: ' + (value * 100).toFixed(0) + '%';
+              }
+            }
+          }
+        },
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            },
+            ticks: {
+              ...commonOptions.scales.x.ticks,
+              maxRotation: 0,
+              autoSkip: false
+            }
+          },
+          y: {
+            beginAtZero: true,
+            max: 1,
+            grid: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Объем бюджетного финансирования ЦКП, УНУ
+    const ctxFunding = document.getElementById('chart-funding').getContext('2d');
+    const gradientFunding = ctxFunding.createLinearGradient(0, 0, 0, 300);
+    gradientFunding.addColorStop(0, 'rgba(0, 102, 255, 0.25)');
+    gradientFunding.addColorStop(1, 'rgba(0, 102, 255, 0.05)');
+
+    new Chart(document.getElementById('chart-funding'), {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Финансирование, млрд руб.',
+          data: [12.5, 14.2, 15.8, 17.3, 18.9],
+          borderColor: '#0066ff',
+          backgroundColor: gradientFunding,
+          borderWidth: 3,
+          pointRadius: 6,
+          pointBackgroundColor: '#0066ff',
+          pointBorderWidth: 0,
+          tension: 0.5,
+          fill: true
+        }]
+      },
+      plugins: [lineChartLabelsNoPercentPlugin],
+      options: {
+        ...commonOptions,
+        clip: false,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            }
+          },
+          y: {
+            display: false,
+            grid: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Доля инфраструктурных объектов
+    new Chart(document.getElementById('chart-infrastructure'), {
+      type: 'bar',
+      data: {
+        labels: [
+          'ЦКП',
+          'УНУ',
+          'Лаборатории',
+          ['Испытательные', 'центры'],
+          'Другие'
+        ],
+        datasets: [{
+          label: 'Доля объектов',
+          data: [28, 24, 22, 15, 11],
+          backgroundColor: ['#0066ff', '#51a2ff', '#00c951', '#ffb96a', '#e2e8f0'],
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 60
+        }]
+      },
+      plugins: [datalabelsPlugin],
+      options: {
+        ...commonOptions,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            },
+            ticks: {
+              ...commonOptions.scales.x.ticks,
+              maxRotation: 0,
+              autoSkip: false
+            }
+          },
+          y: {
+            display: false,
+            grid: {
+              display: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Доля молодых исследователей
+    const ctxYoung = document.getElementById('chart-young-researchers').getContext('2d');
+    const gradientYoung = ctxYoung.createLinearGradient(0, 0, 0, 300);
+    gradientYoung.addColorStop(0, 'rgba(0, 201, 81, 0.25)');
+    gradientYoung.addColorStop(1, 'rgba(0, 201, 81, 0.05)');
+
+    new Chart(document.getElementById('chart-young-researchers'), {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Доля молодых исследователей, %',
+          data: [24, 26, 27, 28, 28],
+          borderColor: '#00c951',
+          backgroundColor: gradientYoung,
+          borderWidth: 3,
+          pointRadius: 6,
+          pointBackgroundColor: '#00c951',
+          pointBorderWidth: 0,
+          tension: 0.5,
+          fill: true
+        }]
+      },
+      plugins: [lineChartLabelsPlugin],
+      options: {
+        ...commonOptions,
+        clip: false,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            }
+          },
+          y: {
+            display: false,
+            grid: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Плагин для отображения подписей внутри каждого сегмента stacked bar chart
+    const stackedBarSegmentLabelsPlugin = {
+      id: 'stackedBarSegmentLabels',
+      afterDatasetsDraw: function(chart) {
+        const ctx = chart.ctx;
+        const chartArea = chart.chartArea;
+        
+        // Сначала отображаем суммарные значения наверху каждого столбца
+        if (chart.data.datasets.length > 1) {
+          const firstMeta = chart.getDatasetMeta(0);
+          const lastMeta = chart.getDatasetMeta(chart.data.datasets.length - 1);
+          
+          ctx.save();
+          ctx.font = '600 12px system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          
+          firstMeta.data.forEach((bar, index) => {
+            // Вычисляем сумму всех значений для этого индекса
+            let total = 0;
+            chart.data.datasets.forEach((dataset) => {
+              total += dataset.data[index] || 0;
+            });
+            
+            // Находим последний dataset для получения цвета
+            const lastBar = lastMeta.data[index];
+            const lastDataset = chart.data.datasets[chart.data.datasets.length - 1];
+            
+            const x = bar.x;
+            const y = lastBar.y - 5; // Отступ сверху от последнего сегмента
+            
+            // Используем цвет последнего бара
+            let color = '#0066ff';
+            if (typeof lastDataset.backgroundColor === 'function') {
+              color = lastDataset.backgroundColor({parsed: {y: lastDataset.data[index]}, dataIndex: index});
+            } else if (Array.isArray(lastDataset.backgroundColor)) {
+              color = lastDataset.backgroundColor[index] || lastDataset.backgroundColor[0] || '#0066ff';
+            } else {
+              color = lastDataset.backgroundColor || '#0066ff';
+            }
+            
+            ctx.fillStyle = color;
+            
+            // Форматируем значение как процент
+            let text = total;
+            if (typeof total === 'number') {
+              if (total % 1 === 0) {
+                text = total.toString() + '%';
+              } else {
+                text = total.toFixed(1) + '%';
+              }
+            }
+            
+            ctx.fillText(text, x, y);
+          });
+          
+          ctx.restore();
+        }
+        
+        // Затем отображаем подписи внутри каждого сегмента
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+          const meta = chart.getDatasetMeta(datasetIndex);
+          
+          ctx.save();
+          ctx.font = '600 11px system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          
+          meta.data.forEach((bar, index) => {
+            const value = dataset.data[index];
+            
+            // Пропускаем очень маленькие сегменты
+            if (value < 1 || bar.height < 10) return;
+            
+            // Используем цвет сегмента из dataset
+            let color = '#ffffff';
+            if (typeof dataset.backgroundColor === 'function') {
+              const bgColor = dataset.backgroundColor({parsed: {y: value}, dataIndex: index});
+              // Для темных цветов используем белый текст, для светлых - темный
+              if (bgColor === '#0066ff' || bgColor === '#51a2ff') {
+                color = '#ffffff';
+              } else {
+                color = '#1e293b';
+              }
+            } else if (Array.isArray(dataset.backgroundColor)) {
+              const bgColor = dataset.backgroundColor[index] || dataset.backgroundColor[0] || '#0066ff';
+              if (bgColor === '#0066ff' || bgColor === '#51a2ff') {
+                color = '#ffffff';
+              } else {
+                color = '#1e293b';
+              }
+            } else {
+              const bgColor = dataset.backgroundColor || '#0066ff';
+              if (bgColor === '#0066ff' || bgColor === '#51a2ff') {
+                color = '#ffffff';
+              } else {
+                color = '#1e293b';
+              }
+            }
+            
+            ctx.fillStyle = color;
+            
+            // Вычисляем центр сегмента
+            const x = bar.x;
+            // В Chart.js для вертикального bar chart:
+            // bar.y - это верхняя граница сегмента (меньшее значение Y = выше)
+            // bar.base - это нижняя граница сегмента (большее значение Y = ниже)
+            // Центр = (верхняя граница + нижняя граница) / 2
+            const top = bar.y;
+            const bottom = bar.base || (bar.y - bar.height);
+            const y = (top + bottom) / 2;
+            
+            // Проверяем, что подпись не выходит за границы
+            if (y < chartArea.top + 8 || y > chartArea.bottom - 8) return;
+            
+            // Форматируем значение как процент
+            let text = value;
+            if (typeof value === 'number') {
+              if (value % 1 === 0) {
+                text = value.toString() + '%';
+              } else {
+                text = value.toFixed(1) + '%';
+              }
+            }
+            
+            ctx.fillText(text, x, y);
+          });
+          
+          ctx.restore();
+        });
+      }
+    };
+
+    // Плагин для отображения подписей внутри сегментов stacked bar chart без суммарного процента
+    // Показывает проценты внутри сегментов и общее количество наверху столбца
+    const stackedBarSegmentLabelsOnlyPlugin = {
+      id: 'stackedBarSegmentLabelsOnly',
+      afterDatasetsDraw: function(chart) {
+        const ctx = chart.ctx;
+        const chartArea = chart.chartArea;
+        
+        // Сначала отображаем общее количество наверху каждого столбца
+        if (chart.data.datasets.length > 1) {
+          const firstMeta = chart.getDatasetMeta(0);
+          const lastMeta = chart.getDatasetMeta(chart.data.datasets.length - 1);
+          
+          ctx.save();
+          ctx.font = '600 12px system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          ctx.fillStyle = '#1e293b';
+          
+          firstMeta.data.forEach((bar, index) => {
+            // Вычисляем сумму всех значений для этого индекса
+            let total = 0;
+            chart.data.datasets.forEach((dataset) => {
+              total += dataset.data[index] || 0;
+            });
+            
+            const lastBar = lastMeta.data[index];
+            const x = bar.x;
+            const y = lastBar.y - 5; // Отступ сверху от последнего сегмента
+            
+            // Форматируем значение как количество в тысячах
+            let text = total.toFixed(0) + ' тыс.';
+            
+            ctx.fillText(text, x, y);
+          });
+          
+          ctx.restore();
+        }
+        
+        // Затем отображаем подписи внутри каждого сегмента
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+          const meta = chart.getDatasetMeta(datasetIndex);
+          
+          ctx.save();
+          ctx.font = '600 11px system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          
+          meta.data.forEach((bar, index) => {
+            const value = dataset.data[index];
+            
+            // Вычисляем общую сумму для этого столбца
+            let total = 0;
+            chart.data.datasets.forEach((ds) => {
+              total += ds.data[index] || 0;
+            });
+            
+            // Вычисляем процент от общего количества
+            const percentage = total > 0 ? (value / total) * 100 : 0;
+            
+            // Пропускаем очень маленькие сегменты
+            if (percentage < 1 || bar.height < 10) return;
+            
+            // Используем цвет сегмента из dataset
+            let color = '#ffffff';
+            if (typeof dataset.backgroundColor === 'function') {
+              const bgColor = dataset.backgroundColor({parsed: {y: value}, dataIndex: index});
+              // Для темных цветов используем белый текст, для светлых - темный
+              if (bgColor === '#0066ff' || bgColor === '#51a2ff') {
+                color = '#ffffff';
+              } else {
+                color = '#1e293b';
+              }
+            } else if (Array.isArray(dataset.backgroundColor)) {
+              const bgColor = dataset.backgroundColor[index] || dataset.backgroundColor[0] || '#0066ff';
+              if (bgColor === '#0066ff' || bgColor === '#51a2ff') {
+                color = '#ffffff';
+              } else {
+                color = '#1e293b';
+              }
+            } else {
+              const bgColor = dataset.backgroundColor || '#0066ff';
+              if (bgColor === '#0066ff' || bgColor === '#51a2ff') {
+                color = '#ffffff';
+              } else {
+                color = '#1e293b';
+              }
+            }
+            
+            ctx.fillStyle = color;
+            
+            // Вычисляем центр сегмента
+            const x = bar.x;
+            // В Chart.js для вертикального bar chart:
+            // bar.y - это верхняя граница сегмента (меньшее значение Y = выше)
+            // bar.base - это нижняя граница сегмента (большее значение Y = ниже)
+            // Центр = (верхняя граница + нижняя граница) / 2
+            const top = bar.y;
+            const bottom = bar.base || (bar.y - bar.height);
+            const y = (top + bottom) / 2;
+            
+            // Проверяем, что подпись не выходит за границы
+            if (y < chartArea.top + 8 || y > chartArea.bottom - 8) return;
+            
+            // Форматируем значение как процент
+            let text = percentage;
+            if (typeof percentage === 'number') {
+              if (percentage % 1 === 0) {
+                text = percentage.toString() + '%';
+              } else {
+                text = percentage.toFixed(1) + '%';
+              }
+            }
+            
+            ctx.fillText(text, x, y);
+          });
+          
+          ctx.restore();
+        });
+      }
+    };
+
+    // Возрастная структура исследователей
+    // Нормализуем данные так, чтобы сумма всех значений была 100%
+    const menData = [15, 22, 18, 12, 8];
+    const womenData = [13, 20, 16, 10, 6];
+    const totalSum = menData.reduce((sum, val, idx) => sum + val + womenData[idx], 0); // 140
+    const normalizedMenData = menData.map(val => Math.round((val / totalSum) * 100 * 10) / 10);
+    const normalizedWomenData = womenData.map(val => Math.round((val / totalSum) * 100 * 10) / 10);
+    
+    new Chart(document.getElementById('chart-age-structure'), {
+      type: 'bar',
+      data: {
+        labels: ['До 30', '30-40', '40-50', '50-60', '60+'],
+        datasets: [{
+          label: 'Мужчины',
+          data: normalizedMenData,
+          backgroundColor: '#0066ff',
+          borderRadius: {
+            topLeft: 0,
+            topRight: 0,
+            bottomLeft: 6,
+            bottomRight: 6
+          },
+          borderSkipped: false,
+          maxBarThickness: 60
+        }, {
+          label: 'Женщины',
+          data: normalizedWomenData,
+          backgroundColor: '#51a2ff',
+          borderRadius: {
+            topLeft: 6,
+            topRight: 6,
+            bottomLeft: 0,
+            bottomRight: 0
+          },
+          borderSkipped: false,
+          maxBarThickness: 60
+        }]
+      },
+      plugins: [stackedBarSegmentLabelsPlugin],
+      options: {
+        ...commonOptions,
+        layout: {
+          padding: {
+            top: 0
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            stacked: true,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            },
+            ticks: {
+              ...commonOptions.scales.x.ticks,
+              maxRotation: 0,
+              autoSkip: false
+            }
+          },
+          y: {
+            display: false,
+            stacked: true,
+            beginAtZero: true,
+            max: 35,
+            grid: {
+              display: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Плагин для отображения значений как долей с двумя знаками после запятой
+    const horizontalBarLabelsDecimalPlugin = {
+      id: 'horizontalBarLabelsDecimal',
+      afterDatasetsDraw: function(chart) {
+        const ctx = chart.ctx;
+        const meta = chart.getDatasetMeta(0);
+        const dataset = chart.data.datasets[0];
+        
+        ctx.save();
+        ctx.font = '600 12px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        
+        meta.data.forEach((bar, index) => {
+          const value = dataset.data[index];
+          const x = bar.x + 8; // Отступ справа от бара
+          const y = bar.y;
+          
+          // Используем цвет бара из dataset
+          let color = '#0066ff';
+          if (typeof dataset.backgroundColor === 'function') {
+            color = dataset.backgroundColor({parsed: {x: value}, dataIndex: index});
+          } else if (Array.isArray(dataset.backgroundColor)) {
+            color = dataset.backgroundColor[index] || dataset.backgroundColor[0] || '#0066ff';
+          } else {
+            color = dataset.backgroundColor || '#0066ff';
+          }
+          
+          ctx.fillStyle = color;
+          
+          // Форматируем значение как долю с двумя знаками после запятой
+          let text = value.toFixed(2);
+          
+          ctx.fillText(text, x, y);
+        });
+        
+        ctx.restore();
+      }
+    };
+
+    // Плагин для отображения референсной линии на уровне 1.0 и выделения критической зоны
+    const referenceLinePlugin = {
+      id: 'referenceLine',
+      beforeDatasetsDraw: function(chart) {
+        const ctx = chart.ctx;
+        const chartArea = chart.chartArea;
+        const yScale = chart.scales.y;
+        
+        // Вычисляем позицию линии на уровне 1.0
+        const referenceValue = 1.0;
+        const yPos = yScale.getPixelForValue(referenceValue);
+        const bottomPos = chartArea.bottom;
+        
+        ctx.save();
+        
+        // Закрашиваем критическую зону под линией (область ниже 1.0)
+        ctx.fillStyle = 'rgba(251, 44, 54, 0.08)'; // Полупрозрачный красный
+        ctx.fillRect(chartArea.left, yPos, chartArea.right - chartArea.left, bottomPos - yPos);
+        
+        ctx.restore();
+      },
+      afterDatasetsDraw: function(chart) {
+        const ctx = chart.ctx;
+        const chartArea = chart.chartArea;
+        const yScale = chart.scales.y;
+        
+        // Вычисляем позицию линии на уровне 1.0
+        const referenceValue = 1.0;
+        const yPos = yScale.getPixelForValue(referenceValue);
+        
+        ctx.save();
+        
+        // Рисуем референсную линию
+        ctx.strokeStyle = '#fb2c36';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(chartArea.left, yPos);
+        ctx.lineTo(chartArea.right, yPos);
+        ctx.stroke();
+        
+        // Добавляем подпись с отступом от линии (над линией)
+        ctx.fillStyle = '#fb2c36';
+        ctx.font = '500 11px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        // Размещаем подпись слева с небольшим отступом вверх от линии
+        const firstLabelY = yPos - 12;
+        ctx.fillText('1.0 (критический уровень)', chartArea.left + 5, firstLabelY);
+        
+        // Добавляем подпись "критическая зона" под линией
+        const secondLabelY = yPos + 12;
+        const text = '↓ критическая зона';
+        
+        // Добавляем текст "критическая зона" без фона
+        ctx.font = '500 10px system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#fb2c36';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, chartArea.left + 5, secondLabelY);
+        
+        ctx.restore();
+      }
+    };
+
+    // Плагин для отображения значений внутри вертикальных баров
+    const verticalBarLabelsInsidePlugin = {
+      id: 'verticalBarLabelsInside',
+      afterDatasetsDraw: function(chart) {
+        const ctx = chart.ctx;
+        const meta = chart.getDatasetMeta(0);
+        const dataset = chart.data.datasets[0];
+        
+        ctx.save();
+        ctx.font = '600 12px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        meta.data.forEach((bar, index) => {
+          const value = dataset.data[index];
+          
+          // Пропускаем очень маленькие бары
+          if (bar.height < 15) return;
+          
+          const x = bar.x;
+          // В Chart.js для вертикального bar chart:
+          // bar.y - это верхняя граница бара (меньшее значение Y = выше)
+          // bar.base - это нижняя граница бара (большее значение Y = ниже)
+          // Центр бара = (верхняя граница + нижняя граница) / 2
+          const top = bar.y;
+          const bottom = bar.base || (bar.y - bar.height);
+          const y = (top + bottom) / 2;
+          
+          // Используем белый цвет для всех подписей (контрастный для красных и зеленых баров)
+          ctx.fillStyle = '#ffffff';
+          
+          // Добавляем тень для лучшей читаемости
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+          ctx.shadowBlur = 2;
+          ctx.shadowOffsetX = 1;
+          ctx.shadowOffsetY = 1;
+          
+          // Форматируем значение как долю с двумя знаками после запятой
+          let text = value.toFixed(2);
+          
+          ctx.fillText(text, x, y);
+          
+          // Сбрасываем тень
+          ctx.shadowColor = 'transparent';
+          ctx.shadowBlur = 0;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
+        });
+        
+        ctx.restore();
+      }
+    };
+
+    // Коэффициент восполнения кадров
+    new Chart(document.getElementById('chart-staff-replenishment'), {
+      type: 'bar',
+      data: {
+        labels: ['Физика', 'Химия', 'Биология', 'Математика', 'Информатика'],
+        datasets: [{
+          label: 'Коэффициент восполнения',
+          data: [0.85, 0.78, 0.92, 0.88, 0.95],
+          backgroundColor: function(context) {
+            const value = context.parsed.y;
+            // Красный для значений ниже 1 (убывание), зеленый для >= 1 (рост)
+            return value < 1 ? '#fb2c36' : '#00c951';
+          },
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 60
+        }]
+      },
+      plugins: [verticalBarLabelsInsidePlugin, referenceLinePlugin],
+      options: {
+        ...commonOptions,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        layout: {
+          padding: {
+            top: 20
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            }
+          },
+          y: {
+            display: false,
+            beginAtZero: true,
+            max: 1.2,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Численность исследователей по областям
+    new Chart(document.getElementById('chart-researchers-by-field'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Физика', 'Химия', 'Биология', 'Математика', 'Информатика', 'Другие'],
+        datasets: [{
+          data: [28, 18, 22, 12, 15, 5],
+          backgroundColor: ['#0066ff', '#51a2ff', '#00c951', '#ffb96a', '#ff9900', '#e2e8f0'],
+          borderWidth: 0
+        }]
+      },
+      plugins: [doughnutLabelsPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+          legend: { 
+            position: 'bottom',
+            align: 'center',
+            labels: { 
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              boxWidth: 8,
+              boxHeight: 8,
+              font: {
+                size: 12,
+                weight: '500'
+              },
+              color: '#64748b'
+            }
+          },
+          tooltip: commonOptions.plugins.tooltip
+        }
+      }
+    });
+
+    // Доля сотрудников с учеными степенями
+    // Данные в абсолютных значениях (количество сотрудников в тысячах)
+    const doctorsData = [10, 11, 12, 13, 14]; // тысячи
+    const candidatesData = [40, 42, 44, 45, 46]; // тысячи
+    const noDegreeData = [50, 47, 44, 42, 40]; // тысячи
+    
+    // Вычисляем максимальное общее количество для масштабирования
+    const totals = doctorsData.map((val, idx) => val + candidatesData[idx] + noDegreeData[idx]);
+    const maxTotal = Math.max(...totals);
+    
+    new Chart(document.getElementById('chart-degrees'), {
+      type: 'bar',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Без степени',
+          data: noDegreeData,
+          backgroundColor: '#e2e8f0',
+          borderRadius: {
+            topLeft: 0,
+            topRight: 0,
+            bottomLeft: 6,
+            bottomRight: 6
+          },
+          borderSkipped: false,
+          maxBarThickness: 60
+        }, {
+          label: 'Кандидаты наук',
+          data: candidatesData,
+          backgroundColor: '#51a2ff',
+          borderRadius: 0,
+          borderSkipped: false,
+          maxBarThickness: 60
+        }, {
+          label: 'Доктора наук',
+          data: doctorsData,
+          backgroundColor: '#0066ff',
+          borderRadius: {
+            topLeft: 6,
+            topRight: 6,
+            bottomLeft: 0,
+            bottomRight: 0
+          },
+          borderSkipped: false,
+          maxBarThickness: 60
+        }]
+      },
+      plugins: [stackedBarSegmentLabelsOnlyPlugin],
+      options: {
+        ...commonOptions,
+        layout: {
+          padding: {
+            top: 0
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            stacked: true,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            },
+            ticks: {
+              ...commonOptions.scales.x.ticks,
+              maxRotation: 0,
+              autoSkip: false
+            }
+          },
+          y: {
+            display: false,
+            stacked: true,
+            beginAtZero: true,
+            max: Math.ceil(maxTotal * 1.1),
+            grid: {
+              display: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Тепловая карта дефицита кадров
+    // Функция для вычисления цвета на основе значения (плавный градиент)
+    function getHeatmapColor(value, maxValue) {
+      // Нормализуем значение от 0 до 1
+      const normalized = Math.min(value / maxValue, 1);
+      
+      // Определяем цвета для градиента: зеленый -> желтый -> красный
+      // Зеленый (0%): rgb(0, 201, 81) = #00c951
+      // Желтый (50%): rgb(255, 185, 106) = #ffb96a
+      // Красный (100%): rgb(251, 44, 54) = #fb2c36
+      
+      let r, g, b;
+      
+      if (normalized <= 0.5) {
+        // От зеленого к желтому (0 -> 0.5)
+        const t = normalized * 2; // 0 -> 1
+        r = Math.round(0 + t * 255); // 0 -> 255
+        g = Math.round(201 + t * (185 - 201)); // 201 -> 185
+        b = Math.round(81 + t * (106 - 81)); // 81 -> 106
+      } else {
+        // От желтого к красному (0.5 -> 1)
+        const t = (normalized - 0.5) * 2; // 0 -> 1
+        r = Math.round(255 + t * (251 - 255)); // 255 -> 251
+        g = Math.round(185 + t * (44 - 185)); // 185 -> 44
+        b = Math.round(106 + t * (54 - 106)); // 106 -> 54
+      }
+      
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+    
+    // Плагин для отображения тепловой карты в виде цветных карточек
+    const heatmapCardsPlugin = {
+      id: 'heatmapCards',
+      afterDatasetsDraw: function(chart) {
+        const ctx = chart.ctx;
+        const chartArea = chart.chartArea;
+        const labels = chart.data.labels;
+        const data = chart.data.datasets[0].data;
+        const maxValue = Math.max(...data, 30);
+        
+        // Создаем массив элементов с индексами и сортируем по убыванию значения
+        const items = labels.map((label, index) => ({
+          label,
+          value: data[index],
+          index
+        })).sort((a, b) => b.value - a.value); // Сортируем по убыванию
+        
+        const cardsPerRow = 3;
+        const numRows = Math.ceil(items.length / cardsPerRow);
+        const availableWidth = chartArea.right - chartArea.left;
+        const availableHeight = chartArea.bottom - chartArea.top;
+        const cardWidth = (availableWidth / cardsPerRow) * 0.85;
+        const cardHeight = Math.min(cardWidth * 0.9, availableHeight / numRows * 0.7);
+        const horizontalSpacing = (availableWidth - cardWidth * cardsPerRow) / (cardsPerRow + 1);
+        const verticalSpacing = (availableHeight - cardHeight * numRows) / (numRows + 1);
+        
+        ctx.save();
+        
+        items.forEach((item, index) => {
+          const value = item.value;
+          const color = getHeatmapColor(value, maxValue);
+          
+          // Вычисляем позицию карточки (сетка 2x3)
+          const row = Math.floor(index / cardsPerRow);
+          const col = index % cardsPerRow;
+          const x = chartArea.left + horizontalSpacing + col * (cardWidth + horizontalSpacing);
+          const y = chartArea.top + verticalSpacing + row * (cardHeight + verticalSpacing);
+          const actualCardWidth = cardWidth;
+          
+          // Рисуем карточку с закругленными углами и тенью
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
+          ctx.shadowBlur = 6;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 3;
+          
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          const radius = 8;
+          ctx.moveTo(x + radius, y);
+          ctx.lineTo(x + actualCardWidth - radius, y);
+          ctx.quadraticCurveTo(x + actualCardWidth, y, x + actualCardWidth, y + radius);
+          ctx.lineTo(x + actualCardWidth, y + cardHeight - radius);
+          ctx.quadraticCurveTo(x + actualCardWidth, y + cardHeight, x + actualCardWidth - radius, y + cardHeight);
+          ctx.lineTo(x + radius, y + cardHeight);
+          ctx.quadraticCurveTo(x, y + cardHeight, x, y + cardHeight - radius);
+          ctx.lineTo(x, y + radius);
+          ctx.quadraticCurveTo(x, y, x + radius, y);
+          ctx.closePath();
+          ctx.fill();
+          
+          // Сбрасываем тень
+          ctx.shadowColor = 'transparent';
+          ctx.shadowBlur = 0;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
+          
+          // Добавляем текст с названием области
+          ctx.fillStyle = '#ffffff';
+          ctx.font = '600 12px system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(item.label, x + actualCardWidth / 2, y + cardHeight / 2 - 8);
+          
+          // Добавляем значение
+          ctx.fillStyle = '#ffffff';
+          ctx.font = '700 16px system-ui, -apple-system, sans-serif';
+          ctx.fillText(value + '%', x + actualCardWidth / 2, y + cardHeight / 2 + 12);
+        });
+        
+        ctx.restore();
+      }
+    };
+    
+    const deficitData = [15, 22, 12, 8, 5, 18];
+    const labels = ['Физика', 'Химия', 'Биология', 'Математика', 'Информатика', 'Материаловедение'];
+    
+    // Создаем чарт с визуализацией через плагин (бары скрыты)
+    new Chart(document.getElementById('chart-staff-deficit'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Дефицит кадров, %',
+          data: deficitData,
+          backgroundColor: 'transparent',
+          borderWidth: 0
+        }]
+      },
+      plugins: [heatmapCardsPlugin],
+      options: {
+        ...commonOptions,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          },
+          tooltip: {
+            enabled: false
+          }
+        },
+        scales: {
+          x: {
+            display: false
+          },
+          y: {
+            display: false
+          }
+        }
+      }
+    });
+
+    // Трудоустройство в химических технологиях
+    new Chart(document.getElementById('chart-employment-chem'), {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Доля трудоустроенных, %',
+          data: [68, 72, 75, 78, 82],
+          borderColor: '#0066ff',
+          backgroundColor: 'rgba(0, 102, 255, 0.1)',
+          borderWidth: 3,
+          pointRadius: 6,
+          pointBackgroundColor: '#0066ff',
+          pointBorderWidth: 0,
+          tension: 0.5,
+          fill: true
+        }]
+      },
+      plugins: [lineChartLabelsPlugin],
+      options: {
+        ...commonOptions,
+        clip: false,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            }
+          },
+          y: {
+            display: false,
+            grid: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Дефицит кадров в химических технологиях
+    new Chart(document.getElementById('chart-deficit-chem'), {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Дефицит кадров, %',
+          data: [28, 24, 20, 18, 15],
+          borderColor: '#fb2c36',
+          backgroundColor: 'rgba(251, 44, 54, 0.1)',
+          borderWidth: 3,
+          pointRadius: 6,
+          pointBackgroundColor: '#fb2c36',
+          pointBorderWidth: 0,
+          tension: 0.5,
+          fill: true
+        }]
+      },
+      plugins: [lineChartLabelsPlugin],
+      options: {
+        ...commonOptions,
+        clip: false,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            }
+          },
+          y: {
+            display: false,
+            grid: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Трудоустройство в производстве средств производства
+    new Chart(document.getElementById('chart-employment-manufacturing'), {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Доля трудоустроенных, %',
+          data: [65, 70, 74, 78, 81],
+          borderColor: '#0066ff',
+          backgroundColor: 'rgba(0, 102, 255, 0.1)',
+          borderWidth: 3,
+          pointRadius: 6,
+          pointBackgroundColor: '#0066ff',
+          pointBorderWidth: 0,
+          tension: 0.5,
+          fill: true
+        }]
+      },
+      plugins: [lineChartLabelsPlugin],
+      options: {
+        ...commonOptions,
+        clip: false,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            }
+          },
+          y: {
+            display: false,
+            grid: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Дефицит кадров в производстве средств производства
+    new Chart(document.getElementById('chart-deficit-manufacturing'), {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Дефицит кадров, %',
+          data: [32, 28, 25, 22, 19],
+          borderColor: '#fb2c36',
+          backgroundColor: 'rgba(251, 44, 54, 0.1)',
+          borderWidth: 3,
+          pointRadius: 6,
+          pointBackgroundColor: '#fb2c36',
+          pointBorderWidth: 0,
+          tension: 0.5,
+          fill: true
+        }]
+      },
+      plugins: [lineChartLabelsPlugin],
+      options: {
+        ...commonOptions,
+        clip: false,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            }
+          },
+          y: {
+            display: false,
+            grid: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Количество специалистов в производстве средств производства
+    new Chart(document.getElementById('chart-manufacturing-specialists'), {
+      type: 'bar',
+      data: {
+        labels: ['2023', '2024', '2025'],
+        datasets: [{
+          label: 'Специалисты',
+          data: [1950, 2650, 3450],
+          backgroundColor: '#0066ff',
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 60
+        }]
+      },
+      plugins: [datalabelsPlugin],
+      options: {
+        ...commonOptions,
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            },
+            ticks: {
+              ...commonOptions.scales.x.ticks,
+              maxRotation: 0,
+              autoSkip: false
+            }
+          },
+          y: {
+            display: false,
+            beginAtZero: true,
+            grid: {
+              display: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Количество учащихся в производстве средств производства
+    new Chart(document.getElementById('chart-manufacturing-organizations'), {
+      type: 'doughnut',
+      data: {
+        labels: ['ВУЗы', 'СПО', 'Доп. образование'],
+        datasets: [{
+          data: [11200, 4200, 2200], // Количество учащихся в тысячах
+          backgroundColor: ['#0066ff', '#51a2ff', '#00c951'],
+          borderWidth: 0
+        }]
+      },
+      plugins: [doughnutStudentsLabelsPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+          legend: { 
+            position: 'bottom',
+            align: 'center',
+            labels: { 
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              boxWidth: 8,
+              boxHeight: 8,
+              font: {
+                size: 12,
+                weight: '500'
+              },
+              color: '#64748b'
+            }
+          },
+          tooltip: {
+            ...commonOptions.plugins.tooltip,
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                const percentage = ((value / total) * 100).toFixed(0);
+                const valueText = value >= 1000 ? (value / 1000).toFixed(1) + ' тыс.' : value;
+                return label + ': ' + valueText + ' чел. (' + percentage + '%)';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Программы в цифровом реестре производства средств производства
+    new Chart(document.getElementById('chart-manufacturing-programs'), {
+      type: 'bar',
+      data: {
+        labels: ['2023', '2024', '2025'],
+        datasets: [{
+          label: 'Программы',
+          data: [110, 175, 245],
+          backgroundColor: '#00c951',
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 60
+        }]
+      },
+      plugins: [datalabelsPlugin],
+      options: {
+        ...commonOptions,
+        layout: {
+          padding: {
+            top: 25
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            },
+            ticks: {
+              ...commonOptions.scales.x.ticks,
+              maxRotation: 0,
+              autoSkip: false
+            }
+          },
+          y: {
+            display: false,
+            beginAtZero: true,
+            grid: {
+              display: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Образовательные организации производства средств производства
+    new Chart(document.getElementById('chart-manufacturing-organizations-count'), {
+      type: 'doughnut',
+      data: {
+        labels: ['ВУЗы', 'СПО', 'Доп. образование'],
+        datasets: [{
+          data: [58, 42, 22], // Количество организаций
+          backgroundColor: ['#0066ff', '#51a2ff', '#00c951'],
+          borderWidth: 0
+        }]
+      },
+      plugins: [doughnutLabelsPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+          legend: { 
+            position: 'bottom',
+            align: 'center',
+            labels: { 
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              boxWidth: 8,
+              boxHeight: 8,
+              font: {
+                size: 12,
+                weight: '500'
+              },
+              color: '#64748b'
+            }
+          },
+          tooltip: {
+            ...commonOptions.plugins.tooltip,
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                return label + ': ' + value + ' орг.';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Трудоустройство в авиа- и судостроении
+    new Chart(document.getElementById('chart-employment-aviation'), {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Доля трудоустроенных, %',
+          data: [72, 75, 78, 80, 83],
+          borderColor: '#0066ff',
+          backgroundColor: 'rgba(0, 102, 255, 0.1)',
+          borderWidth: 3,
+          pointRadius: 6,
+          pointBackgroundColor: '#0066ff',
+          pointBorderWidth: 0,
+          tension: 0.5,
+          fill: true
+        }]
+      },
+      plugins: [lineChartLabelsPlugin],
+      options: {
+        ...commonOptions,
+        clip: false,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            }
+          },
+          y: {
+            display: false,
+            grid: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Дефицит кадров в авиа- и судостроении
+    new Chart(document.getElementById('chart-deficit-aviation'), {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Дефицит кадров, %',
+          data: [35, 30, 26, 23, 20],
+          borderColor: '#fb2c36',
+          backgroundColor: 'rgba(251, 44, 54, 0.1)',
+          borderWidth: 3,
+          pointRadius: 6,
+          pointBackgroundColor: '#fb2c36',
+          pointBorderWidth: 0,
+          tension: 0.5,
+          fill: true
+        }]
+      },
+      plugins: [lineChartLabelsPlugin],
+      options: {
+        ...commonOptions,
+        clip: false,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            }
+          },
+          y: {
+            display: false,
+            grid: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Количество специалистов в авиа- и судостроении
+    new Chart(document.getElementById('chart-aviation-specialists'), {
+      type: 'bar',
+      data: {
+        labels: ['2023', '2024', '2025'],
+        datasets: [{
+          label: 'Специалисты',
+          data: [1650, 2250, 2950],
+          backgroundColor: '#0066ff',
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 60
+        }]
+      },
+      plugins: [datalabelsPlugin],
+      options: {
+        ...commonOptions,
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            },
+            ticks: {
+              ...commonOptions.scales.x.ticks,
+              maxRotation: 0,
+              autoSkip: false
+            }
+          },
+          y: {
+            display: false,
+            beginAtZero: true,
+            grid: {
+              display: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Количество учащихся в авиа- и судостроении
+    new Chart(document.getElementById('chart-aviation-organizations'), {
+      type: 'doughnut',
+      data: {
+        labels: ['ВУЗы', 'СПО', 'Доп. образование'],
+        datasets: [{
+          data: [9800, 3600, 1900], // Количество учащихся в тысячах
+          backgroundColor: ['#0066ff', '#51a2ff', '#00c951'],
+          borderWidth: 0
+        }]
+      },
+      plugins: [doughnutStudentsLabelsPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+          legend: { 
+            position: 'bottom',
+            align: 'center',
+            labels: { 
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              boxWidth: 8,
+              boxHeight: 8,
+              font: {
+                size: 12,
+                weight: '500'
+              },
+              color: '#64748b'
+            }
+          },
+          tooltip: {
+            ...commonOptions.plugins.tooltip,
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                const percentage = ((value / total) * 100).toFixed(0);
+                const valueText = value >= 1000 ? (value / 1000).toFixed(1) + ' тыс.' : value;
+                return label + ': ' + valueText + ' чел. (' + percentage + '%)';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Программы в цифровом реестре авиа- и судостроения
+    new Chart(document.getElementById('chart-aviation-programs'), {
+      type: 'bar',
+      data: {
+        labels: ['2023', '2024', '2025'],
+        datasets: [{
+          label: 'Программы',
+          data: [95, 158, 225],
+          backgroundColor: '#00c951',
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 60
+        }]
+      },
+      plugins: [datalabelsPlugin],
+      options: {
+        ...commonOptions,
+        layout: {
+          padding: {
+            top: 25
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            },
+            ticks: {
+              ...commonOptions.scales.x.ticks,
+              maxRotation: 0,
+              autoSkip: false
+            }
+          },
+          y: {
+            display: false,
+            beginAtZero: true,
+            grid: {
+              display: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Образовательные организации авиа- и судостроения
+    new Chart(document.getElementById('chart-aviation-organizations-count'), {
+      type: 'doughnut',
+      data: {
+        labels: ['ВУЗы', 'СПО', 'Доп. образование'],
+        datasets: [{
+          data: [52, 38, 20], // Количество организаций
+          backgroundColor: ['#0066ff', '#51a2ff', '#00c951'],
+          borderWidth: 0
+        }]
+      },
+      plugins: [doughnutLabelsPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+          legend: { 
+            position: 'bottom',
+            align: 'center',
+            labels: { 
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              boxWidth: 8,
+              boxHeight: 8,
+              font: {
+                size: 12,
+                weight: '500'
+              },
+              color: '#64748b'
+            }
+          },
+          tooltip: {
+            ...commonOptions.plugins.tooltip,
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                return label + ': ' + value + ' орг.';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Трудоустройство в агропроме и БАС
+    new Chart(document.getElementById('chart-employment-bas'), {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Доля трудоустроенных, %',
+          data: [70, 73, 76, 79, 82],
+          borderColor: '#0066ff',
+          backgroundColor: 'rgba(0, 102, 255, 0.1)',
+          borderWidth: 3,
+          pointRadius: 6,
+          pointBackgroundColor: '#0066ff',
+          pointBorderWidth: 0,
+          tension: 0.5,
+          fill: true
+        }]
+      },
+      plugins: [lineChartLabelsPlugin],
+      options: {
+        ...commonOptions,
+        clip: false,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            }
+          },
+          y: {
+            display: false,
+            grid: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Дефицит кадров в агропроме и БАС
+    new Chart(document.getElementById('chart-deficit-bas'), {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Дефицит кадров, %',
+          data: [30, 26, 22, 19, 16],
+          borderColor: '#fb2c36',
+          backgroundColor: 'rgba(251, 44, 54, 0.1)',
+          borderWidth: 3,
+          pointRadius: 6,
+          pointBackgroundColor: '#fb2c36',
+          pointBorderWidth: 0,
+          tension: 0.5,
+          fill: true
+        }]
+      },
+      plugins: [lineChartLabelsPlugin],
+      options: {
+        ...commonOptions,
+        clip: false,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            }
+          },
+          y: {
+            display: false,
+            grid: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Количество специалистов в сфере БАС
+    new Chart(document.getElementById('chart-bas-specialists'), {
+      type: 'bar',
+      data: {
+        labels: ['2023', '2024', '2025'],
+        datasets: [{
+          label: 'Специалисты',
+          data: [1250, 1850, 2450],
+          backgroundColor: '#0066ff',
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 60
+        }]
+      },
+      plugins: [datalabelsPlugin],
+      options: {
+        ...commonOptions,
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            },
+            ticks: {
+              ...commonOptions.scales.x.ticks,
+              maxRotation: 0,
+              autoSkip: false
+            }
+          },
+          y: {
+            display: false,
+            beginAtZero: true,
+            grid: {
+              display: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Количество учащихся в сфере БАС
+    new Chart(document.getElementById('chart-bas-organizations'), {
+      type: 'doughnut',
+      data: {
+        labels: ['ВУЗы', 'СПО', 'Доп. образование'],
+        datasets: [{
+          data: [8500, 3200, 1800], // Количество учащихся в тысячах
+          backgroundColor: ['#0066ff', '#51a2ff', '#00c951'],
+          borderWidth: 0
+        }]
+      },
+      plugins: [doughnutStudentsLabelsPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+          legend: { 
+            position: 'bottom',
+            align: 'center',
+            labels: { 
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              boxWidth: 8,
+              boxHeight: 8,
+              font: {
+                size: 12,
+                weight: '500'
+              },
+              color: '#64748b'
+            }
+          },
+          tooltip: {
+            ...commonOptions.plugins.tooltip,
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                const percentage = ((value / total) * 100).toFixed(0);
+                const valueText = value >= 1000 ? (value / 1000).toFixed(1) + ' тыс.' : value;
+                return label + ': ' + valueText + ' чел. (' + percentage + '%)';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Программы в цифровом реестре БАС
+    new Chart(document.getElementById('chart-bas-programs'), {
+      type: 'bar',
+      data: {
+        labels: ['2023', '2024', '2025'],
+        datasets: [{
+          label: 'Программы',
+          data: [85, 142, 198],
+          backgroundColor: '#00c951',
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 60
+        }]
+      },
+      plugins: [datalabelsPlugin],
+      options: {
+        ...commonOptions,
+        layout: {
+          padding: {
+            top: 25
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            },
+            ticks: {
+              ...commonOptions.scales.x.ticks,
+              maxRotation: 0,
+              autoSkip: false
+            }
+          },
+          y: {
+            display: false,
+            beginAtZero: true,
+            grid: {
+              display: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Образовательные организации БАС
+    new Chart(document.getElementById('chart-bas-organizations-count'), {
+      type: 'doughnut',
+      data: {
+        labels: ['ВУЗы', 'СПО', 'Доп. образование'],
+        datasets: [{
+          data: [45, 32, 18], // Количество организаций
+          backgroundColor: ['#0066ff', '#51a2ff', '#00c951'],
+          borderWidth: 0
+        }]
+      },
+      plugins: [doughnutLabelsPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+          legend: { 
+            position: 'bottom',
+            align: 'center',
+            labels: { 
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              boxWidth: 8,
+              boxHeight: 8,
+              font: {
+                size: 12,
+                weight: '500'
+              },
+              color: '#64748b'
+            }
+          },
+          tooltip: {
+            ...commonOptions.plugins.tooltip,
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                return label + ': ' + value + ' орг.';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Количество специалистов в химической отрасли
+    new Chart(document.getElementById('chart-chem-specialists'), {
+      type: 'bar',
+      data: {
+        labels: ['2023', '2024', '2025'],
+        datasets: [{
+          label: 'Специалисты',
+          data: [2150, 2850, 3650],
+          backgroundColor: '#0066ff',
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 60
+        }]
+      },
+      plugins: [datalabelsPlugin],
+      options: {
+        ...commonOptions,
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            },
+            ticks: {
+              ...commonOptions.scales.x.ticks,
+              maxRotation: 0,
+              autoSkip: false
+            }
+          },
+          y: {
+            display: false,
+            beginAtZero: true,
+            grid: {
+              display: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Количество учащихся в химической отрасли
+    new Chart(document.getElementById('chart-chem-organizations'), {
+      type: 'doughnut',
+      data: {
+        labels: ['ВУЗы', 'СПО', 'Доп. образование'],
+        datasets: [{
+          data: [12400, 4800, 2500], // Количество учащихся в тысячах
+          backgroundColor: ['#0066ff', '#51a2ff', '#00c951'],
+          borderWidth: 0
+        }]
+      },
+      plugins: [doughnutStudentsLabelsPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+          legend: { 
+            position: 'bottom',
+            align: 'center',
+            labels: { 
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              boxWidth: 8,
+              boxHeight: 8,
+              font: {
+                size: 12,
+                weight: '500'
+              },
+              color: '#64748b'
+            }
+          },
+          tooltip: {
+            ...commonOptions.plugins.tooltip,
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                const percentage = ((value / total) * 100).toFixed(0);
+                const valueText = value >= 1000 ? (value / 1000).toFixed(1) + ' тыс.' : value;
+                return label + ': ' + valueText + ' чел. (' + percentage + '%)';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Программы в цифровом реестре химической отрасли
+    new Chart(document.getElementById('chart-chem-programs'), {
+      type: 'bar',
+      data: {
+        labels: ['2023', '2024', '2025'],
+        datasets: [{
+          label: 'Программы',
+          data: [125, 198, 275],
+          backgroundColor: '#00c951',
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 60
+        }]
+      },
+      plugins: [datalabelsPlugin],
+      options: {
+        ...commonOptions,
+        layout: {
+          padding: {
+            top: 25
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            },
+            ticks: {
+              ...commonOptions.scales.x.ticks,
+              maxRotation: 0,
+              autoSkip: false
+            }
+          },
+          y: {
+            display: false,
+            beginAtZero: true,
+            grid: {
+              display: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Образовательные организации химической отрасли
+    new Chart(document.getElementById('chart-chem-organizations-count'), {
+      type: 'doughnut',
+      data: {
+        labels: ['ВУЗы', 'СПО', 'Доп. образование'],
+        datasets: [{
+          data: [62, 48, 25], // Количество организаций
+          backgroundColor: ['#0066ff', '#51a2ff', '#00c951'],
+          borderWidth: 0
+        }]
+      },
+      plugins: [doughnutLabelsPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+          legend: { 
+            position: 'bottom',
+            align: 'center',
+            labels: { 
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              boxWidth: 8,
+              boxHeight: 8,
+              font: {
+                size: 12,
+                weight: '500'
+              },
+              color: '#64748b'
+            }
+          },
+          tooltip: {
+            ...commonOptions.plugins.tooltip,
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                return label + ': ' + value + ' орг.';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Тренд big data показателей
+    const ctxBigData = document.getElementById('chart-bigdata-trend').getContext('2d');
+    const gradientBigData = ctxBigData.createLinearGradient(0, 0, 0, 250);
+    gradientBigData.addColorStop(0, 'rgba(0, 102, 255, 0.25)');
+    gradientBigData.addColorStop(1, 'rgba(0, 102, 255, 0.05)');
+
+    new Chart(document.getElementById('chart-bigdata-trend'), {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Доля показателей на основе big data, %',
+          data: [28, 32, 36, 39, 42],
+          borderColor: '#0066ff',
+          backgroundColor: gradientBigData,
+          borderWidth: 3,
+          pointRadius: 6,
+          pointBackgroundColor: '#0066ff',
+          pointBorderWidth: 0,
+          tension: 0.5,
+          fill: true
+        }]
+      },
+      plugins: [lineChartLabelsPlugin],
+      options: {
+        ...commonOptions,
+        clip: false,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            }
+          },
+          y: {
+            display: false,
+            grid: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Сокращение сроков обработки данных
+    new Chart(document.getElementById('chart-processing-time'), {
+      type: 'bar',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Срок обработки, дней',
+          data: [12, 10, 8, 6, 5],
+          backgroundColor: '#00c951',
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 60
+        }]
+      },
+      plugins: [daysLabelsPlugin],
+      options: {
+        ...commonOptions,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            },
+            ticks: {
+              ...commonOptions.scales.x.ticks,
+              maxRotation: 0,
+              autoSkip: false
+            }
+          },
+          y: {
+            display: false,
+            beginAtZero: true,
+            max: 15,
+            grid: {
+              display: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Доля показателей в ДАП
+    new Chart(document.getElementById('chart-dap'), {
+      type: 'doughnut',
+      data: {
+        labels: ['В ДАП', 'Не в ДАП'],
+        datasets: [{
+          data: [68, 32],
+          backgroundColor: ['#00c951', '#e2e8f0'],
+          borderWidth: 0
+        }]
+      },
+      plugins: [doughnutLabelsPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+          legend: { 
+            position: 'bottom',
+            align: 'center',
+            labels: { 
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              boxWidth: 8,
+              boxHeight: 8,
+              font: {
+                size: 12,
+                weight: '500'
+              },
+              color: '#64748b'
+            }
+          },
+          tooltip: commonOptions.plugins.tooltip
+        }
+      }
+    });
+
+    // Доля показателей, соответствующих международным стандартам
+    new Chart(document.getElementById('chart-standards'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Соответствуют', 'Не соответствуют'],
+        datasets: [{
+          data: [75, 25],
+          backgroundColor: ['#0066ff', '#e2e8f0'],
+          borderWidth: 0
+        }]
+      },
+      plugins: [doughnutLabelsPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+          legend: { 
+            position: 'bottom',
+            align: 'center',
+            labels: { 
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              boxWidth: 8,
+              boxHeight: 8,
+              font: {
+                size: 12,
+                weight: '500'
+              },
+              color: '#64748b'
+            }
+          },
+          tooltip: commonOptions.plugins.tooltip
+        }
+      }
+    });
+
+    // Снижение нагрузки на объекты статистики
+    new Chart(document.getElementById('chart-statistics-load'), {
+      type: 'bar',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Снижение нагрузки, %',
+          data: [0, 8, 15, 22, 28],
+          backgroundColor: '#00c951',
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 60
+        }]
+      },
+      plugins: [datalabelsPlugin],
+      options: {
+        ...commonOptions,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          ...commonOptions.scales,
+          x: {
+            ...commonOptions.scales.x,
+            grid: {
+              display: true,
+              color: '#f1f5f9',
+              drawBorder: false
+            },
+            ticks: {
+              ...commonOptions.scales.x.ticks,
+              maxRotation: 0,
+              autoSkip: false
+            }
+          },
+          y: {
+            display: false,
+            beginAtZero: true,
+            max: 35,
+            grid: {
+              display: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Статус поручений КНТР
+    new Chart(document.getElementById('chart-assignments-status'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Исполнено', 'В работе', 'Просрочено'],
+        datasets: [{
+          data: [68, 24, 8],
+          backgroundColor: ['#00c951', '#ffb96a', '#fb2c36'],
+          borderWidth: 0
+        }]
+      },
+      plugins: [doughnutLabelsPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+          legend: { 
+            position: 'bottom',
+            align: 'center',
+            labels: { 
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              boxWidth: 8,
+              boxHeight: 8,
+              font: {
+                size: 12,
+                weight: '500'
+              },
+              color: '#64748b'
+            }
+          },
+          tooltip: commonOptions.plugins.tooltip
+        }
+      }
+    });
+
+    // Средний срок исполнения поручений по ФОИВ
+    new Chart(document.getElementById('chart-assignments-timing'), {
+      type: 'bar',
+      data: {
+        labels: ['Минобрнауки', 'Минцифры', 'Росатом', 'Роскосмос', 'Минэнерго', 'Минздрав', 'Минпромторг'],
+        datasets: [{
+          label: 'Средний срок, дней',
+          data: [12, 8, 15, 18, 14, 10, 16],
+          backgroundColor: function(context) {
+            // Для горизонтальных баров (indexAxis: 'y') Chart.js использует parsed.x для значения данных
+            const value = context.parsed.x !== undefined ? context.parsed.x : context.parsed.y;
+            if (value > 15) return '#fb2c36';
+            if (value > 12) return '#ffb96a';
+            return '#00c951';
+          },
+          borderRadius: 8,
+          borderSkipped: false,
+          maxBarThickness: 32
+        }]
+      },
+      plugins: [horizontalBarLabelsNoPercentPlugin],
+      options: {
+        ...commonOptions,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        indexAxis: 'y',
+        scales: {
+          ...commonOptions.scales,
+          x: { 
+            beginAtZero: true, 
+            max: 20,
+            display: false,
+            grid: {
+              display: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // Доля межведомственных проектов
+    new Chart(document.getElementById('chart-interagency-projects'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Межведомственные', 'Внутриведомственные'],
+        datasets: [{
+          data: [68, 32],
+          backgroundColor: ['#0066ff', '#e2e8f0'],
+          borderWidth: 0
+        }]
+      },
+      plugins: [doughnutLabelsPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+          legend: { 
+            position: 'bottom',
+            align: 'center',
+            labels: { 
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              boxWidth: 8,
+              boxHeight: 8,
+              font: {
+                size: 12,
+                weight: '500'
+              },
+              color: '#64748b'
+            }
+          },
+          tooltip: commonOptions.plugins.tooltip
+        }
+      }
+    });
+
+    // Среднее отклонение сроков реализации
+    new Chart(document.getElementById('chart-deviations'), {
+      type: 'bar',
+      data: {
+        labels: ['Минобрнауки', 'Минцифры', 'Росатом', 'Роскосмос', 'Минэнерго', 'Минздрав', 'Минпромторг'],
+        datasets: [{
+          label: 'Отклонение, дней',
+          data: [8, 5, 3, 8, 2, 0, 12],
+          backgroundColor: function(context) {
+            // Для горизонтальных баров (indexAxis: 'y') Chart.js использует parsed.x для значения данных
+            const value = context.parsed.x !== undefined ? context.parsed.x : context.parsed.y;
+            if (value > 10) return '#fb2c36';
+            if (value > 5) return '#ffb96a';
+            return '#00c951';
+          },
+          borderRadius: 8,
+          borderSkipped: false,
+          maxBarThickness: 32
+        }]
+      },
+      plugins: [horizontalBarLabelsNoPercentPlugin],
+      options: {
+        ...commonOptions,
+        layout: {
+          padding: {
+            left: 10,
+            right: 50,
+            top: 10,
+            bottom: 10
+          }
+        },
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        indexAxis: 'y',
+        scales: {
+          ...commonOptions.scales,
+          x: { 
+            beginAtZero: true,
+            display: false,
+            max: 15,
+            grid: {
+              display: false
+            },
+            ticks: {
+              display: false
+            },
+            border: {
+              display: false
+            }
+          },
+          y: {
+            ...commonOptions.scales.y,
+            ticks: {
+              ...commonOptions.scales.y.ticks,
+              padding: 12,
+              font: { size: 11 },
+              color: '#64748b'
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+

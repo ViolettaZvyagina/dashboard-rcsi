@@ -1,0 +1,2262 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подраздел 6.9 — Деятельность Президиума Комиссии</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .header-section {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--space-24);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: var(--space-4) 0 var(--space-6) 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .service-controls {
+      background: linear-gradient(165deg, rgba(255, 105, 0, 0.12), rgba(0, 102, 255, 0.12));
+      border: 1px solid var(--color-warning-200);
+      border-radius: var(--radius-lg);
+      padding: var(--space-16);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      min-width: 280px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-controls__group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .service-controls__label {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label);
+    }
+
+    .service-controls__select-wrapper {
+      position: relative;
+    }
+
+    .service-controls__select {
+      padding: var(--space-6) var(--space-10);
+      padding-right: calc(var(--space-10) + 20px);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+      cursor: pointer;
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+
+    .service-controls__select-wrapper::after {
+      content: "▼";
+      position: absolute;
+      right: var(--space-10);
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      color: var(--material-neutral-content-tertiary);
+      pointer-events: none;
+    }
+
+    .service-controls__actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      margin-top: auto;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-6);
+      height: var(--control-height);
+      padding: 0 var(--space-16);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-family: var(--font-main);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      text-decoration: none;
+      cursor: pointer;
+      background-color: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-primary);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn--primary {
+      background-color: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn--small {
+      height: 32px;
+      padding: 0 var(--space-12);
+      font-size: var(--font-size-caption);
+    }
+
+    /* KPI карточки */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-20);
+    }
+
+    @media (max-width: 1200px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-card__label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+      min-height: calc(var(--line-height-label) * 2);
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .kpi-card__value {
+      font-family: var(--font-alt);
+      font-size: 42px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 48px;
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+    }
+
+    .kpi-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-card__trend {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .kpi-card__metrics {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      margin-top: var(--space-4);
+      padding-top: var(--space-12);
+      border-top: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .kpi-card__metric {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .kpi-card__metric-label {
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .kpi-card__metric-value {
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+    }
+
+    .kpi-card__metric-value--green {
+      color: var(--color-positive-500);
+    }
+
+    .kpi-card__metric-value--yellow {
+      color: var(--color-warning-500);
+    }
+
+    /* Процессная диаграмма */
+    .process-section {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+    }
+
+    .process-section__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-24) 0;
+    }
+
+    .process-chain {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      margin-bottom: var(--space-24);
+      padding: var(--space-16);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+    }
+
+    .process-chain__item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+      white-space: nowrap;
+    }
+
+    .process-chain__item-text {
+      padding: var(--space-6) var(--space-12);
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-sm);
+    }
+
+    .process-chain__arrow {
+      color: var(--material-neutral-content-secondary);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+      .process-chain {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .process-chain__arrow {
+        transform: rotate(90deg);
+      }
+    }
+
+    .process-diagram {
+      height: 200px;
+      position: relative;
+    }
+
+    /* Секции с таблицами и графиками */
+    .content-section {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+    }
+
+    .content-section__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-24) 0;
+    }
+
+    .content-section__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-20);
+      flex-wrap: wrap;
+      gap: var(--space-16);
+    }
+
+    .registry-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      align-items: center;
+    }
+
+    .registry-search {
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+      min-width: 250px;
+    }
+
+    .registry-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-body);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .registry-table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .registry-table th,
+    .registry-table td {
+      padding: var(--space-12) var(--space-16);
+      text-align: left;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .registry-table th {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label-xl);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+    }
+
+    .registry-table td {
+      color: var(--material-neutral-content-primary);
+      background-color: var(--material-neutral-surface-primary);
+    }
+
+    .registry-table tbody tr:hover {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+    }
+
+    .status-badge--completed {
+      background-color: rgba(0, 201, 81, 0.1);
+      color: var(--color-positive-500);
+    }
+
+    .status-badge--in-progress {
+      background-color: rgba(245, 165, 36, 0.1);
+      color: var(--color-warning-500);
+    }
+
+    .status-badge--overdue {
+      background-color: rgba(251, 44, 54, 0.1);
+      color: var(--color-negative-500);
+    }
+
+    .status-badge--rejected {
+      background-color: rgba(138, 148, 166, 0.1);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .status-badge--on-revision {
+      background-color: rgba(156, 39, 176, 0.1);
+      color: #9c27b0;
+    }
+
+    /* Графики */
+    .chart-container {
+      height: 350px;
+      margin-top: var(--space-24);
+    }
+
+    .chart-container--large {
+      height: 450px;
+    }
+
+    .chart-container--small {
+      height: 250px;
+    }
+
+    /* Heatmap */
+    .heatmap-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-body);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .heatmap-table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .heatmap-table th,
+    .heatmap-table td {
+      padding: var(--space-12) var(--space-16);
+      text-align: left;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .heatmap-table th {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label-xl);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+      white-space: nowrap;
+    }
+
+    .heatmap-table td {
+      color: var(--material-neutral-content-primary);
+      background-color: var(--material-neutral-surface-primary);
+    }
+
+    .heatmap-table tbody tr:hover {
+      background-color: var(--material-neutral-highlight-primary);
+      cursor: pointer;
+    }
+
+    .heatmap-cell {
+      padding: var(--space-8) var(--space-12);
+      border-radius: var(--radius-sm);
+      text-align: center;
+      font-weight: 600;
+      font-size: var(--font-size-body);
+      min-width: 80px;
+    }
+
+    .heatmap-cell--green {
+      background: rgba(0, 201, 81, 0.2);
+      color: var(--color-positive-700);
+    }
+
+    .heatmap-cell--yellow {
+      background: rgba(245, 165, 36, 0.2);
+      color: var(--color-warning-700);
+    }
+
+    .heatmap-cell--red {
+      background: rgba(251, 44, 54, 0.2);
+      color: var(--color-negative-700);
+    }
+
+    .heatmap-cell--gray {
+      background: rgba(138, 148, 166, 0.2);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    /* Карточки предложений */
+    .proposals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .proposal-card {
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-20);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .proposal-card__title {
+      font-size: var(--font-size-body);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .proposal-card__meta {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .proposal-card__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-6);
+      margin-top: var(--space-4);
+    }
+
+    .proposal-tag {
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    /* Gauge chart */
+    .gauge-container {
+      height: 300px;
+      width: auto;
+      max-width: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      overflow: visible;
+    }
+
+    .gauge-container canvas {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Риски */
+    .risks-section {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+    }
+
+    .risks-section__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-24) 0;
+    }
+
+    .risks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .risk-card {
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-20);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .risk-card--high {
+      border-left: 4px solid var(--color-negative-500);
+    }
+
+    .risk-card--medium {
+      border-left: 4px solid var(--color-warning-500);
+    }
+
+    .risk-card--low {
+      border-left: 4px solid var(--color-positive-500);
+    }
+
+    .risk-card__title {
+      font-size: var(--font-size-body);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .risk-card__reason {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+      margin: 0;
+    }
+
+    .risk-card__assessment {
+      display: flex;
+      flex-direction: row;
+      gap: var(--space-16);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      flex-wrap: wrap;
+    }
+
+    .risk-card__assessment-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .risk-card__assessment-label {
+      font-weight: 600;
+    }
+
+    @media (max-width: 1024px) {
+      .header-section {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <!-- Шапка страницы -->
+      <section class="header-section">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="chapter6.html">
+                <span class="back-link__icon"></span>
+                Назад к разделу 6
+              </a>
+              <span class="meta-pill">Подраздел 6.9</span>
+            </div>
+            <h1>Деятельность Президиума Комиссии</h1>
+            <p>Президиум — операционный центр Комиссии, обеспечивающий обобщение информации по всем вопросам НТР, подготовку предложений и материалов для заседаний, оперативное рассмотрение вопросов, которые требуют быстрого решения.</p>
+            <div class="meta-row">
+              <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+              <span class="meta-pill">Источники: Президиум КНТР, ФОИВ, РАН</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Правый верхний блок -->
+        <aside class="service-controls">
+          <div class="service-controls__group">
+            <label class="service-controls__label">Период</label>
+            <div class="service-controls__select-wrapper">
+              <select class="service-controls__select" id="period-select">
+                <option>Год</option>
+                <option>Квартал</option>
+                <option>Месяц</option>
+              </select>
+            </div>
+          </div>
+          <div class="service-controls__group">
+            <label class="service-controls__label">Тематика</label>
+            <div class="service-controls__select-wrapper">
+              <select class="service-controls__select" id="topic-select">
+                <option>Все тематики</option>
+                <option>Кадры</option>
+                <option>Инфраструктура</option>
+                <option>Образование</option>
+                <option>Наука</option>
+                <option>Цифровизация</option>
+                <option>Отрасли НТР</option>
+              </select>
+            </div>
+          </div>
+          <div class="service-controls__group">
+            <label class="service-controls__label">Источник</label>
+            <div class="service-controls__select-wrapper">
+              <select class="service-controls__select" id="source-select">
+                <option>Все источники</option>
+                <option>ФОИВ</option>
+                <option>РАН</option>
+                <option>Регион</option>
+                <option>Отраслевые ведомства</option>
+              </select>
+            </div>
+          </div>
+          <div class="service-controls__actions">
+            <button class="btn btn--primary btn--small" id="export-btn">Выгрузка отчёта (PDF/Excel)</button>
+            <button class="btn btn--small" id="methodology-btn">Методика мониторинга</button>
+          </div>
+        </aside>
+      </section>
+
+      <!-- Верхние KPI-карточки -->
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-card__label">Обобщённые и представленные материалы</div>
+          <div class="kpi-card__value kpi-card__value--green">
+            142<span style="font-size: 24px; font-weight: 400;"> материалов</span>
+          </div>
+          <div class="kpi-card__trend">
+            <span>↗</span>
+            <span>+8 к предыдущему периоду</span>
+          </div>
+          <div class="kpi-card__metrics">
+            <div class="kpi-card__metric">
+              <span class="kpi-card__metric-label">Использовано на заседаниях</span>
+              <span class="kpi-card__metric-value kpi-card__metric-value--green">89 (63%)</span>
+            </div>
+            <div class="kpi-card__metric">
+              <span class="kpi-card__metric-label">YoY динамика</span>
+              <span class="kpi-card__metric-value kpi-card__metric-value--green">+5.6%</span>
+            </div>
+            <div class="kpi-card__metric">
+              <span class="kpi-card__metric-label">Разрезы: тематики, направления, типы</span>
+              <span class="kpi-card__metric-value">6 тематик</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-card__label">Подготовленные предложения для заседаний Комиссии</div>
+          <div class="kpi-card__value kpi-card__value--green">
+            67<span style="font-size: 24px; font-weight: 400;"> предложений</span>
+          </div>
+          <div class="kpi-card__trend">
+            <span>↗</span>
+            <span>Утверждено: 52 (78%)</span>
+          </div>
+          <div class="kpi-card__metrics">
+            <div class="kpi-card__metric">
+              <span class="kpi-card__metric-label">Средний срок подготовки</span>
+              <span class="kpi-card__metric-value">12 дней</span>
+            </div>
+            <div class="kpi-card__metric">
+              <span class="kpi-card__metric-label">Доля утверждённых Комиссией</span>
+              <span class="kpi-card__metric-value kpi-card__metric-value--green">78%</span>
+            </div>
+            <div class="kpi-card__metric">
+              <span class="kpi-card__metric-label">Включено в повестку</span>
+              <span class="kpi-card__metric-value kpi-card__metric-value--green">61 (91%)</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-card__label">Вопросы по выполнению решений Комиссии и Совета</div>
+          <div class="kpi-card__value kpi-card__value--yellow">
+            34<span style="font-size: 24px; font-weight: 400;"> вопросов</span>
+          </div>
+          <div class="kpi-card__trend">
+            <span>↗</span>
+            <span>Поручения даны: 28 (82%)</span>
+          </div>
+          <div class="kpi-card__metrics">
+            <div class="kpi-card__metric">
+              <span class="kpi-card__metric-label">Доля вопросов с поручениями</span>
+              <span class="kpi-card__metric-value kpi-card__metric-value--yellow">82%</span>
+            </div>
+            <div class="kpi-card__metric">
+              <span class="kpi-card__metric-label">Средний срок исполнения</span>
+              <span class="kpi-card__metric-value">18 дней</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-card__label">Вопросы, требующие оперативного решения</div>
+          <div class="kpi-card__value kpi-card__value--yellow">
+            23<span style="font-size: 24px; font-weight: 400;"> вопросов</span>
+          </div>
+          <div class="kpi-card__trend">
+            <span>↗</span>
+            <span>Решено в срок: 19 (83%)</span>
+          </div>
+          <div class="kpi-card__metrics">
+            <div class="kpi-card__metric">
+              <span class="kpi-card__metric-label">Средний срок оперативного рассмотрения</span>
+              <span class="kpi-card__metric-value">3 дня</span>
+            </div>
+            <div class="kpi-card__metric">
+              <span class="kpi-card__metric-label">Доля решённых в срок</span>
+              <span class="kpi-card__metric-value kpi-card__metric-value--green">83%</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-card__label">Вклад Президиума в достижение индикаторов НТР</div>
+          <div class="kpi-card__value kpi-card__value--green">
+            68<span style="font-size: 24px; font-weight: 400;">%</span>
+          </div>
+          <div class="kpi-card__trend">
+            <span>↗</span>
+            <span>+4.2 п.п. YoY</span>
+          </div>
+          <div class="kpi-card__metrics">
+            <div class="kpi-card__metric">
+              <span class="kpi-card__metric-label">Интегральный показатель влияния</span>
+              <span class="kpi-card__metric-value kpi-card__metric-value--green">68%</span>
+            </div>
+            <div class="kpi-card__metric">
+              <span class="kpi-card__metric-label">Поручения по молодым исследователям</span>
+              <span class="kpi-card__metric-value">24</span>
+            </div>
+            <div class="kpi-card__metric">
+              <span class="kpi-card__metric-label">Решения по созданию/внедрению технологий</span>
+              <span class="kpi-card__metric-value">31</span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- Процессная диаграмма Президиума -->
+      <section class="process-section">
+        <h2 class="process-section__title">Цепочка процессов Президиума</h2>
+        <div class="process-chain">
+          <div class="process-chain__item">
+            <span class="process-chain__item-text">Получение информации</span>
+          </div>
+          <span class="process-chain__arrow">→</span>
+          <div class="process-chain__item">
+            <span class="process-chain__item-text">Анализ</span>
+          </div>
+          <span class="process-chain__arrow">→</span>
+          <div class="process-chain__item">
+            <span class="process-chain__item-text">Обобщение</span>
+          </div>
+          <span class="process-chain__arrow">→</span>
+          <div class="process-chain__item">
+            <span class="process-chain__item-text">Подготовка материалов</span>
+          </div>
+          <span class="process-chain__arrow">→</span>
+          <div class="process-chain__item">
+            <span class="process-chain__item-text">Представление Комиссии</span>
+          </div>
+          <span class="process-chain__arrow">→</span>
+          <div class="process-chain__item">
+            <span class="process-chain__item-text">Рассмотрение</span>
+          </div>
+          <span class="process-chain__arrow">→</span>
+          <div class="process-chain__item">
+            <span class="process-chain__item-text">Принятие решения</span>
+          </div>
+          <span class="process-chain__arrow">→</span>
+          <div class="process-chain__item">
+            <span class="process-chain__item-text">Контроль исполнения</span>
+          </div>
+        </div>
+        <div class="process-diagram">
+          <canvas id="process-chart"></canvas>
+        </div>
+      </section>
+
+      <!-- Обобщённые материалы -->
+      <section class="content-section">
+        <div class="content-section__header">
+          <h2 class="content-section__title">Обобщённые материалы (структура и тематики)</h2>
+          <div class="registry-filters">
+            <input type="text" class="registry-search" placeholder="Поиск по тематике..." id="materials-search">
+            <select class="service-controls__select" id="materials-topic-filter" style="width: auto;">
+              <option>Все тематики</option>
+              <option>Кадры</option>
+              <option>Инфраструктура</option>
+              <option>Образование</option>
+              <option>Наука</option>
+              <option>Цифровизация</option>
+              <option>Отрасли НТР</option>
+            </select>
+            <select class="service-controls__select" id="materials-type-filter" style="width: auto;">
+              <option>Все типы</option>
+              <option>Аналитическая записка</option>
+              <option>Сводка</option>
+              <option>Справка</option>
+              <option>Проект решения</option>
+              <option>Доклад</option>
+            </select>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-24);">
+          <div class="chart-container">
+            <canvas id="materials-treemap"></canvas>
+          </div>
+          <div class="chart-container">
+            <canvas id="materials-bar"></canvas>
+          </div>
+        </div>
+        <div style="overflow-x: auto; margin-top: var(--space-24);">
+          <table class="registry-table" id="materials-table">
+            <thead>
+              <tr>
+                <th>№</th>
+                <th>Тематика</th>
+                <th>Тип документа</th>
+                <th>Источник</th>
+                <th>Срок подготовки</th>
+                <th>Использование на заседании</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Кадры</td>
+                <td>Аналитическая записка</td>
+                <td>Минобрнауки</td>
+                <td>10 дней</td>
+                <td><span class="status-badge status-badge--completed">Использовано</span></td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Инфраструктура</td>
+                <td>Сводка</td>
+                <td>ФОИВ</td>
+                <td>7 дней</td>
+                <td><span class="status-badge status-badge--completed">Использовано</span></td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Образование</td>
+                <td>Справка</td>
+                <td>РАН</td>
+                <td>5 дней</td>
+                <td><span class="status-badge status-badge--in-progress">В процессе</span></td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>Наука</td>
+                <td>Проект решения</td>
+                <td>Минобрнауки</td>
+                <td>14 дней</td>
+                <td><span class="status-badge status-badge--completed">Использовано</span></td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>Цифровизация</td>
+                <td>Доклад</td>
+                <td>Минцифры</td>
+                <td>12 дней</td>
+                <td><span class="status-badge status-badge--completed">Использовано</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Подготовленные предложения -->
+      <section class="content-section">
+        <div class="content-section__header">
+          <h2 class="content-section__title">Подготовленные предложения для заседаний Комиссии</h2>
+          <div class="registry-filters">
+            <select class="service-controls__select" id="proposals-status-filter" style="width: auto;">
+              <option>Все статусы</option>
+              <option>Включено в повестку</option>
+              <option>Рассмотрено</option>
+              <option>Отклонено</option>
+              <option>На доработке</option>
+            </select>
+          </div>
+        </div>
+        <div class="proposals-grid">
+          <div class="proposal-card">
+            <h3 class="proposal-card__title">Развитие системы подготовки кадров для НТР</h3>
+            <div class="proposal-card__meta">
+              <div><strong>Инициатор:</strong> Минобрнауки</div>
+              <div><strong>Дата подготовки:</strong> 10.11.2025</div>
+              <div><strong>Срок внесения:</strong> 15.11.2025</div>
+            </div>
+            <div><span class="status-badge status-badge--completed">Рассмотрено</span></div>
+            <div class="proposal-card__tags">
+              <span class="proposal-tag">Молодые исследователи</span>
+              <span class="proposal-tag">Кадры</span>
+            </div>
+          </div>
+          <div class="proposal-card">
+            <h3 class="proposal-card__title">Создание инфраструктуры для НИОКР</h3>
+            <div class="proposal-card__meta">
+              <div><strong>Инициатор:</strong> Минобрнауки</div>
+              <div><strong>Дата подготовки:</strong> 05.11.2025</div>
+              <div><strong>Срок внесения:</strong> 12.11.2025</div>
+            </div>
+            <div><span class="status-badge status-badge--completed">Включено в повестку</span></div>
+            <div class="proposal-card__tags">
+              <span class="proposal-tag">Инфраструктура</span>
+              <span class="proposal-tag">Технологии</span>
+            </div>
+          </div>
+          <div class="proposal-card">
+            <h3 class="proposal-card__title">Цифровизация научных процессов</h3>
+            <div class="proposal-card__meta">
+              <div><strong>Инициатор:</strong> Минцифры</div>
+              <div><strong>Дата подготовки:</strong> 08.11.2025</div>
+              <div><strong>Срок внесения:</strong> 14.11.2025</div>
+            </div>
+            <div><span class="status-badge status-badge--on-revision">На доработке</span></div>
+            <div class="proposal-card__tags">
+              <span class="proposal-tag">Цифровизация</span>
+              <span class="proposal-tag">Инфраструктура</span>
+            </div>
+          </div>
+          <div class="proposal-card">
+            <h3 class="proposal-card__title">Поддержка молодых исследователей</h3>
+            <div class="proposal-card__meta">
+              <div><strong>Инициатор:</strong> РАН</div>
+              <div><strong>Дата подготовки:</strong> 12.11.2025</div>
+              <div><strong>Срок внесения:</strong> 18.11.2025</div>
+            </div>
+            <div><span class="status-badge status-badge--completed">Рассмотрено</span></div>
+            <div class="proposal-card__tags">
+              <span class="proposal-tag">Молодые исследователи</span>
+              <span class="proposal-tag">Кадры</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: var(--space-24); padding: var(--space-20); background: var(--material-neutral-highlight-primary); border-radius: var(--radius-md);">
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-16);">
+            <div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-4);">Средний срок подготовки</div>
+              <div style="font-size: 24px; font-weight: 600; color: var(--material-neutral-content-primary);">12 дней</div>
+            </div>
+            <div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-4);">Доля вошедших в повестку</div>
+              <div style="font-size: 24px; font-weight: 600; color: var(--color-positive-500);">91%</div>
+            </div>
+            <div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-4);">Доля принятых Комиссией</div>
+              <div style="font-size: 24px; font-weight: 600; color: var(--color-positive-500);">78%</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Вопросы по выполнению решений -->
+      <section class="content-section">
+        <div class="content-section__header">
+          <h2 class="content-section__title">Вопросы, связанные с выполнением решений Комиссии и Совета при Президенте РФ</h2>
+          <div class="registry-filters">
+            <select class="service-controls__select" id="decisions-status-filter" style="width: auto;">
+              <option>Все статусы</option>
+              <option>Исполнено</option>
+              <option>В работе</option>
+              <option>Просрочено</option>
+            </select>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: auto 1fr; gap: var(--space-8); margin-bottom: var(--space-24); align-items: start;">
+          <div style="width: fit-content;">
+            <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-20);">KPI: % исполненных решений</div>
+            <div style="font-size: 48px; font-weight: 700; color: var(--color-positive-500);">82%</div>
+          </div>
+          <div class="gauge-container">
+            <canvas id="gauge-chart"></canvas>
+          </div>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="heatmap-table" id="decisions-heatmap">
+            <thead>
+              <tr>
+                <th>ФОИВ</th>
+                <th>Кадры</th>
+                <th>Инфраструктура</th>
+                <th>Образование</th>
+                <th>Наука</th>
+                <th>Цифровизация</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Минобрнауки</strong></td>
+                <td><div class="heatmap-cell heatmap-cell--green">5</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">3</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">2</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">4</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">2</div></td>
+              </tr>
+              <tr>
+                <td><strong>Минцифры</strong></td>
+                <td><div class="heatmap-cell heatmap-cell--green">1</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">2</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">1</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">1</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">3</div></td>
+              </tr>
+              <tr>
+                <td><strong>РАН</strong></td>
+                <td><div class="heatmap-cell heatmap-cell--green">2</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">1</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">1</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">3</div></td>
+                <td><div class="heatmap-cell heatmap-cell--gray">0</div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Оперативные вопросы -->
+      <section class="content-section">
+        <div class="content-section__header">
+          <h2 class="content-section__title">Вопросы оперативного рассмотрения</h2>
+          <div class="registry-filters">
+            <select class="service-controls__select" id="operational-type-filter" style="width: auto;">
+              <option>Все типы</option>
+              <option>Кадровые</option>
+              <option>Инфраструктурные</option>
+              <option>Образовательные</option>
+              <option>Научно-технологические</option>
+              <option>Организационные</option>
+            </select>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-24); margin-bottom: var(--space-24);">
+          <div class="chart-container--small">
+            <canvas id="operational-histogram"></canvas>
+          </div>
+          <div class="chart-container--small">
+            <canvas id="operational-pie"></canvas>
+          </div>
+        </div>
+        <div style="margin-top: var(--space-24); padding: var(--space-20); background: var(--material-neutral-highlight-primary); border-radius: var(--radius-md);">
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-16);">
+            <div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-4);">Средний срок принятия решений</div>
+              <div style="font-size: 24px; font-weight: 600; color: var(--material-neutral-content-primary);">3 дня</div>
+            </div>
+            <div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-4);">Доля вопросов, требующих немедленной реакции</div>
+              <div style="font-size: 24px; font-weight: 600; color: var(--color-warning-500);">35%</div>
+            </div>
+            <div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-4);">Решено в срок</div>
+              <div style="font-size: 24px; font-weight: 600; color: var(--color-positive-500);">83%</div>
+            </div>
+          </div>
+        </div>
+        <div style="overflow-x: auto; margin-top: var(--space-24);">
+          <table class="registry-table" id="operational-table">
+            <thead>
+              <tr>
+                <th>№</th>
+                <th>Описание ситуации</th>
+                <th>Дата поступления</th>
+                <th>Дата рассмотрения</th>
+                <th>Принятое решение</th>
+                <th>Связь с индикаторами НТР</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Требуется срочное решение по финансированию проекта</td>
+                <td>10.11.2025</td>
+                <td>12.11.2025</td>
+                <td>Решение принято, финансирование выделено</td>
+                <td>Инфраструктура, Технологии</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Кадровый вопрос по молодому исследователю</td>
+                <td>08.11.2025</td>
+                <td>10.11.2025</td>
+                <td>Поручение дано, вопрос решён</td>
+                <td>Молодые исследователи</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Организационный вопрос по рабочей группе</td>
+                <td>05.11.2025</td>
+                <td>07.11.2025</td>
+                <td>Группа создана, работа начата</td>
+                <td>Организационные процессы</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Влияние на индикаторы НТР -->
+      <section class="content-section">
+        <h2 class="content-section__title">Влияние на достижение индикаторов Стратегии НТР</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-24); margin-bottom: var(--space-24);">
+          <div class="chart-container">
+            <canvas id="spider-chart"></canvas>
+          </div>
+          <div class="chart-container">
+            <canvas id="sankey-chart"></canvas>
+          </div>
+        </div>
+        <div style="padding: var(--space-20); background: var(--material-neutral-highlight-primary); border-radius: var(--radius-md);">
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-16);">
+            <div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-4);">Доля решений, связанных с KPI НТР</div>
+              <div style="font-size: 24px; font-weight: 600; color: var(--color-positive-500);">68%</div>
+            </div>
+            <div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-4);">YoY динамика влияния</div>
+              <div style="font-size: 24px; font-weight: 600; color: var(--color-positive-500);">+4.2 п.п.</div>
+            </div>
+            <div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-4);">Молодые исследователи</div>
+              <div style="font-size: 24px; font-weight: 600; color: var(--material-neutral-content-primary);">24 решения</div>
+            </div>
+            <div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-4);">Создание технологий</div>
+              <div style="font-size: 24px; font-weight: 600; color: var(--material-neutral-content-primary);">31 решение</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Разрезы -->
+      <section class="content-section">
+        <div class="content-section__header">
+          <h2 class="content-section__title">Разрез по тематикам / направлениям / источникам</h2>
+          <div class="registry-filters">
+            <select class="service-controls__select" id="breakdown-direction-filter" style="width: auto;">
+              <option>Все направления НТР</option>
+              <option>Искусственный интеллект</option>
+              <option>Новые материалы</option>
+              <option>Биотехнологии</option>
+              <option>Энергетика</option>
+              <option>Транспорт</option>
+            </select>
+            <select class="service-controls__select" id="breakdown-foiv-filter" style="width: auto;">
+              <option>Все ФОИВ</option>
+              <option>Минобрнауки</option>
+              <option>Минцифры</option>
+              <option>РАН</option>
+              <option>Минпромторг</option>
+            </select>
+            <select class="service-controls__select" id="breakdown-region-filter" style="width: auto;">
+              <option>Все регионы</option>
+              <option>Москва</option>
+              <option>Санкт-Петербург</option>
+              <option>Новосибирская область</option>
+              <option>Московская область</option>
+              <option>Республика Татарстан</option>
+            </select>
+            <select class="service-controls__select" id="breakdown-doc-type-filter" style="width: auto;">
+              <option>Все типы документов</option>
+              <option>Аналитическая записка</option>
+              <option>Сводка</option>
+              <option>Справка</option>
+              <option>Проект решения</option>
+              <option>Доклад</option>
+            </select>
+            <select class="service-controls__select" id="breakdown-urgency-filter" style="width: auto;">
+              <option>Все уровни срочности</option>
+              <option>Критично</option>
+              <option>Высокая</option>
+              <option>Средняя</option>
+              <option>Низкая</option>
+            </select>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-24); margin-bottom: var(--space-24);">
+          <div class="chart-container">
+            <canvas id="breakdown-heatmap-chart"></canvas>
+          </div>
+          <div class="chart-container">
+            <canvas id="breakdown-bar-chart"></canvas>
+          </div>
+        </div>
+        <div class="chart-container--large" style="margin-bottom: var(--space-24);">
+          <canvas id="breakdown-geomap"></canvas>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="heatmap-table" id="breakdown-heatmap-table">
+            <thead>
+              <tr>
+                <th>Направление НТР</th>
+                <th>ФОИВ</th>
+                <th>Регион</th>
+                <th>Тип документа</th>
+                <th>Срочность</th>
+                <th>Количество</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Искусственный интеллект</td>
+                <td>Минцифры</td>
+                <td>Москва</td>
+                <td>Аналитическая записка</td>
+                <td><span class="status-badge status-badge--warning">Высокая</span></td>
+                <td><div class="heatmap-cell heatmap-cell--green">15</div></td>
+              </tr>
+              <tr>
+                <td>Новые материалы</td>
+                <td>Минобрнауки</td>
+                <td>Московская область</td>
+                <td>Сводка</td>
+                <td><span class="status-badge status-badge--completed">Средняя</span></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">12</div></td>
+              </tr>
+              <tr>
+                <td>Биотехнологии</td>
+                <td>РАН</td>
+                <td>Новосибирская область</td>
+                <td>Проект решения</td>
+                <td><span class="status-badge status-badge--warning">Высокая</span></td>
+                <td><div class="heatmap-cell heatmap-cell--green">18</div></td>
+              </tr>
+              <tr>
+                <td>Энергетика</td>
+                <td>Минобрнауки</td>
+                <td>Санкт-Петербург</td>
+                <td>Доклад</td>
+                <td><span class="status-badge status-badge--completed">Средняя</span></td>
+                <td><div class="heatmap-cell heatmap-cell--green">10</div></td>
+              </tr>
+              <tr>
+                <td>Транспорт</td>
+                <td>Минпромторг</td>
+                <td>Республика Татарстан</td>
+                <td>Справка</td>
+                <td><span class="status-badge status-badge--on-revision">Низкая</span></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">8</div></td>
+              </tr>
+              <tr>
+                <td>Искусственный интеллект</td>
+                <td>Минобрнауки</td>
+                <td>Москва</td>
+                <td>Аналитическая записка</td>
+                <td><span class="status-badge status-badge--warning">Критично</span></td>
+                <td><div class="heatmap-cell heatmap-cell--red">22</div></td>
+              </tr>
+              <tr>
+                <td>Новые материалы</td>
+                <td>Минцифры</td>
+                <td>Московская область</td>
+                <td>Сводка</td>
+                <td><span class="status-badge status-badge--completed">Средняя</span></td>
+                <td><div class="heatmap-cell heatmap-cell--green">9</div></td>
+              </tr>
+              <tr>
+                <td>Биотехнологии</td>
+                <td>Минобрнауки</td>
+                <td>Новосибирская область</td>
+                <td>Проект решения</td>
+                <td><span class="status-badge status-badge--warning">Высокая</span></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">14</div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Риски -->
+      <section class="risks-section">
+        <h2 class="risks-section__title">Сводные риски и узкие места процесса</h2>
+        <div class="risks-grid">
+          <div class="risk-card risk-card--high">
+            <h3 class="risk-card__title">Задержки подготовки материалов</h3>
+            <p class="risk-card__reason">Причина: недостаточная стандартизация документов, длительные согласования между ведомствами</p>
+            <div class="risk-card__assessment">
+              <div class="risk-card__assessment-item">
+                <div class="risk-card__assessment-label">Вероятность</div>
+                <div>Высокая</div>
+              </div>
+              <div class="risk-card__assessment-item">
+                <div class="risk-card__assessment-label">Влияние</div>
+                <div>Высокое</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="risk-card risk-card--medium">
+            <h3 class="risk-card__title">Низкая полнота информации от отдельных ФОИВ</h3>
+            <p class="risk-card__reason">Причина: отсутствие единых требований к предоставлению информации, недостаточная мотивация</p>
+            <div class="risk-card__assessment">
+              <div class="risk-card__assessment-item">
+                <div class="risk-card__assessment-label">Вероятность</div>
+                <div>Средняя</div>
+              </div>
+              <div class="risk-card__assessment-item">
+                <div class="risk-card__assessment-label">Влияние</div>
+                <div>Среднее</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="risk-card risk-card--medium">
+            <h3 class="risk-card__title">Потребность в дополнительных данных</h3>
+            <p class="risk-card__reason">Причина: растущая сложность вопросов НТР требует более глубокого анализа</p>
+            <div class="risk-card__assessment">
+              <div class="risk-card__assessment-item">
+                <div class="risk-card__assessment-label">Вероятность</div>
+                <div>Средняя</div>
+              </div>
+              <div class="risk-card__assessment-item">
+                <div class="risk-card__assessment-label">Влияние</div>
+                <div>Среднее</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="risk-card risk-card--low">
+            <h3 class="risk-card__title">Недостаточная стандартизация документов</h3>
+            <p class="risk-card__reason">Причина: различные форматы представления информации от разных источников</p>
+            <div class="risk-card__assessment">
+              <div class="risk-card__assessment-item">
+                <div class="risk-card__assessment-label">Вероятность</div>
+                <div>Низкая</div>
+              </div>
+              <div class="risk-card__assessment-item">
+                <div class="risk-card__assessment-label">Влияние</div>
+                <div>Низкое</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    // Настройка Chart.js
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+    const colors = {
+      primary: '#1565FF',
+      secondary: '#00C951',
+      neutral: '#8A94A6',
+      warning: '#F5A524',
+      danger: '#FB2C36'
+    };
+
+    // Процессная диаграмма
+    const processSteps = [
+      'Получение информации',
+      'Анализ',
+      'Обобщение',
+      'Подготовка материалов',
+      'Представление Комиссии',
+      'Рассмотрение',
+      'Принятие решения',
+      'Контроль исполнения'
+    ];
+    const processTimes = [2, 3, 4, 5, 1, 2, 1, 3]; // дни
+
+    new Chart(document.getElementById('process-chart'), {
+      type: 'bar',
+      data: {
+        labels: processSteps,
+        datasets: [{
+          label: 'Средний срок (дни)',
+          data: processTimes,
+          backgroundColor: 'rgba(21, 101, 255, 0.7)',
+          borderColor: '#1565FF',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return 'Средний срок: ' + context.parsed.x + ' дней';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Дни'
+            }
+          }
+        }
+      }
+    });
+
+    // Treemap по тематикам (упрощённая версия - bar chart)
+    new Chart(document.getElementById('materials-treemap'), {
+      type: 'bar',
+      data: {
+        labels: ['Кадры', 'Инфраструктура', 'Образование', 'Наука', 'Цифровизация', 'Отрасли НТР'],
+        datasets: [{
+          label: 'Количество материалов',
+          data: [32, 28, 24, 22, 18, 18],
+          backgroundColor: [
+            'rgba(21, 101, 255, 0.7)',
+            'rgba(0, 201, 81, 0.7)',
+            'rgba(245, 165, 36, 0.7)',
+            'rgba(156, 39, 176, 0.7)',
+            'rgba(255, 87, 34, 0.7)',
+            'rgba(0, 188, 212, 0.7)'
+          ],
+          borderColor: [
+            '#1565FF',
+            '#00C951',
+            '#F5A524',
+            '#9c27b0',
+            '#ff5722',
+            '#00bcd4'
+          ],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    // Bar chart по типам материалов
+    new Chart(document.getElementById('materials-bar'), {
+      type: 'bar',
+      data: {
+        labels: ['Аналитическая записка', 'Сводка', 'Справка', 'Проект решения', 'Доклад'],
+        datasets: [{
+          label: 'Количество',
+          data: [45, 38, 32, 18, 17],
+          backgroundColor: 'rgba(0, 201, 81, 0.7)',
+          borderColor: '#00C951',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    // Gauge chart (упрощённая версия - doughnut)
+    new Chart(document.getElementById('gauge-chart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Исполнено', 'В работе', 'Просрочено'],
+        datasets: [{
+          data: [82, 12, 6],
+          backgroundColor: [
+            'rgba(0, 201, 81, 0.7)',
+            'rgba(245, 165, 36, 0.7)',
+            'rgba(251, 44, 54, 0.7)'
+          ],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 1,
+        layout: {
+          padding: {
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 8,
+              boxWidth: 8,
+              boxHeight: 8
+            }
+          }
+        }
+      }
+    });
+
+    // Гистограмма распределения сроков оперативных решений
+    new Chart(document.getElementById('operational-histogram'), {
+      type: 'bar',
+      data: {
+        labels: ['1 день', '2 дня', '3 дня', '4 дня', '5+ дней'],
+        datasets: [{
+          label: 'Количество вопросов',
+          data: [8, 6, 5, 3, 1],
+          backgroundColor: 'rgba(21, 101, 255, 0.7)',
+          borderColor: '#1565FF',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    // Pie chart типов оперативных вопросов
+    new Chart(document.getElementById('operational-pie'), {
+      type: 'pie',
+      data: {
+        labels: ['Кадровые', 'Инфраструктурные', 'Образовательные', 'Научно-технологические', 'Организационные'],
+        datasets: [{
+          data: [8, 6, 4, 3, 2],
+          backgroundColor: [
+            'rgba(21, 101, 255, 0.7)',
+            'rgba(0, 201, 81, 0.7)',
+            'rgba(245, 165, 36, 0.7)',
+            'rgba(156, 39, 176, 0.7)',
+            'rgba(255, 87, 34, 0.7)'
+          ],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+
+    // Spider chart (радар)
+    new Chart(document.getElementById('spider-chart'), {
+      type: 'radar',
+      data: {
+        labels: ['Молодые исследователи', 'Создание технологий', 'Высокотехнологичная продукция', 'Технологическая зависимость', 'Инфраструктура', 'Образование'],
+        datasets: [{
+          label: 'Влияние решений Президиума',
+          data: [85, 78, 72, 65, 80, 75],
+          backgroundColor: 'rgba(21, 101, 255, 0.2)',
+          borderColor: '#1565FF',
+          borderWidth: 2,
+          pointBackgroundColor: '#1565FF',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#1565FF'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            beginAtZero: true,
+            max: 100
+          }
+        }
+      }
+    });
+
+    // Sankey diagram (упрощённая версия - bar chart)
+    new Chart(document.getElementById('sankey-chart'), {
+      type: 'bar',
+      data: {
+        labels: ['Молодые исследователи', 'Создание технологий', 'Высокотехнологичная продукция', 'Технологическая зависимость'],
+        datasets: [{
+          label: 'Количество решений',
+          data: [24, 31, 18, 15],
+          backgroundColor: 'rgba(0, 201, 81, 0.7)',
+          borderColor: '#00C951',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    // Данные для разрезов
+    const breakdownTableData = [
+      { direction: 'Искусственный интеллект', foiv: 'Минцифры', region: 'Москва', docType: 'Аналитическая записка', urgency: 'Высокая', count: 15 },
+      { direction: 'Новые материалы', foiv: 'Минобрнауки', region: 'Московская область', docType: 'Сводка', urgency: 'Средняя', count: 12 },
+      { direction: 'Биотехнологии', foiv: 'РАН', region: 'Новосибирская область', docType: 'Проект решения', urgency: 'Высокая', count: 18 },
+      { direction: 'Энергетика', foiv: 'Минобрнауки', region: 'Санкт-Петербург', docType: 'Доклад', urgency: 'Средняя', count: 10 },
+      { direction: 'Транспорт', foiv: 'Минпромторг', region: 'Республика Татарстан', docType: 'Справка', urgency: 'Низкая', count: 8 },
+      { direction: 'Искусственный интеллект', foiv: 'Минобрнауки', region: 'Москва', docType: 'Аналитическая записка', urgency: 'Критично', count: 22 },
+      { direction: 'Новые материалы', foiv: 'Минцифры', region: 'Московская область', docType: 'Сводка', urgency: 'Средняя', count: 9 },
+      { direction: 'Биотехнологии', foiv: 'Минобрнауки', region: 'Новосибирская область', docType: 'Проект решения', urgency: 'Высокая', count: 14 }
+    ];
+
+    let breakdownHeatmapChart = null;
+    let breakdownBarChart = null;
+    let breakdownGeomapChart = null;
+
+    // Функция для обновления графиков разрезов
+    function updateBreakdownCharts() {
+      const directionFilter = document.getElementById('breakdown-direction-filter').value;
+      const foivFilter = document.getElementById('breakdown-foiv-filter').value;
+      const regionFilter = document.getElementById('breakdown-region-filter').value;
+      const docTypeFilter = document.getElementById('breakdown-doc-type-filter').value;
+      const urgencyFilter = document.getElementById('breakdown-urgency-filter').value;
+
+      // Фильтрация данных
+      const filteredData = breakdownTableData.filter(item => {
+        const matchesDirection = directionFilter === 'Все направления НТР' || item.direction === directionFilter;
+        const matchesFoiv = foivFilter === 'Все ФОИВ' || item.foiv === foivFilter;
+        const matchesRegion = regionFilter === 'Все регионы' || item.region === regionFilter;
+        const matchesDocType = docTypeFilter === 'Все типы документов' || item.docType === docTypeFilter;
+        const matchesUrgency = urgencyFilter === 'Все уровни срочности' || item.urgency === urgencyFilter;
+        return matchesDirection && matchesFoiv && matchesRegion && matchesDocType && matchesUrgency;
+      });
+
+      // Подготовка данных для heatmap (направление × ФОИВ)
+      const directions = [...new Set(breakdownTableData.map(d => d.direction))];
+      const foivs = [...new Set(breakdownTableData.map(d => d.foiv))];
+      const heatmapData = directions.map(dir => {
+        return foivs.map(foiv => {
+          const items = filteredData.filter(d => d.direction === dir && d.foiv === foiv);
+          return items.reduce((sum, item) => sum + item.count, 0);
+        });
+      });
+
+      // Обновление heatmap графика
+      if (breakdownHeatmapChart) {
+        breakdownHeatmapChart.destroy();
+      }
+      breakdownHeatmapChart = new Chart(document.getElementById('breakdown-heatmap-chart'), {
+        type: 'bar',
+        data: {
+          labels: foivs,
+          datasets: directions.map((dir, idx) => ({
+            label: dir,
+            data: heatmapData[idx],
+            backgroundColor: [
+              'rgba(21, 101, 255, 0.7)',
+              'rgba(0, 201, 81, 0.7)',
+              'rgba(245, 165, 36, 0.7)',
+              'rgba(156, 39, 176, 0.7)',
+              'rgba(255, 87, 34, 0.7)'
+            ][idx % 5]
+          }))
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top'
+            },
+            title: {
+              display: true,
+              text: 'Направление НТР × ФОИВ'
+            }
+          },
+          scales: {
+            x: {
+              stacked: true
+            },
+            y: {
+              stacked: true,
+              beginAtZero: true
+            }
+          }
+        }
+      });
+
+      // Подготовка данных для bar chart (по регионам)
+      const regions = [...new Set(breakdownTableData.map(d => d.region))];
+      const regionCounts = regions.map(region => {
+        const items = filteredData.filter(d => d.region === region);
+        return items.reduce((sum, item) => sum + item.count, 0);
+      });
+
+      // Обновление bar chart
+      if (breakdownBarChart) {
+        breakdownBarChart.destroy();
+      }
+      breakdownBarChart = new Chart(document.getElementById('breakdown-bar-chart'), {
+        type: 'bar',
+        data: {
+          labels: regions,
+          datasets: [{
+            label: 'Количество документов',
+            data: regionCounts,
+            backgroundColor: 'rgba(21, 101, 255, 0.7)',
+            borderColor: '#1565FF',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            title: {
+              display: true,
+              text: 'Распределение по регионам'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+
+      // Обновление geomap (упрощенная версия - столбчатая диаграмма по регионам)
+      if (breakdownGeomapChart) {
+        breakdownGeomapChart.destroy();
+      }
+      breakdownGeomapChart = new Chart(document.getElementById('breakdown-geomap'), {
+        type: 'bar',
+        data: {
+          labels: regions,
+          datasets: [{
+            label: 'Количество по регионам',
+            data: regionCounts,
+            backgroundColor: regions.map((_, idx) => [
+              'rgba(21, 101, 255, 0.8)',
+              'rgba(0, 201, 81, 0.8)',
+              'rgba(245, 165, 36, 0.8)',
+              'rgba(156, 39, 176, 0.8)',
+              'rgba(255, 87, 34, 0.8)'
+            ][idx % 5]),
+            borderColor: regions.map((_, idx) => [
+              '#1565FF',
+              '#00C951',
+              '#F5A524',
+              '#9C27B0',
+              '#FF5722'
+            ][idx % 5]),
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: {
+            legend: {
+              display: false
+            },
+            title: {
+              display: true,
+              text: 'Распределение по регионам'
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    // Инициализация графиков разрезов
+    updateBreakdownCharts();
+
+    // Кнопка экспорта
+    const exportBtn = document.getElementById('export-btn');
+    if (exportBtn) {
+      exportBtn.addEventListener('click', () => {
+        alert('Функция экспорта будет реализована в следующей версии');
+      });
+    }
+
+    // Кнопка методики
+    const methodologyBtn = document.getElementById('methodology-btn');
+    if (methodologyBtn) {
+      methodologyBtn.addEventListener('click', () => {
+        alert('Методика мониторинга деятельности Президиума Комиссии');
+      });
+    }
+
+    // Функция для фильтрации таблицы материалов
+    function filterMaterialsTable() {
+      const searchInput = document.getElementById('materials-search');
+      const topicFilter = document.getElementById('materials-topic-filter');
+      const typeFilter = document.getElementById('materials-type-filter');
+      const table = document.getElementById('materials-table');
+      const rows = table.querySelectorAll('tbody tr');
+
+      const searchText = searchInput.value.toLowerCase();
+      const selectedTopic = topicFilter.value;
+      const selectedType = typeFilter.value;
+
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const topic = cells[1].textContent.trim();
+        const type = cells[2].textContent.trim();
+        const allText = row.textContent.toLowerCase();
+
+        const matchesSearch = searchText === '' || allText.includes(searchText);
+        const matchesTopic = selectedTopic === 'Все тематики' || topic === selectedTopic;
+        const matchesType = selectedType === 'Все типы' || type === selectedType;
+
+        row.style.display = (matchesSearch && matchesTopic && matchesType) ? '' : 'none';
+      });
+    }
+
+    // Обработчики для фильтров материалов
+    const materialsSearch = document.getElementById('materials-search');
+    const materialsTopicFilter = document.getElementById('materials-topic-filter');
+    const materialsTypeFilter = document.getElementById('materials-type-filter');
+
+    if (materialsSearch) {
+      materialsSearch.addEventListener('input', filterMaterialsTable);
+    }
+    if (materialsTopicFilter) {
+      materialsTopicFilter.addEventListener('change', filterMaterialsTable);
+    }
+    if (materialsTypeFilter) {
+      materialsTypeFilter.addEventListener('change', filterMaterialsTable);
+    }
+
+    // Функция для фильтрации предложений
+    function filterProposals() {
+      const statusFilter = document.getElementById('proposals-status-filter');
+      const proposalCards = document.querySelectorAll('.proposal-card');
+
+      const selectedStatus = statusFilter.value;
+
+      proposalCards.forEach(card => {
+        const statusBadge = card.querySelector('.status-badge');
+        if (!statusBadge) return;
+
+        const statusText = statusBadge.textContent.trim();
+        let matches = false;
+
+        if (selectedStatus === 'Все статусы') {
+          matches = true;
+        } else if (selectedStatus === 'Включено в повестку' && statusText === 'Включено в повестку') {
+          matches = true;
+        } else if (selectedStatus === 'Рассмотрено' && statusText === 'Рассмотрено') {
+          matches = true;
+        } else if (selectedStatus === 'Отклонено' && statusText === 'Отклонено') {
+          matches = true;
+        } else if (selectedStatus === 'На доработке' && statusText === 'На доработке') {
+          matches = true;
+        }
+
+        card.style.display = matches ? '' : 'none';
+      });
+    }
+
+    // Обработчик для фильтра предложений
+    const proposalsStatusFilter = document.getElementById('proposals-status-filter');
+    if (proposalsStatusFilter) {
+      proposalsStatusFilter.addEventListener('change', filterProposals);
+    }
+
+    // Функция для фильтрации оперативных вопросов
+    function filterOperationalTable() {
+      const typeFilter = document.getElementById('operational-type-filter');
+      const table = document.getElementById('operational-table');
+      const rows = table.querySelectorAll('tbody tr');
+
+      const selectedType = typeFilter.value;
+
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const description = cells[1].textContent.trim();
+        const ntrLink = cells[5].textContent.trim();
+
+        let matches = false;
+
+        if (selectedType === 'Все типы') {
+          matches = true;
+        } else if (selectedType === 'Кадровые' && (description.toLowerCase().includes('кадр') || ntrLink.toLowerCase().includes('молод'))) {
+          matches = true;
+        } else if (selectedType === 'Инфраструктурные' && (description.toLowerCase().includes('инфраструктур') || ntrLink.toLowerCase().includes('инфраструктур'))) {
+          matches = true;
+        } else if (selectedType === 'Образовательные' && (description.toLowerCase().includes('образован') || ntrLink.toLowerCase().includes('образован'))) {
+          matches = true;
+        } else if (selectedType === 'Научно-технологические' && (description.toLowerCase().includes('технолог') || ntrLink.toLowerCase().includes('технолог'))) {
+          matches = true;
+        } else if (selectedType === 'Организационные' && (description.toLowerCase().includes('организацион') || ntrLink.toLowerCase().includes('организацион'))) {
+          matches = true;
+        }
+
+        row.style.display = matches ? '' : 'none';
+      });
+    }
+
+    // Обработчик для фильтра оперативных вопросов
+    const operationalTypeFilter = document.getElementById('operational-type-filter');
+    if (operationalTypeFilter) {
+      operationalTypeFilter.addEventListener('change', filterOperationalTable);
+    }
+
+    // Функция для фильтрации решений (heatmap)
+    function filterDecisionsHeatmap() {
+      const statusFilter = document.getElementById('decisions-status-filter');
+      const table = document.getElementById('decisions-heatmap');
+      const rows = table.querySelectorAll('tbody tr');
+
+      const selectedStatus = statusFilter.value;
+
+      // Для heatmap фильтрация по статусу может быть реализована через изменение цвета ячеек
+      // Здесь просто показываем/скрываем строки в зависимости от наличия соответствующих значений
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td:not(:first-child)');
+        let hasMatchingStatus = false;
+
+        cells.forEach(cell => {
+          const cellValue = parseInt(cell.textContent.trim());
+          const cellClasses = cell.querySelector('.heatmap-cell').classList;
+
+          if (selectedStatus === 'Все статусы') {
+            hasMatchingStatus = true;
+          } else if (selectedStatus === 'Исполнено' && cellClasses.contains('heatmap-cell--green') && cellValue > 0) {
+            hasMatchingStatus = true;
+          } else if (selectedStatus === 'В работе' && cellClasses.contains('heatmap-cell--yellow')) {
+            hasMatchingStatus = true;
+          } else if (selectedStatus === 'Просрочено' && cellClasses.contains('heatmap-cell--red')) {
+            hasMatchingStatus = true;
+          }
+        });
+
+        row.style.display = hasMatchingStatus ? '' : 'none';
+      });
+    }
+
+    // Обработчик для фильтра решений
+    const decisionsStatusFilter = document.getElementById('decisions-status-filter');
+    if (decisionsStatusFilter) {
+      decisionsStatusFilter.addEventListener('change', filterDecisionsHeatmap);
+    }
+
+    // Функция для фильтрации таблицы разрезов
+    function filterBreakdownTable() {
+      const directionFilter = document.getElementById('breakdown-direction-filter').value;
+      const foivFilter = document.getElementById('breakdown-foiv-filter').value;
+      const regionFilter = document.getElementById('breakdown-region-filter').value;
+      const docTypeFilter = document.getElementById('breakdown-doc-type-filter').value;
+      const urgencyFilter = document.getElementById('breakdown-urgency-filter').value;
+      const table = document.getElementById('breakdown-heatmap-table');
+      const rows = table.querySelectorAll('tbody tr');
+
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const direction = cells[0].textContent.trim();
+        const foiv = cells[1].textContent.trim();
+        const region = cells[2].textContent.trim();
+        const docType = cells[3].textContent.trim();
+        const urgencyBadge = cells[4].querySelector('.status-badge');
+        const urgency = urgencyBadge ? urgencyBadge.textContent.trim() : '';
+
+        const matchesDirection = directionFilter === 'Все направления НТР' || direction === directionFilter;
+        const matchesFoiv = foivFilter === 'Все ФОИВ' || foiv === foivFilter;
+        const matchesRegion = regionFilter === 'Все регионы' || region === regionFilter;
+        const matchesDocType = docTypeFilter === 'Все типы документов' || docType === docTypeFilter;
+        const matchesUrgency = urgencyFilter === 'Все уровни срочности' || urgency === urgencyFilter;
+
+        row.style.display = (matchesDirection && matchesFoiv && matchesRegion && matchesDocType && matchesUrgency) ? '' : 'none';
+      });
+
+      // Обновляем графики
+      updateBreakdownCharts();
+    }
+
+    // Обработчики для фильтров разрезов
+    const breakdownDirectionFilter = document.getElementById('breakdown-direction-filter');
+    const breakdownFoivFilter = document.getElementById('breakdown-foiv-filter');
+    const breakdownRegionFilter = document.getElementById('breakdown-region-filter');
+    const breakdownDocTypeFilter = document.getElementById('breakdown-doc-type-filter');
+    const breakdownUrgencyFilter = document.getElementById('breakdown-urgency-filter');
+
+    if (breakdownDirectionFilter) {
+      breakdownDirectionFilter.addEventListener('change', filterBreakdownTable);
+    }
+    if (breakdownFoivFilter) {
+      breakdownFoivFilter.addEventListener('change', filterBreakdownTable);
+    }
+    if (breakdownRegionFilter) {
+      breakdownRegionFilter.addEventListener('change', filterBreakdownTable);
+    }
+    if (breakdownDocTypeFilter) {
+      breakdownDocTypeFilter.addEventListener('change', filterBreakdownTable);
+    }
+    if (breakdownUrgencyFilter) {
+      breakdownUrgencyFilter.addEventListener('change', filterBreakdownTable);
+    }
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел 5 — Информационное представление и распространение результатов</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .management-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-20);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      grid-column: span 2;
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+      align-items: flex-end;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .controls-bar {
+      border-top: 1px solid var(--material-neutral-border-primary);
+      border-bottom: 1px solid var(--material-neutral-border-primary);
+      padding: var(--space-16) var(--space-20);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .controls-bar__filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      align-items: center;
+    }
+
+    .controls-bar__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      align-items: center;
+    }
+
+    .filter-select {
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-caption);
+      cursor: pointer;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-6);
+      height: var(--control-height);
+      padding: 0 var(--space-16);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-family: var(--font-main);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      text-decoration: none;
+      cursor: pointer;
+      background-color: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-primary);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn--primary {
+      background-color: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .risk-card {
+      background: linear-gradient(165deg, rgba(255, 105, 0, 0.12), rgba(0, 102, 255, 0.12));
+      border: 1px solid var(--color-warning-200);
+      color: var(--material-neutral-content-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .risk-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-8);
+      font-family: var(--font-alt);
+      font-weight: var(--font-weight-label-xl);
+      font-size: var(--font-size-label-xl);
+      line-height: var(--line-height-label-xl);
+      letter-spacing: var(--letter-spacing-label-xl);
+    }
+
+    .risk-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: var(--space-10);
+    }
+
+    .risk-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-8);
+      align-items: center;
+      font-size: var(--font-size-body);
+    }
+
+    .risk-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 105, 0, 0.1);
+    }
+
+    .risk-dot--high {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.12);
+    }
+
+    .risk-dot--progress {
+      background-color: var(--color-info-300);
+      box-shadow: 0 0 0 4px rgba(81, 162, 255, 0.12);
+    }
+
+    .risk-legend {
+      display: flex;
+      gap: var(--space-12);
+      flex-wrap: wrap;
+      align-items: center;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      margin-top: auto;
+      padding-top: var(--space-8);
+    }
+
+    .legend {
+      display: flex;
+      gap: var(--space-8);
+      align-items: center;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: var(--space-24);
+    }
+
+    @media (min-width: 1200px) {
+      .dashboard-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .section-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .section-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .section-card::before {
+      content: attr(data-code);
+      position: absolute;
+      top: var(--space-12);
+      right: var(--space-12);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      letter-spacing: var(--letter-spacing-caption);
+      text-transform: uppercase;
+    }
+
+    .section-card__title {
+      font-family: var(--font-alt);
+      font-size: 28px;
+      line-height: 36px;
+      letter-spacing: -0.4px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+      max-width: 90%;
+    }
+
+    .section-card__description {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .section-card__kpi-list {
+      list-style: none;
+      margin: 0;
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .section-card__kpi-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-8);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .section-card__kpi-item::before {
+      content: "•";
+      color: var(--material-neutral-content-tertiary);
+      font-weight: bold;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .micro-metrics {
+      list-style: none;
+      margin: 0;
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-10);
+    }
+
+    .micro-metric {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-16);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .micro-metric span {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .micro-metric strong {
+      color: var(--material-neutral-content-primary);
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .micro-metric__value-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: var(--space-2);
+      flex-shrink: 0;
+    }
+
+    .micro-metric__hint {
+      color: var(--material-neutral-content-tertiary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      white-space: nowrap;
+    }
+
+    .section-card__data-types {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      align-items: center;
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+    }
+
+    .section-card__data-type {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .section-card__status {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+    }
+
+    .section-card__status-text {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .section-card__status-block {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      flex: 1;
+      margin-right: var(--space-12);
+    }
+
+    .section-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--material-neutral-highlight-primary);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: var(--space-4);
+    }
+
+    .progress-bar__fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-positive-400), var(--color-info-400));
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-bar__fill--yellow {
+      background: linear-gradient(90deg, var(--color-warning-400), var(--color-warning-500));
+    }
+
+    .progress-bar__fill--red {
+      background: linear-gradient(90deg, var(--color-negative-400), var(--color-negative-500));
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.12);
+    }
+
+    .status-dot--red {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.18);
+    }
+
+    .status-dot--yellow {
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 185, 106, 0.15);
+    }
+
+    .status-dot--green {
+      background-color: var(--color-positive-400);
+      box-shadow: 0 0 0 4px rgba(0, 201, 81, 0.15);
+    }
+
+    .status-dot--blue {
+      background-color: var(--color-info-400);
+      box-shadow: 0 0 0 4px rgba(81, 162, 255, 0.15);
+    }
+
+    .summary-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-20);
+    }
+
+    .summary-section__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-20) 0;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--space-20);
+    }
+
+    @media (min-width: 1200px) {
+      .summary-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    .summary-item {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .summary-item:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .summary-item__label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .summary-item__value-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      margin-top: auto;
+    }
+
+    .summary-item__value {
+      font-family: var(--font-alt);
+      font-size: 34px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 40px;
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+    }
+
+    .summary-item__value--text {
+      font-size: 24px;
+      line-height: 32px;
+      font-weight: 600;
+    }
+
+    .summary-item__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .summary-item__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .summary-item__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .summary-item__hint {
+      color: var(--material-neutral-content-tertiary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+    }
+
+    .timer-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+    }
+
+    @media (max-width: 900px) {
+      .management-bar {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-bar">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="index.html">
+                <span class="back-link__icon"></span>
+                На главную
+              </a>
+              <span class="meta-pill">Раздел 5</span>
+            </div>
+            <h1>5. Информационное представление и распространение результатов</h1>
+            <p>Комплексная витрина всех аналитических и отчётных материалов КНТР: формирование докладов, анализ отчётов РАН, подготовка предложений, поддержание актуальности информационного облика НТР.</p>
+            <div class="meta-row">
+              <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+              <span class="meta-pill">Источники: КНТР, РАН, Президентский совет, ФОИВ</span>
+            </div>
+          </div>
+        </div>
+        <aside class="risk-card">
+          <div class="risk-title">
+            Краткая сводка рисков
+          </div>
+          <ul class="risk-list">
+            <li class="risk-item">
+              <span class="risk-dot risk-dot--high"></span>
+              Задержки в подготовке доклада Президентскому совету
+            </li>
+            <li class="risk-item">
+              <span class="risk-dot"></span>
+              Недостаточная актуализация аналитических данных
+            </li>
+            <li class="risk-item">
+              <span class="risk-dot risk-dot--high"></span>
+              Просрочки в подготовке предложений РАН по итогам отчётов
+            </li>
+            <li class="risk-item">
+              <span class="risk-dot risk-dot--progress"></span>
+              Улучшение качества информационного сопровождения НТР
+            </li>
+          </ul>
+          <div class="risk-legend">
+            <span class="legend"><span class="status-dot status-dot--red"></span> высокий риск</span>
+            <span class="legend"><span class="status-dot status-dot--yellow"></span> средний</span>
+            <span class="legend"><span class="status-dot status-dot--green"></span> низкий</span>
+          </div>
+        </aside>
+      </section>
+
+      <!-- Блок фильтров и кнопок -->
+      <section class="controls-bar">
+        <div class="controls-bar__filters">
+          <select class="filter-select">
+            <option>Тип: Все материалы</option>
+            <option>Тип: KPI-ориентированные подразделы</option>
+            <option>Тип: Докладные материалы</option>
+            <option>Тип: РАН и ФНИ</option>
+            <option>Тип: Поручения ВИП ГЗ</option>
+          </select>
+          <select class="filter-select">
+            <option>Год: 2025</option>
+            <option>Год: 2024</option>
+            <option>Год: 2023</option>
+          </select>
+        </div>
+        <div class="controls-bar__actions">
+          <button class="btn btn--primary">📄 Сформировать сводный отчёт раздела 5</button>
+          <button class="btn">🔍 Показать все KPI раздела 5</button>
+          <button class="btn">🗂️ Материалы и документы</button>
+        </div>
+      </section>
+
+      <!-- Сводная мини-аналитика раздела 5 -->
+      <section class="summary-section">
+        <div class="summary-grid">
+          <div class="summary-item">
+            <div class="summary-item__label">Готовность всех ключевых документов раздела (%)</div>
+            <div class="summary-item__value-wrapper">
+              <div class="summary-item__value summary-item__value--green">78%</div>
+              <div class="summary-item__hint">Целевой показатель: 85%</div>
+            </div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-item__label">Количество проанализированных отчётов (годовых/итоговых)</div>
+            <div class="summary-item__value-wrapper">
+              <div class="summary-item__value summary-item__value--green">12</div>
+              <div class="summary-item__hint">Из 15 запланированных</div>
+            </div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-item__label">Количество подготовленных предложений РАН</div>
+            <div class="summary-item__value-wrapper">
+              <div class="summary-item__value summary-item__value--yellow">8</div>
+              <div class="summary-item__hint">Из 12 запланированных</div>
+            </div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-item__label">Ключевые достижения месяца</div>
+            <div class="summary-item__value-wrapper">
+              <div class="summary-item__value summary-item__value--text summary-item__value--green">Доклад 5.1 готов на 85%</div>
+              <div class="summary-item__hint">Анализ отчётов РАН завершён</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Карточки подразделов -->
+      <section class="dashboard-grid">
+        <!-- Карточка 5.1 -->
+        <article class="section-card" data-code="5.1">
+          <h2 class="section-card__title">Доклад Президентскому совету по науке и образованию</h2>
+          <p class="section-card__description">Подготовка сводного доклада о состоянии НТР и мерах государственной политики.</p>
+          
+          <ul class="micro-metrics">
+            <li class="micro-metric"><span>Готовность доклада (%)</span><strong>85%</strong></li>
+            <li class="micro-metric"><span>Количество обновлённых аналитических блоков</span><strong>12 из 15</strong></li>
+            <li class="micro-metric"><span>Степень актуализации данных</span><strong>15.12.2025</strong></li>
+            <li class="micro-metric"><span>Количество разделов доклада</span><strong>8</strong></li>
+            <li class="micro-metric"><span>Статус согласования</span><strong>В работе</strong></li>
+          </ul>
+
+          <div class="section-card__data-types">
+            <span class="section-card__data-type">📊 KPI</span>
+            <span class="section-card__data-type">📄 Докладные материалы</span>
+            <span class="section-card__data-type">📈 Прогресс</span>
+          </div>
+
+          <div class="section-card__status">
+            <div style="flex: 1;">
+              <div class="section-card__status-text">Прогресс готовности</div>
+              <div class="progress-bar">
+                <div class="progress-bar__fill" style="width: 85%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card__footer">
+            <div class="section-card__status-block">
+              <span class="status-dot status-dot--green"></span>
+              <span class="section-card__status-text">В работе</span>
+            </div>
+            <a href="chapter5-1.html" class="btn btn--primary">Перейти в подраздел</a>
+          </div>
+        </article>
+
+        <!-- Карточка 5.2 -->
+        <article class="section-card" data-code="5.2">
+          <h2 class="section-card__title">Рассмотрение годового отчёта и итогового доклада РАН по ФНИ</h2>
+          <p class="section-card__description">Оценка вклада фундаментальных исследований в достижение целей НТР.</p>
+          
+          <ul class="micro-metrics">
+            <li class="micro-metric"><span>Готовность анализа годового отчёта (%)</span><strong>92%</strong></li>
+            <li class="micro-metric"><span>Готовность анализа итогового доклада (%)</span><strong>88%</strong></li>
+            <li class="micro-metric"><span>Ключевые вклады ФНИ в конкурентоспособность РФ (WoS / Scopus / FTE)</span><strong>1,245</strong></li>
+            <li class="micro-metric"><span>Доля молодых исследователей, участвующих в ФНИ</span><strong>42%</strong></li>
+            <li class="micro-metric"><span>Количество проанализированных направлений</span><strong>18</strong></li>
+          </ul>
+
+          <div class="section-card__data-types">
+            <span class="section-card__data-type">📊 KPI</span>
+            <span class="section-card__data-type">🔬 РАН и ФНИ</span>
+            <span class="section-card__data-type">📈 Анализ</span>
+          </div>
+
+          <div class="section-card__status">
+            <span class="section-card__status-text">Анализ в процессе</span>
+          </div>
+
+          <div class="section-card__footer">
+            <div class="section-card__status-block">
+              <span class="status-dot status-dot--blue"></span>
+              <span class="section-card__status-text">Анализ в процессе</span>
+            </div>
+            <a href="chapter5-2.html" class="btn btn--primary">Перейти в подраздел</a>
+          </div>
+        </article>
+
+        <!-- Карточка 5.3 -->
+        <article class="section-card" data-code="5.3">
+          <h2 class="section-card__title">Подготовка предложений РАН по итогам отчётов</h2>
+          <p class="section-card__description">Формирование предложений по совершенствованию реализации Программы ФНИ.</p>
+          
+          <ul class="micro-metrics">
+            <li class="micro-metric"><span>Количество подготовленных предложений</span><strong>8 из 12</strong></li>
+            <li class="micro-metric"><span>Доля предложений, основанных на KPI-отклонениях (%)</span><strong>75%</strong></li>
+            <li class="micro-metric"><span>Готовность итогового пакета (%)</span><strong>67%</strong></li>
+            <li class="micro-metric"><span>Количество направлений для предложений</span><strong>6</strong></li>
+            <li class="micro-metric"><span>Приоритетных предложений</span><strong>3</strong></li>
+          </ul>
+
+          <div class="section-card__data-types">
+            <span class="section-card__data-type">📊 KPI</span>
+            <span class="section-card__data-type">📝 Предложения</span>
+            <span class="section-card__data-type">⏱ Таймер</span>
+          </div>
+
+          <div class="section-card__status">
+            <div style="display: flex; align-items: center; gap: var(--space-8);">
+              <span class="section-card__status-text">До срока внесения:</span>
+              <span class="timer-badge">⏱ 12 дней</span>
+            </div>
+          </div>
+
+          <div class="section-card__footer">
+            <div class="section-card__status-block">
+              <span class="status-dot status-dot--yellow"></span>
+              <span class="section-card__status-text">В работе</span>
+            </div>
+            <a href="chapter5-3.html" class="btn btn--primary">Перейти в подраздел</a>
+          </div>
+        </article>
+
+        <!-- Карточка 5.7 -->
+        <article class="section-card" data-code="5.7">
+          <h2 class="section-card__title">Мониторинг реализации ВИП ГЗ «Единая система мониторинга климатически активных веществ»</h2>
+          <p class="section-card__description">Контроль исполнения поручений по проекту ВИП ГЗ.</p>
+          
+          <ul class="micro-metrics">
+            <li class="micro-metric"><span>Количество поручений ФОИВ и организаций</span><strong>27</strong></li>
+            <li class="micro-metric"><span>Доля исполненных поручений</span><strong>81%</strong></li>
+            <li class="micro-metric"><span>Скорость исполнения (медиана)</span><strong>18 дней</strong></li>
+            <li class="micro-metric"><span>Поручений в работе</span><strong>5</strong></li>
+            <li class="micro-metric"><span>Поручений просрочено</span><strong>0</strong></li>
+          </ul>
+
+          <div class="section-card__data-types">
+            <span class="section-card__data-type">🕒 Поручения ВИП ГЗ</span>
+            <span class="section-card__data-type">📊 KPI</span>
+            <span class="section-card__data-type">🗂 Реестр</span>
+          </div>
+
+          <div class="section-card__status">
+            <span class="section-card__status-text">Поручений: 27 (81% исполнено)</span>
+          </div>
+
+          <div class="section-card__footer">
+            <div class="section-card__status-block">
+              <span class="status-dot status-dot--green"></span>
+              <span class="section-card__status-text">В работе / стабильно</span>
+            </div>
+            <a href="chapter5-7.html" class="btn btn--primary">Перейти в подраздел</a>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
+

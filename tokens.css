@@ -1,0 +1,384 @@
+/* =========================
+   TOKENS: COLORS (SEMANTIC)
+   ========================= */
+
+:root {
+  /* neutral (slate) — значения из colors_core-pallet.json */
+  --color-neutral-0: #ffffff;
+  --color-neutral-50: #f8fafc;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-300: #cad5e2;
+  --color-neutral-400: #90a1b9;
+  --color-neutral-500: #62748e;
+  --color-neutral-600: #45556c;
+  --color-neutral-700: #314158;
+  --color-neutral-800: #1d293d;
+  --color-neutral-900: #0f172b;
+  --color-neutral-950: #020618;
+
+  /* accent / info (blue) */
+  --color-accent-50: #eff6ff;
+  --color-accent-100: #dbeafe;
+  --color-accent-200: #bedbff;
+  --color-accent-300: #8ec5ff;
+  --color-accent-400: #51a2ff;
+  --color-accent-500: #2b7fff;
+  --color-accent-600: #0066ff;
+  --color-accent-700: #1447e6;
+  --color-accent-800: #193cb8;
+  --color-accent-900: #1c398e;
+  --color-accent-950: #162456;
+
+  /* negative (red) */
+  --color-negative-50: #fef2f2;
+  --color-negative-100: #ffe2e2;
+  --color-negative-200: #ffc9c9;
+  --color-negative-300: #ffa2a2;
+  --color-negative-400: #ff6467;
+  --color-negative-500: #fb2c36;
+  --color-negative-600: #e7000b;
+  --color-negative-700: #c10007;
+  --color-negative-800: #9f0712;
+  --color-negative-900: #82181a;
+  --color-negative-950: #460809;
+
+  /* positive (green) */
+  --color-positive-50: #f0fdf4;
+  --color-positive-100: #dcfce7;
+  --color-positive-200: #b9f8cf;
+  --color-positive-300: #7bf1a8;
+  --color-positive-400: #05df72;
+  --color-positive-500: #00c951;
+  --color-positive-600: #00a63e;
+  --color-positive-700: #008236;
+  --color-positive-800: #016630;
+  --color-positive-900: #0d542b;
+  --color-positive-950: #032e15;
+
+  /* info — дублирует accent для семантики */
+  --color-info-50: #eff6ff;
+  --color-info-100: #dbeafe;
+  --color-info-200: #bedbff;
+  --color-info-300: #8ec5ff;
+  --color-info-400: #51a2ff;
+  --color-info-500: #2b7fff;
+  --color-info-600: #0066ff;
+  --color-info-700: #1447e6;
+  --color-info-800: #193cb8;
+  --color-info-900: #1c398e;
+  --color-info-950: #162456;
+
+  /* warning (orange) */
+  --color-warning-50: #fff7ed;
+  --color-warning-100: #ffedd4;
+  --color-warning-200: #ffd6a8;
+  --color-warning-300: #ffb86a;
+  --color-warning-400: #ff8904;
+  --color-warning-500: #ff6900;
+  --color-warning-600: #f54a00;
+  --color-warning-700: #ca3500;
+  --color-warning-800: #9f2d00;
+  --color-warning-900: #7e2a0c;
+  --color-warning-950: #441306;
+}
+  
+  /* =========================
+     TOKENS: MATERIALS
+     (пример: neutral, lite-accent, accent)
+     ========================= */
+  
+  /* Базовые «материалы» — удобно задавать через CSS-переменные.
+     Дальше компоненты могут использовать их как фон/бордер/текст. */
+  
+:root {
+  /* Neutral surfaces/content (из colors_semantic-materials.json) */
+  --material-neutral-surface-primary: var(--color-neutral-0);
+  --material-neutral-border-primary: var(--color-neutral-200);
+  --material-neutral-divider-primary: var(--color-neutral-300);
+  --material-neutral-highlight-primary: var(--color-neutral-50);
+  --material-neutral-content-primary: var(--color-neutral-900);
+  --material-neutral-content-secondary: var(--color-neutral-600);
+  --material-neutral-content-tertiary: var(--color-neutral-400);
+
+  /* Контрастные нейтральные поверхности (тёмные блоки) */
+  --material-contrast-neutral-surface: var(--color-neutral-900);
+  --material-contrast-neutral-border: var(--color-neutral-700);
+  --material-contrast-neutral-divider: var(--color-neutral-500);
+  --material-contrast-neutral-highlight: var(--color-neutral-700);
+  --material-contrast-neutral-content-primary: var(--color-neutral-0);
+  --material-contrast-neutral-content-secondary: var(--color-neutral-300);
+  --material-contrast-neutral-content-tertiary: var(--color-neutral-500);
+
+  /* Accent */
+  --material-accent-surface-primary: var(--color-accent-600);
+  --material-accent-border-primary: var(--color-accent-700);
+  --material-accent-divider-primary: var(--color-accent-300);
+  --material-accent-highlight-primary: var(--color-accent-500);
+  --material-accent-content-primary: var(--color-neutral-0);
+  --material-accent-content-secondary: var(--color-accent-50);
+  --material-accent-content-tertiary: var(--color-accent-300);
+
+  /* Lite-accent */
+  --material-lite-accent-surface: var(--color-accent-50);
+  --material-lite-accent-border: var(--color-accent-200);
+  --material-lite-accent-divider: var(--color-accent-300);
+  --material-lite-accent-highlight: var(--color-accent-100);
+  --material-lite-accent-content-primary: var(--color-accent-600);
+  --material-lite-accent-content-secondary: var(--color-accent-400);
+  --material-lite-accent-content-tertiary: var(--color-accent-300);
+
+  /* Negative */
+  --material-negative-surface: var(--color-negative-500);
+  --material-negative-border: var(--color-negative-700);
+  --material-negative-divider: var(--color-negative-300);
+  --material-negative-highlight: var(--color-negative-400);
+  --material-negative-content-primary: var(--color-neutral-0);
+  --material-negative-content-secondary: var(--color-negative-50);
+  --material-negative-content-tertiary: var(--color-negative-300);
+
+  /* Lite-negative */
+  --material-lite-negative-surface: var(--color-negative-50);
+  --material-lite-negative-border: var(--color-negative-200);
+  --material-lite-negative-divider: var(--color-negative-300);
+  --material-lite-negative-highlight: var(--color-negative-100);
+  --material-lite-negative-content-primary: var(--color-negative-500);
+  --material-lite-negative-content-secondary: var(--color-negative-400);
+  --material-lite-negative-content-tertiary: var(--color-negative-300);
+
+  /* Positive */
+  --material-positive-surface: var(--color-positive-500);
+  --material-positive-border: var(--color-positive-700);
+  --material-positive-divider: var(--color-positive-300);
+  --material-positive-highlight: var(--color-positive-400);
+  --material-positive-content-primary: var(--color-neutral-0);
+  --material-positive-content-secondary: var(--color-positive-50);
+  --material-positive-content-tertiary: var(--color-positive-300);
+
+  /* Lite-positive */
+  --material-lite-positive-surface: var(--color-positive-50);
+  --material-lite-positive-border: var(--color-positive-200);
+  --material-lite-positive-divider: var(--color-positive-300);
+  --material-lite-positive-highlight: var(--color-positive-100);
+  --material-lite-positive-content-primary: var(--color-positive-600);
+  --material-lite-positive-content-secondary: var(--color-positive-400);
+  --material-lite-positive-content-tertiary: var(--color-positive-300);
+
+  /* Warning */
+  --material-warning-surface: var(--color-warning-500);
+  --material-warning-border: var(--color-warning-700);
+  --material-warning-divider: var(--color-warning-300);
+  --material-warning-highlight: var(--color-warning-400);
+  --material-warning-content-primary: var(--color-neutral-0);
+  --material-warning-content-secondary: var(--color-warning-50);
+  --material-warning-content-tertiary: var(--color-warning-300);
+
+  /* Lite-warning */
+  --material-lite-warning-surface: var(--color-warning-50);
+  --material-lite-warning-border: var(--color-warning-200);
+  --material-lite-warning-divider: var(--color-warning-300);
+  --material-lite-warning-highlight: var(--color-warning-100);
+  --material-lite-warning-content-primary: var(--color-warning-500);
+  --material-lite-warning-content-secondary: var(--color-warning-400);
+  --material-lite-warning-content-tertiary: var(--color-warning-300);
+
+  /* Info */
+  --material-info-surface: var(--color-info-600);
+  --material-info-border: var(--color-info-700);
+  --material-info-divider: var(--color-info-300);
+  --material-info-highlight: var(--color-info-500);
+  --material-info-content-primary: var(--color-neutral-0);
+  --material-info-content-secondary: var(--color-info-50);
+  --material-info-content-tertiary: var(--color-info-300);
+
+  /* Lite-info */
+  --material-lite-info-surface: var(--color-info-50);
+  --material-lite-info-border: var(--color-info-200);
+  --material-lite-info-divider: var(--color-info-300);
+  --material-lite-info-highlight: var(--color-info-100);
+  --material-lite-info-content-primary: var(--color-info-600);
+  --material-lite-info-content-secondary: var(--color-info-400);
+  --material-lite-info-content-tertiary: var(--color-info-300);
+}
+  
+  /* Пример утилит-материалов для быстрого использования */
+  
+  .u-material-neutral {
+    background-color: var(--material-neutral-surface-primary);
+    border: 1px solid var(--material-neutral-border-primary);
+    color: var(--material-neutral-content-primary);
+  }
+  
+  .u-material-accent {
+    background-color: var(--material-accent-surface-primary);
+    color: var(--material-accent-content-primary);
+  }
+  
+  /* Синий текст ссылки внутри нейтрального абзаца */
+  .u-text-lite-accent-primary {
+    color: var(--material-lite-accent-content-primary);
+  }
+  
+  /* =========================
+     TOKENS: TYPOGRAPHY
+     (шрифты, базовый размер; детализация – в typography.css)
+     ========================= */
+  
+:root {
+  --font-main: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-alt: "Geologica", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* XL / Display */
+  --font-size-display-xl: 64px;
+  --line-height-display-xl: 80px;
+  --letter-spacing-display-xl: -1.28px;
+  --font-weight-display-xl: 500;
+
+  /* XL / Heading */
+  --font-size-heading-xl: 40px;
+  --line-height-heading-xl: 48px;
+  --letter-spacing-heading-xl: -0.8px;
+  --font-weight-heading-xl: 500;
+
+  /* Medium / Display */
+  --font-size-display-md: 28px;
+  --line-height-display-md: 36px;
+  --font-weight-display-md: 600;
+
+  /* XL / Label */
+  --font-size-label-xl: 28px;
+  --line-height-label-xl: 34px;
+  --letter-spacing-label-xl: -0.56px;
+  --font-weight-label-xl: 500;
+
+  /* Medium / Heading */
+  --font-size-heading: 20px;
+  --line-height-heading: 28px;
+  --font-weight-heading: 500;
+
+  /* Large / Label */
+  --font-size-label-lg: 18px;
+  --line-height-label-lg: 28px;
+  --font-weight-label-lg: 500;
+
+  /* Medium / Label */
+  --font-size-label: 16px;
+  --line-height-label: 24px;
+  --font-weight-label: 500;
+
+  /* Large / Body */
+  --font-size-body-lg: 16px;
+  --line-height-body-lg: 26px;
+  --font-weight-body-lg: 400;
+
+  /* Medium / Body */
+  --font-size-body: 14px;
+  --line-height-body: 20px;
+  --font-weight-body: 400;
+
+  /* Small / Label */
+  --font-size-label-sm: 14px;
+  --line-height-label-sm: 20px;
+  --font-weight-label-sm: 500;
+
+  /* Table number */
+  --font-size-table-number: 14px;
+  --line-height-table-number: 20px;
+
+  /* Code */
+  --font-size-code: 14px;
+  --line-height-code: 20px;
+  --letter-spacing-code: 0.56px;
+  --font-weight-code: 500;
+
+  /* Medium / Caption */
+  --font-size-caption: 12px;
+  --line-height-caption: 18px;
+  --letter-spacing-caption: 0.48px;
+  --font-weight-caption: 500;
+}
+  
+  /* =========================
+     TOKENS: RADII, SPACING
+     ========================= */
+  
+  :root {
+    /* Скругления */
+    --radius-xs: 4px;   /* чекбоксы */
+    --radius-sm: 6px;   /* инпуты, селекты, кнопки */
+    --radius-md: 12px;  /* небольшие карточки */
+    --radius-lg: 16px;  /* секции, тело страницы */
+  
+    /* Стандартная высота инпутов / кнопок */
+    --control-height: 36px;
+  
+    /* Сетка отступов (только кратные 2 и 4, как в гайде) */
+    --space-0: 0px;
+    --space-2: 2px;
+    --space-4: 4px;
+    --space-6: 6px;
+    --space-8: 8px;
+    --space-10: 10px;
+    --space-12: 12px;
+    --space-16: 16px;
+    --space-20: 20px;
+    --space-24: 24px;
+    --space-32: 32px;
+    --space-40: 40px;
+    --space-48: 48px;
+    --space-64: 64px;
+    --space-80: 80px;
+    --space-96: 96px;
+    --space-112: 112px;
+    --space-128: 128px;
+  }
+  
+  /* =========================
+     TOKENS: SHADOWS
+     ========================= */
+  
+  :root {
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.25);
+    --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.3);
+    --shadow-lg: 0 10px 24px rgba(15, 23, 42, 0.4);
+    --shadow-xl: 0 18px 40px rgba(15, 23, 42, 0.5);
+  }
+  
+  /* =========================
+     TOKENS: STATES (hover/active/disabled)
+     ========================= */
+  
+  :root {
+    /* Прозрачности для состояний поверх материала */
+    --state-hover-overlay: rgba(255, 255, 255, 0.2);  /* наведено: +белый 20% */
+    --state-active-overlay: rgba(0, 0, 0, 0.15);      /* нажато: +черный 15% */
+    --state-disabled-opacity: 0.33;                   /* disabled: 33% opacity */
+  }
+  
+  /* Утилиты состояний для компонентов */
+  
+  .is-disabled {
+    opacity: var(--state-disabled-opacity);
+    pointer-events: none;
+  }
+  
+  .is-hoverable:hover {
+    position: relative;
+  }
+  
+  .is-hoverable:hover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--state-hover-overlay);
+    border-radius: inherit;
+  }
+  
+  .is-pressable:active::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--state-active-overlay);
+    border-radius: inherit;
+  }
+  

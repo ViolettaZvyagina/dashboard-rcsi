@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подраздел 2.2 / 2.6 / 2.7 — Согласование базовых и доп. ассигнований</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .section-block {
+      padding: var(--space-20) 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .section-block--highlighted {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .section-block__description {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-20);
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-card__label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .kpi-card__value {
+      font-family: var(--font-alt);
+      font-size: 42px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 48px;
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+    }
+
+    .kpi-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-card__trend {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .charts-grid--2cols {
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    }
+
+    .chart-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    /* Увеличенный отступ для карточки с круговой диаграммой ИСА */
+    .chart-card:has(#chart-isa) {
+      gap: var(--space-48);
+    }
+
+    .chart-card canvas {
+      width: 100% !important;
+      height: 260px !important;
+      display: block;
+    }
+
+    /* Фиксированная квадратная форма для круговой диаграммы ИСА */
+    #chart-isa {
+      width: 260px !important;
+      height: 260px !important;
+      max-width: 260px;
+      max-height: 260px;
+      margin: 0 auto;
+    }
+
+    .chart-card__title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .chart-placeholder {
+      height: 240px;
+      border: 1px dashed var(--material-neutral-border-secondary);
+      border-radius: var(--radius-md);
+      background: var(--material-neutral-highlight-primary);
+      display: grid;
+      place-items: center;
+      color: var(--material-neutral-content-tertiary);
+      font-size: var(--font-size-label);
+      text-align: center;
+      padding: var(--space-12);
+    }
+
+    .map-card {
+      height: 320px;
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--material-neutral-highlight-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .map-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: saturate(1.05);
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--space-20);
+      align-items: stretch;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-body);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table th,
+    .table td {
+      padding: var(--space-16) var(--space-16);
+      text-align: left;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .table th {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label-xl);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+    }
+
+    .table td {
+      color: var(--material-neutral-content-primary);
+      background-color: var(--material-neutral-surface-primary);
+    }
+
+    .table tbody tr:hover {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .feature-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: var(--space-10);
+    }
+
+    .feature-item {
+      display: flex;
+      gap: var(--space-10);
+      align-items: flex-start;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .feature-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-top: 6px;
+      background: var(--color-accent-400);
+      box-shadow: 0 0 0 4px rgba(81, 162, 255, 0.12);
+      flex-shrink: 0;
+    }
+
+    .micro-metrics {
+      list-style: none;
+      margin: 0;
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-10);
+    }
+
+    .micro-metric {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-8);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .micro-metric strong {
+      color: var(--material-neutral-content-primary);
+      font-weight: 600;
+    }
+
+    .layout-wire {
+      background: var(--material-neutral-highlight-primary);
+      border: 1px dashed var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-16);
+      font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--material-neutral-content-secondary);
+      white-space: pre-wrap;
+    }
+
+    .boxplot-figure {
+      width: 100%;
+      height: 240px;
+      display: block;
+    }
+
+    .boxplot-legend {
+      display: flex;
+      gap: var(--space-12);
+      flex-wrap: wrap;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      margin-top: var(--space-8);
+    }
+
+    .boxplot-legend__item {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+    }
+
+    .boxplot-legend__swatch {
+      width: 20px;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--color-accent-400);
+      display: inline-block;
+    }
+
+    .boxplot-legend__swatch--risk {
+      background: var(--color-negative-400);
+    }
+
+    @media (max-width: 1024px) {
+      .split-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter2.html">
+              <span class="back-link__icon"></span>
+              Назад к разделу 2
+            </a>
+            <span class="meta-pill">Подраздел 2.2 / 2.6 / 2.7</span>
+          </div>
+          <h1>2.2. Согласование базовых и дополнительных ассигнований</h1>
+          <p class="ty-body-lg ty-muted">
+            Главный мониторинг эффективности бюджетирования НИОКР: соответствие приоритетам НТР/ВНТ, динамика финансирования, вклад внебюджета, сроки проектов и фактические результаты.
+          </p>
+          <div class="meta-row">
+            <span class="meta-pill">Последнее обновление: <strong>12.11.2025</strong></span>
+            <span class="meta-pill">Источники: Минфин, Минобрнауки, ФОИВ, ЕИС, Росстат</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="kpi-grid">
+          <article class="kpi-card">
+            <div class="kpi-card__label">Доля ассигнований в приоритеты НТР</div>
+            <div class="kpi-card__value kpi-card__value--green">64%</div>
+            <div class="kpi-card__trend">Цель 60%, факт растёт на +3.2 п.п. YoY</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Проекты в приоритетах</div>
+            <div class="kpi-card__value kpi-card__value--green">1 240</div>
+            <div class="kpi-card__trend">+14% YoY, расширение по ВНТ</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Объем по важнейшим технологиям</div>
+            <div class="kpi-card__value kpi-card__value--green">412 млрд ₽</div>
+            <div class="kpi-card__trend">ФОИВ: Минпром — 34%, Минцифра — 28%</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Внебюджет привлечено</div>
+            <div class="kpi-card__value kpi-card__value--yellow">0.42 ₽/₽</div>
+            <div class="kpi-card__trend">Стрела вверх YoY, но ниже целевых 0.5</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Среднее отклонение сроков</div>
+            <div class="kpi-card__value kpi-card__value--yellow">9.8%</div>
+            <div class="kpi-card__trend">Требуется удерживать &lt; 10%; риск в ФОИВ х2</div>
+          </article>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Управленческий смысл</h2>
+        <p class="section-block__description">КНТР оценивает соблюдение приоритетов, устойчивость структуры и эффект ассигнований.</p>
+        <ul class="feature-list">
+          <li class="feature-item"><span class="feature-dot"></span><span>Насколько базовые и доп. ассигнования следуют приоритетам НТР / ВНТ / важнейшим технологиям.</span></li>
+          <li class="feature-item"><span class="feature-dot"></span><span>Как меняется структура финансирования год к году (проекты, суммы, доля приоритетов).</span></li>
+          <li class="feature-item"><span class="feature-dot"></span><span>Какой вклад даёт бюджет в привлечение внебюджетных средств по отраслям и ФОИВ.</span></li>
+          <li class="feature-item"><span class="feature-dot"></span><span>Прогресс проектов: объём, сроки, региональная и ведомственная концентрация.</span></li>
+          <li class="feature-item"><span class="feature-dot"></span><span>Результаты: выручка, высокотехнологичные продукты, экспорт, налоговые поступления.</span></li>
+        </ul>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Кластеризация показателей</h2>
+        <div class="charts-grid charts-grid--2cols">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Блок A — Структурные (baseline)</h3>
+            <ul class="micro-metrics">
+              <li class="micro-metric"><span>НИОКР (% ВВП)</span><strong>0.96%</strong></li>
+              <li class="micro-metric"><span>Доля внебюджета</span><strong>38%</strong></li>
+              <li class="micro-metric"><span>НИОКР в обрабатывающей пром-сти</span><strong>3.2% к выручке</strong></li>
+              <li class="micro-metric"><span>Затраты на инновации</span><strong>+7% YoY</strong></li>
+              <li class="micro-metric"><span>Инвестиции</span><strong>+9% YoY</strong></li>
+              <li class="micro-metric"><span>Средняя зарплата</span><strong>99 тыс.</strong></li>
+            </ul>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Блок B — Базовые и доп. ассигнования</h3>
+            <ul class="feature-list">
+              <li class="feature-item"><span class="feature-dot"></span><span>Количество проектов в приоритетах НТР (регион / ФОИВ / тип технологий).</span></li>
+              <li class="feature-item"><span class="feature-dot"></span><span>Доля ассигнований в приоритетах (YoY).</span></li>
+              <li class="feature-item"><span class="feature-dot"></span><span>Проекты и объём по важнейшим наукоемким технологиям.</span></li>
+              <li class="feature-item"><span class="feature-dot"></span><span>Привлечённые внебюджетные средства (ФОИВ / отрасли).</span></li>
+              <li class="feature-item"><span class="feature-dot"></span><span>Средний срок реализации vs план (квартили, медиана).</span></li>
+            </ul>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Блок C — Результативность</h3>
+            <ul class="feature-list">
+              <li class="feature-item"><span class="feature-dot"></span><span>Прирост выручки малых технологических компаний.</span></li>
+              <li class="feature-item"><span class="feature-dot"></span><span>Налоговые поступления от высокотехнологичной продукции.</span></li>
+              <li class="feature-item"><span class="feature-dot"></span><span>Индикаторы high-tech активности (косвенные).</span></li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Распределение базовых ассигнований</h2>
+        <p class="section-block__description">Структура проектов и доля ассигнований, направленных в приоритеты НТР.</p>
+        <div class="charts-grid charts-grid--2cols">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Количество проектов по приоритетам НТР</h3>
+            <canvas id="chart-priority-projects"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доля ассигнований в приоритеты (YoY)</h3>
+            <canvas id="chart-share-priorities"></canvas>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Важнейшие наукоемкие технологии</h2>
+        <p class="section-block__description">Концентрация проектов и объёмов по технологиям: где сосредоточены «большие деньги».</p>
+        <div class="charts-grid charts-grid--2cols">
+          <article class="chart-card">
+            <h3 class="chart-card__title">ФОИВ × НТР × объем финансирования</h3>
+            <canvas id="chart-bubble-tech"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Динамика проектов по важнейшим технологиям (YoY)</h3>
+            <canvas id="chart-tech-dynamic"></canvas>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Привлечение внебюджетных средств</h2>
+        <p class="section-block__description">Связка бюджетных ассигнований и доли внебюджетного плеча по отраслям.</p>
+        <div class="charts-grid charts-grid--2cols">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Внебюджетное финансирование (столбики) + YoY линия</h3>
+            <canvas id="chart-nonbudget"></canvas>
+          </article>
+          <article class="chart-card" style="gap: var(--space-16);">
+            <h3 class="chart-card__title">Отрасли — вклад внебюджета</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Отрасль</th>
+                  <th>Привлечено, млрд ₽</th>
+                  <th>Доля внебюджета</th>
+                  <th>Комментарий</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>ИТ / электроника</td>
+                  <td>86</td>
+                  <td>0.62</td>
+                  <td>Лидеры по ВНТ, высокий мультипликатор</td>
+                </tr>
+                <tr>
+                  <td>Машиностроение</td>
+                  <td>54</td>
+                  <td>0.38</td>
+                  <td>Нужны доп. стимулы к софинансированию</td>
+                </tr>
+                <tr>
+                  <td>Химия</td>
+                  <td>31</td>
+                  <td>0.35</td>
+                  <td>Рост по базовым ассигнованиям → слабый внебюджет</td>
+                </tr>
+                <tr>
+                  <td>Агро / биотех</td>
+                  <td>18</td>
+                  <td>0.27</td>
+                  <td>Фокус на региональных программах</td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Сроки реализации проектов</h2>
+        <p class="section-block__description">Контроль план/факт и доля проектов с критическими отклонениями.</p>
+        <div class="charts-grid charts-grid--2cols">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Boxplot: отклонения план/факт</h3>
+            <svg class="boxplot-figure" viewBox="0 0 400 240" aria-label="Boxplot отклонений сроков">
+              <line x1="20" y1="200" x2="380" y2="200" stroke="#CAD5E2" stroke-width="1"/>
+              <line x1="20" y1="60" x2="380" y2="60" stroke="#CAD5E2" stroke-width="1" stroke-dasharray="4 6"/>
+              <!-- Q1–Q3 box -->
+              <rect x="110" y="100" width="180" height="70" rx="4" fill="rgba(21,101,255,0.10)" stroke="#1565FF" stroke-width="2"/>
+              <!-- Median -->
+              <line x1="200" y1="100" x2="200" y2="170" stroke="#1565FF" stroke-width="3"/>
+              <!-- Whiskers -->
+              <line x1="70" y1="135" x2="110" y2="135" stroke="#1565FF" stroke-width="2"/>
+              <line x1="290" y1="135" x2="330" y2="135" stroke="#1565FF" stroke-width="2"/>
+              <line x1="70" y1="135" x2="70" y2="170" stroke="#1565FF" stroke-width="2"/>
+              <line x1="330" y1="135" x2="330" y2="110" stroke="#1565FF" stroke-width="2"/>
+              <!-- Outliers -->
+              <circle cx="355" cy="95" r="5" fill="#F44336" opacity="0.9"/>
+              <circle cx="345" cy="75" r="5" fill="#F44336" opacity="0.9"/>
+              <!-- Labels -->
+              <text x="70" y="218" fill="#45556C" font-size="12">Q1 4%</text>
+              <text x="188" y="218" fill="#45556C" font-size="12">Med 8%</text>
+              <text x="290" y="218" fill="#45556C" font-size="12">Q3 13%</text>
+              <text x="322" y="58" fill="#F44336" font-size="12">ФОИВ A, B &gt; 30%</text>
+            </svg>
+            <div class="boxplot-legend">
+              <span class="boxplot-legend__item"><span class="boxplot-legend__swatch"></span>Базовые проекты: распределение отклонений</span>
+              <span class="boxplot-legend__item"><span class="boxplot-legend__swatch boxplot-legend__swatch--risk"></span>ФОИВ с тяжелыми хвостами (&gt; 30%)</span>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">KPI по срокам</h3>
+            <ul class="micro-metrics">
+              <li class="micro-metric"><span>% проектов с отклонением &lt; 10%</span><strong>62%</strong></li>
+              <li class="micro-metric"><span>% проектов с отклонением &gt; 30%</span><strong>11%</strong></li>
+              <li class="micro-metric"><span>ФОИВ-лидеры по срокам</span><strong>Минцифра, Минобр</strong></li>
+              <li class="micro-metric"><span>Риски по срокам</span><strong>Минпром, отрасли обороны</strong></li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">География ассигнований</h2>
+        <p class="section-block__description">Региональное распределение базовых ассигнований, вклад внебюджета и соответствие приоритетам.</p>
+        <div class="split-grid">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Карта распределения базовых ассигнований</h3>
+            <div class="map-card">
+              <img src="vecteezy_states-map-of-russia-with-detailed-borders_25845202.svg" alt="Карта распределения ассигнований по регионам">
+            </div>
+          </article>
+          <article class="chart-card" style="gap: var(--space-16);">
+            <h3 class="chart-card__title">Регионы — проекты × бюджет × приоритеты</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Регион</th>
+                  <th>Проекты</th>
+                  <th>Бюджет, млрд ₽</th>
+                  <th>% в приоритетах</th>
+                  <th>Внебюджет</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Москва</td>
+                  <td>320</td>
+                  <td>142</td>
+                  <td>74%</td>
+                  <td>0.58</td>
+                </tr>
+                <tr>
+                  <td>СПб</td>
+                  <td>180</td>
+                  <td>88</td>
+                  <td>69%</td>
+                  <td>0.46</td>
+                </tr>
+                <tr>
+                  <td>Татарстан</td>
+                  <td>96</td>
+                  <td>41</td>
+                  <td>71%</td>
+                  <td>0.43</td>
+                </tr>
+                <tr>
+                  <td>ДФО (ср.)</td>
+                  <td>54</td>
+                  <td>18</td>
+                  <td>52%</td>
+                  <td>0.31</td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Индекс стратегического соответствия ассигнований (ИСА)</h2>
+        <p class="section-block__description">Композит 0–100: доля проектов и ассигнований в приоритетах, уровень внебюджета, сроки и объём по важнейшим технологиям.</p>
+        <div class="charts-grid charts-grid--2cols">
+          <article class="chart-card">
+            <h3 class="chart-card__title">ИСА: интегральный показатель</h3>
+            <canvas id="chart-isa"></canvas>
+          </article>
+          <article class="chart-card" style="gap: var(--space-16);">
+            <h3 class="chart-card__title">Весовые коэффициенты</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Компонент</th>
+                  <th>Вес</th>
+                  <th>Комментарий</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Доля проектов в приоритетах</td>
+                  <td>w1 = 0.25</td>
+                  <td>Качество портфеля</td>
+                </tr>
+                <tr>
+                  <td>Доля ассигнований в приоритетах</td>
+                  <td>w2 = 0.20</td>
+                  <td>Финансовый фокус</td>
+                </tr>
+                <tr>
+                  <td>Внебюджет / бюджет</td>
+                  <td>w3 = 0.20</td>
+                  <td>Мультипликатор</td>
+                </tr>
+                <tr>
+                  <td>Отклонение сроков</td>
+                  <td>w4 = 0.15</td>
+                  <td>Исполнительская дисциплина</td>
+                </tr>
+                <tr>
+                  <td>Объем по ВНТ</td>
+                  <td>w5 = 0.20</td>
+                  <td>Технологический приоритет</td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const colors = {
+      primary: '#1565FF',
+      secondary: '#00C951',
+      neutral: '#8A94A6',
+      warning: '#F5A524',
+      danger: '#F44336'
+    };
+
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+
+    const years = ['2021', '2022', '2023', '2024', '2025'];
+
+    new Chart(document.getElementById('chart-priority-projects'), {
+      type: 'bar',
+      data: {
+        labels: ['Искусственный интеллект', 'Новые материалы', 'Энергетика', 'Биотех', 'Транспорт'],
+        datasets: [
+          { label: 'Базовые ассигнования', data: [180, 150, 132, 118, 96], backgroundColor: colors.primary, stack: 'count' },
+          { label: 'Доп. ассигнования', data: [42, 36, 30, 22, 18], backgroundColor: colors.secondary, stack: 'count' }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        plugins: { legend: { position: 'bottom' } },
+        scales: {
+          x: { stacked: true, ticks: { callback: v => v + ' пр.' } },
+          y: { stacked: true }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('chart-share-priorities'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [
+          { label: 'Доля ассигнований в приоритетах', data: [55, 57, 60, 62, 64], borderColor: colors.primary, tension: 0.35, fill: false },
+          { label: 'Цель', data: [60, 60, 60, 60, 60], borderColor: colors.warning, borderDash: [6, 6], tension: 0, fill: false }
+        ]
+      },
+      options: {
+        plugins: { legend: { position: 'bottom' } },
+        scales: { y: { ticks: { callback: v => v + '%' } } }
+      }
+    });
+
+    new Chart(document.getElementById('chart-bubble-tech'), {
+      type: 'bubble',
+      data: {
+        datasets: [
+          { label: 'Минпром', data: [{ x: 1, y: 3, r: 24 }, { x: 2, y: 3, r: 18 }, { x: 3, y: 3, r: 14 }], backgroundColor: 'rgba(21,101,255,0.65)' },
+          { label: 'Минцифра', data: [{ x: 1, y: 2, r: 26 }, { x: 2, y: 2, r: 16 }], backgroundColor: 'rgba(0,201,81,0.65)' },
+          { label: 'Минобр', data: [{ x: 4, y: 1, r: 12 }, { x: 5, y: 1, r: 10 }], backgroundColor: 'rgba(245,165,36,0.65)' }
+        ]
+      },
+      options: {
+        plugins: { legend: { position: 'bottom' } },
+        scales: {
+          x: { ticks: { callback: v => ['','НТР-1','НТР-2','НТР-3','НТР-4','НТР-5'][v] } },
+          y: { ticks: { callback: v => ['','ФОИВ A','ФОИВ B','ФОИВ C','ФОИВ D'][v] } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('chart-tech-dynamic'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [
+          { label: 'Проекты по ВНТ', data: [220, 248, 270, 298, 320], borderColor: colors.primary, tension: 0.35, fill: false },
+          { label: 'Объем финансирования, млрд ₽', data: [280, 310, 345, 380, 412], borderColor: colors.secondary, tension: 0.35, fill: false, yAxisID: 'y1' }
+        ]
+      },
+      options: {
+        plugins: { legend: { position: 'bottom' } },
+        scales: {
+          y: { position: 'left', ticks: { callback: v => v + ' пр.' } },
+          y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { callback: v => v + ' ₽' }, title: { display: true, text: 'млрд ₽' } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('chart-nonbudget'), {
+      type: 'bar',
+      data: {
+        labels: years,
+        datasets: [
+          { label: 'Внебюджет, млрд ₽', data: [240, 255, 276, 298, 318], backgroundColor: colors.primary, yAxisID: 'y' },
+          { label: 'Соотношение внебюджет/бюджет', data: [0.36, 0.37, 0.39, 0.41, 0.42], type: 'line', borderColor: colors.secondary, tension: 0.35, fill: false, yAxisID: 'y1' }
+        ]
+      },
+      options: {
+        plugins: { legend: { position: 'bottom' } },
+        scales: {
+          y: { position: 'left', title: { display: true, text: 'млрд ₽' } },
+          y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { callback: v => v }, title: { display: true, text: '₽ внебюджета / ₽ бюджета' } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('chart-isa'), {
+      type: 'doughnut',
+      data: {
+        labels: ['ИСА', 'Резерв'],
+        datasets: [{
+          data: [72, 28],
+          backgroundColor: [colors.secondary, colors.neutral],
+          borderWidth: 0,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: false,
+        maintainAspectRatio: false,
+        cutout: '65%',
+        layout: {
+          padding: {
+            bottom: 0
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels: {
+              usePointStyle: true,
+              padding: 12,
+              font: {
+                family: 'system-ui, -apple-system, sans-serif',
+                size: 12,
+                weight: '500'
+              }
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            padding: 12,
+            titleFont: { size: 13, weight: '600' },
+            bodyFont: { size: 12 },
+            cornerRadius: 8,
+            displayColors: true,
+            borderColor: '#e2e8f0',
+            borderWidth: 1,
+            callbacks: {
+              label: ctx => ctx.label + ': ' + ctx.parsed + ' баллов'
+            }
+          }
+        },
+        animation: {
+          duration: 800,
+          easing: 'easeOutQuart'
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+

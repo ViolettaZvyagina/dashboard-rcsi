@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подраздел 2.4 — Механизмы финансирования НИР (СНТР)</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .section-block {
+      padding: var(--space-20) 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .section-block--highlighted {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .section-block__description {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-20);
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-card__label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .kpi-card__value {
+      font-family: var(--font-alt);
+      font-size: 42px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 48px;
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+    }
+
+    .kpi-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-card__trend {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .charts-grid--2cols {
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    }
+
+    .charts-grid--two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .chart-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .chart-card canvas {
+      width: 100% !important;
+      height: 260px !important;
+      display: block;
+    }
+
+    .heatmap-figure {
+      width: 100%;
+      height: 260px;
+      display: block;
+    }
+
+    .heatmap-legend {
+      display: flex;
+      gap: var(--space-12);
+      align-items: center;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      margin-top: var(--space-8);
+    }
+
+    .heatmap-legend__bar {
+      flex: 1;
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #e2e8f0 0%, #8ec5ff 50%, #f44336 100%);
+    }
+
+    .heatmap-legend__labels {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      color: var(--material-neutral-content-tertiary);
+    }
+
+    .flag-bad {
+      color: var(--color-negative-500);
+      font-weight: 600;
+    }
+
+    #chart-internal-rnd {
+      height: 320px !important;
+    }
+
+    .chart-card__title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-body);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table th,
+    .table td {
+      padding: var(--space-16) var(--space-16);
+      text-align: left;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .table th {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label-xl);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+    }
+
+    .table td {
+      color: var(--material-neutral-content-primary);
+      background-color: var(--material-neutral-surface-primary);
+    }
+
+    .table tbody tr:hover {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--space-20);
+      align-items: stretch;
+    }
+
+    @media (max-width: 1024px) {
+      .split-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .charts-grid--two {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter2.html">
+              <span class="back-link__icon"></span>
+              Назад к разделу 2
+            </a>
+            <span class="meta-pill">Подраздел 2.4</span>
+          </div>
+          <h1>2.4. Механизмы финансирования НИР в рамках СНТР</h1>
+          <p class="ty-body-lg ty-muted">
+            Структура, соответствие приоритетам НТР, эффективность механизмов, баланс бюджет/внебюджет и межведомственное взаимодействие.
+          </p>
+          <div class="meta-row">
+            <span class="meta-pill">Последнее обновление: <strong>12.11.2025</strong></span>
+            <span class="meta-pill">Источники: Минфин, ФОИВ, ЕИС, СНТР</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="kpi-grid">
+          <article class="kpi-card">
+            <div class="kpi-card__label">Доля финансирования в приоритеты НТР</div>
+            <div class="kpi-card__value kpi-card__value--green">62%</div>
+            <div class="kpi-card__trend">+2.5 п.п. YoY</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Бюджет / внебюджет</div>
+            <div class="kpi-card__value kpi-card__value--green">1 : 0.92</div>
+            <div class="kpi-card__trend">Цель 1 : 1.0</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Совместные проекты ФОИВ</div>
+            <div class="kpi-card__value kpi-card__value--green">186</div>
+            <div class="kpi-card__trend">+14% YoY</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Среднее отклонение план–факт</div>
+            <div class="kpi-card__value kpi-card__value--yellow">9.6%</div>
+            <div class="kpi-card__trend">Цель &lt; 8%</div>
+          </article>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Общая структура финансирования НИОКР</h2>
+        <p class="section-block__description">Контекст научно-технологической экономики.</p>
+        <div class="charts-grid charts-grid--two">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Типы НИОКР: финансирование</h3>
+            <canvas id="chart-rnd-structure"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Бюджет vs внебюджет</h3>
+            <canvas id="chart-budget-split"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Динамика внутренних затрат НИОКР</h3>
+            <canvas id="chart-internal-rnd"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Контекст: инновации и зарплаты</h3>
+            <table class="table">
+              <thead>
+                <tr><th>Показатель</th><th>Значение</th><th>Комментарий</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>НИОКР (% ВВП)</td><td>0.96%</td><td>Цель 1.2%</td></tr>
+                <tr><td>Удельный вес внебюджета</td><td>38%</td><td>Рост нужен до 42%</td></tr>
+                <tr><td>НИОКР в обраб. пром.</td><td>3.2% к выручке</td><td>Выше среднего</td></tr>
+                <tr><td>Инновационные затраты</td><td>+7%</td><td>Ускорение</td></tr>
+                <tr><td>Инвестиции в осн. капитал</td><td>+9%</td><td>Стабильно</td></tr>
+                <tr><td>Темп роста реальной зарплаты</td><td>+4.2%</td><td>Поддержка кадров</td></tr>
+                <tr><td>Доля расходов НИОКР в судостроении</td><td>1.2% к выручке</td><td>Низко</td></tr>
+                <tr><td>Средняя зарплата (субъекты)</td><td>99 тыс.</td><td>Разброс по регионам</td></tr>
+              </tbody>
+            </table>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Финансирование по приоритетам НТР</h2>
+        <p class="section-block__description">Соответствие приоритетам, типы НИОКР и баланс бюджет/внебюджет.</p>
+        <div class="charts-grid charts-grid--two">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Приоритеты НТР: объёмы</h3>
+            <canvas id="chart-priorities-bar"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Приоритеты НТР: динамика по годам</h3>
+            <canvas id="chart-priorities-line"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Тепловая карта: ФОИВ × приоритеты</h3>
+            <svg class="heatmap-figure" viewBox="0 0 420 260" aria-label="Heatmap финансирования по ФОИВ и приоритетам">
+              <defs>
+                <linearGradient id="hmap2" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#e2e8f0"/>
+                  <stop offset="50%" stop-color="#8ec5ff"/>
+                  <stop offset="100%" stop-color="#f44336"/>
+                </linearGradient>
+              </defs>
+              <text x="90" y="24" fill="#45556C" font-size="12">AI</text>
+              <text x="150" y="24" fill="#45556C" font-size="12">Мат</text>
+              <text x="210" y="24" fill="#45556C" font-size="12">Био</text>
+              <text x="270" y="24" fill="#45556C" font-size="12">Энерго</text>
+              <text x="330" y="24" fill="#45556C" font-size="12">Транс</text>
+              <text x="10" y="70" fill="#45556C" font-size="12">Минпром</text>
+              <text x="10" y="120" fill="#45556C" font-size="12">Минцифра</text>
+              <text x="10" y="170" fill="#45556C" font-size="12">Минобр</text>
+              <text x="10" y="220" fill="#45556C" font-size="12">ФОИВ-B</text>
+              <!-- row1 -->
+              <rect x="80" y="50" width="50" height="30" rx="4" fill="#f44336" opacity="0.9"/><text x="95" y="70" fill="#fff" font-size="11">22%</text>
+              <rect x="140" y="50" width="50" height="30" rx="4" fill="#fb8c8c" opacity="0.9"/><text x="155" y="70" fill="#fff" font-size="11">17%</text>
+              <rect x="200" y="50" width="50" height="30" rx="4" fill="#8ec5ff"/><text x="215" y="70" fill="#0f172b" font-size="11">11%</text>
+              <rect x="260" y="50" width="50" height="30" rx="4" fill="#bedbff"/><text x="275" y="70" fill="#0f172b" font-size="11">8%</text>
+              <rect x="320" y="50" width="50" height="30" rx="4" fill="#e2e8f0"/><text x="335" y="70" fill="#0f172b" font-size="11">5%</text>
+              <!-- row2 -->
+              <rect x="80" y="100" width="50" height="30" rx="4" fill="#fb8c8c"/><text x="95" y="120" fill="#fff" font-size="11">18%</text>
+              <rect x="140" y="100" width="50" height="30" rx="4" fill="#8ec5ff"/><text x="155" y="120" fill="#0f172b" font-size="11">12%</text>
+              <rect x="200" y="100" width="50" height="30" rx="4" fill="#bedbff"/><text x="215" y="120" fill="#0f172b" font-size="11">9%</text>
+              <rect x="260" y="100" width="50" height="30" rx="4" fill="#e2e8f0"/><text x="275" y="120" fill="#0f172b" font-size="11">6%</text>
+              <rect x="320" y="100" width="50" height="30" rx="4" fill="#e2e8f0"/><text x="335" y="120" fill="#0f172b" font-size="11">5%</text>
+              <!-- row3 -->
+              <rect x="80" y="150" width="50" height="30" rx="4" fill="#8ec5ff"/><text x="95" y="170" fill="#0f172b" font-size="11">12%</text>
+              <rect x="140" y="150" width="50" height="30" rx="4" fill="#bedbff"/><text x="155" y="170" fill="#0f172b" font-size="11">9%</text>
+              <rect x="200" y="150" width="50" height="30" rx="4" fill="#e2e8f0"/><text x="215" y="170" fill="#0f172b" font-size="11">6%</text>
+              <rect x="260" y="150" width="50" height="30" rx="4" fill="#e2e8f0"/><text x="275" y="170" fill="#0f172b" font-size="11">4%</text>
+              <rect x="320" y="150" width="50" height="30" rx="4" fill="#e2e8f0"/><text x="335" y="170" fill="#0f172b" font-size="11">3%</text>
+              <!-- row4 -->
+              <rect x="80" y="200" width="50" height="30" rx="4" fill="#bedbff"/><text x="95" y="220" fill="#0f172b" font-size="11">8%</text>
+              <rect x="140" y="200" width="50" height="30" rx="4" fill="#e2e8f0"/><text x="155" y="220" fill="#0f172b" font-size="11">6%</text>
+              <rect x="200" y="200" width="50" height="30" rx="4" fill="#e2e8f0"/><text x="215" y="220" fill="#0f172b" font-size="11">4%</text>
+              <rect x="260" y="200" width="50" height="30" rx="4" fill="#e2e8f0"/><text x="275" y="220" fill="#0f172b" font-size="11">3%</text>
+              <rect x="320" y="200" width="50" height="30" rx="4" fill="#e2e8f0"/><text x="335" y="220" fill="#0f172b" font-size="11">2%</text>
+            </svg>
+            <div class="heatmap-legend">
+              <span>Доля финансирования по приоритетам</span>
+              <span class="heatmap-legend__bar"></span>
+            </div>
+            <div class="heatmap-legend__labels">
+              <span>0–5%</span>
+              <span>10–15%</span>
+              <span>≥20%</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">План–факт финансирования</h2>
+        <p class="section-block__description">Отклонения, лидеры и проблемные направления.</p>
+        <div class="charts-grid charts-grid--two">
+          <article class="chart-card">
+            <h3 class="chart-card__title">План vs Факт по приоритетам</h3>
+            <canvas id="chart-priorities-planfact"></canvas>
+          </article>
+          <article class="chart-card" style="gap: var(--space-16);">
+            <h3 class="chart-card__title">ТОП отклонений (лидерборд)</h3>
+            <table class="table">
+              <thead><tr><th>Направление</th><th>Отклонение</th><th>Комментарий</th></tr></thead>
+              <tbody>
+                <tr><td>AI</td><td><span class="flag-bad">-5%</span></td><td>Факт ниже плана</td></tr>
+                <tr><td>Материалы</td><td><span class="flag-bad">-6%</span></td><td>Смещение на ОКР</td></tr>
+                <tr><td>Био</td><td><span class="flag-bad">-8%</span></td><td>Задержки этапов</td></tr>
+                <tr><td>Энерго</td><td><span class="flag-bad">-5%</span></td><td>Недофинансирование Q2</td></tr>
+                <tr><td>Транспорт</td><td><span class="flag-bad">-8%</span></td><td>Снижение софинансирования</td></tr>
+              </tbody>
+            </table>
+          </article>
+          <article class="chart-card" style="grid-column: span 2; gap: var(--space-16);">
+            <h3 class="chart-card__title">План–факт по ФОИВ / направлениям</h3>
+            <table class="table">
+              <thead><tr><th>ФОИВ</th><th>Приоритет</th><th>План, млрд</th><th>Факт, млрд</th><th>Отклонение</th></tr></thead>
+              <tbody>
+                <tr><td>Минпром</td><td>AI</td><td>60</td><td>57</td><td><span class="flag-bad">-5%</span></td></tr>
+                <tr><td>Минцифра</td><td>AI</td><td>55</td><td>52</td><td><span class="flag-bad">-5.5%</span></td></tr>
+                <tr><td>Минобр</td><td>Био</td><td>38</td><td>35</td><td><span class="flag-bad">-7.9%</span></td></tr>
+                <tr><td>ФОИВ-B</td><td>Материалы</td><td>42</td><td>39</td><td><span class="flag-bad">-7.1%</span></td></tr>
+              </tbody>
+            </table>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Межведомственное взаимодействие</h2>
+        <p class="section-block__description">Координация и совместное финансирование.</p>
+        <div class="charts-grid charts-grid--two">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Совместные проекты по ФОИВ</h3>
+            <canvas id="chart-foiv-coop"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Кросс-проекты YoY</h3>
+            <canvas id="chart-cofund-bars"></canvas>
+          </article>
+          <article class="chart-card" style="grid-column: span 2; gap: var(--space-16);">
+            <h3 class="chart-card__title">Таблица взаимодействий</h3>
+            <table class="table">
+              <thead>
+                <tr><th>ФОИВ</th><th>Партнёр</th><th>Совместных проектов</th><th>Комментарий</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Минпром</td><td>Минцифра</td><td>42</td><td>Сильная связка AI/Пром</td></tr>
+                <tr><td>Минобр</td><td>Минцифра</td><td>28</td><td>Образование + ЦКП</td></tr>
+                <tr><td>Минпром</td><td>ФОИВ-B</td><td>24</td><td>Софинансирование ОКР</td></tr>
+                <tr><td>Минцифра</td><td>ФОИВ-C</td><td>18</td><td>Инфраструктура НТИ</td></tr>
+              </tbody>
+            </table>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Эффективность механизмов финансирования</h2>
+        <p class="section-block__description">Финансирование → выручка/налоги, инфраструктура, техзависимость и индекс.</p>
+        <div class="charts-grid charts-grid--two">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Финансирование → выручка/налоги</h3>
+            <canvas id="chart-effect-scatter"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Доступность инфраструктуры</h3>
+            <canvas id="chart-infra-mix"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Технологическая зависимость</h3>
+            <canvas id="chart-tech-dep"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Индекс эффективности механизмов</h3>
+            <canvas id="chart-mech-index"></canvas>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block section-block--highlighted">
+        <h2 class="section-block__title">Рекомендации</h2>
+        <p class="section-block__description">Куда увеличивать/сокращать финансирование и какие механизмы масштабировать.</p>
+        <div class="charts-grid charts-grid--two">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Рекомендации по перераспределению</h3>
+            <table class="table">
+              <thead><tr><th>Направление</th><th>Действие</th><th>Причина</th></tr></thead>
+              <tbody>
+                <tr><td>AI</td><td>+ финансирование</td><td>Высокий эффект, низкий разрыв план/факт</td></tr>
+                <tr><td>Материалы</td><td>+ инфраструктура</td><td>Недостаток ЦКП</td></tr>
+                <tr><td>Биотех</td><td>Удержать</td><td>Сбалансированный бюджет/внебюджет</td></tr>
+                <tr><td>Судостроение</td><td>+ R&amp;D доля</td><td>НИОКР/выручка ниже нормы</td></tr>
+              </tbody>
+            </table>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Эффективность 1 ₽ бюджета</h3>
+            <canvas id="chart-ruble-eff"></canvas>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const colors = {
+      primary: '#1565FF',
+      secondary: '#00C951',
+      neutral: '#8A94A6',
+      warning: '#F5A524',
+      danger: '#F44336'
+    };
+
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+
+    const years = ['2021', '2022', '2023', '2024', '2025'];
+
+    new Chart(document.getElementById('chart-rnd-structure'), {
+      type: 'bar',
+      data: {
+        labels: ['ФНИ', 'ПНИ', 'ОКР'],
+        datasets: [
+          { label: '2024', data: [30, 34, 36], backgroundColor: colors.primary },
+          { label: '2025', data: [29, 34, 37], backgroundColor: colors.secondary }
+        ]
+      },
+      options: { plugins: { legend: { position: 'bottom' } } }
+    });
+
+    new Chart(document.getElementById('chart-budget-split'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Бюджет', 'Внебюджет'],
+        datasets: [{
+          data: [52, 48],
+          backgroundColor: [colors.primary, colors.secondary],
+          borderWidth: 0,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '65%',
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels: {
+              usePointStyle: true,
+              padding: 20,
+              font: {
+                family: 'system-ui, -apple-system, sans-serif',
+                size: 12,
+                weight: '500'
+              }
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            padding: 12,
+            titleFont: { size: 13, weight: '600' },
+            bodyFont: { size: 12 },
+            cornerRadius: 8,
+            displayColors: true,
+            borderColor: '#e2e8f0',
+            borderWidth: 1
+          }
+        },
+        animation: {
+          duration: 800,
+          easing: 'easeOutQuart'
+        }
+      }
+    });
+
+    new Chart(document.getElementById('chart-internal-rnd'), {
+      type: 'line',
+      data: { labels: years, datasets: [{ label: 'Внутренние затраты НИОКР', data: [1.6, 1.72, 1.81, 1.92, 2.05], borderColor: colors.primary, tension: 0.35, fill: false }] },
+      options: {
+        plugins: { legend: { display: false } },
+        layout: { padding: { top: 12, right: 8, bottom: 8, left: 8 } },
+        scales: { y: { ticks: { callback: v => v + ' трлн ₽' } } }
+      }
+    });
+
+    new Chart(document.getElementById('chart-priorities-bar'), {
+      type: 'bar',
+      data: {
+        labels: ['AI', 'Материалы', 'Био', 'Энерго', 'Транспорт'],
+        datasets: [{ label: 'Финансирование, млрд ₽', data: [180, 150, 128, 142, 120], backgroundColor: colors.primary }]
+      },
+      options: { plugins: { legend: { display: false } } }
+    });
+
+    new Chart(document.getElementById('chart-priorities-line'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [
+          { label: 'AI', data: [120, 132, 150, 170, 180], borderColor: colors.primary, tension: 0.35, fill: false },
+          { label: 'Материалы', data: [110, 118, 130, 140, 150], borderColor: colors.secondary, tension: 0.35, fill: false },
+          { label: 'Био', data: [90, 98, 108, 120, 128], borderColor: colors.warning, tension: 0.35, fill: false }
+        ]
+      },
+      options: { plugins: { legend: { position: 'bottom' } } }
+    });
+
+    new Chart(document.getElementById('chart-priorities-planfact'), {
+      type: 'bar',
+      data: {
+        labels: ['AI', 'Материалы', 'Био', 'Энерго', 'Транспорт'],
+        datasets: [
+          { label: 'План', data: [190, 160, 140, 150, 130], backgroundColor: colors.neutral },
+          { label: 'Факт', data: [180, 150, 128, 142, 120], backgroundColor: colors.secondary }
+        ]
+      },
+      options: { plugins: { legend: { position: 'bottom' } } }
+    });
+
+    new Chart(document.getElementById('chart-cofund-bars'), {
+      type: 'bar',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{ label: 'Совместные проекты', data: [122, 134, 152, 163, 186], backgroundColor: colors.primary }]
+      },
+      options: { plugins: { legend: { display: false } } }
+    });
+
+    new Chart(document.getElementById('chart-effect-scatter'), {
+      type: 'scatter',
+      data: {
+        datasets: [
+          { label: 'Эффект выручки', data: [{ x: 120, y: 6.2 }, { x: 140, y: 6.8 }, { x: 160, y: 7.4 }, { x: 180, y: 8.1 }], backgroundColor: colors.primary },
+          { label: 'Эффект налогов', data: [{ x: 120, y: 4.4 }, { x: 140, y: 4.9 }, { x: 160, y: 5.3 }, { x: 180, y: 5.8 }], backgroundColor: colors.secondary }
+        ]
+      },
+      options: {
+        plugins: { legend: { position: 'bottom' } },
+        scales: {
+          x: { title: { display: true, text: 'Финансирование, млрд ₽' } },
+          y: { title: { display: true, text: 'Эффект, %' } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('chart-infra-mix'), {
+      type: 'bar',
+      data: {
+        labels: ['ЦКП', 'УНУ', 'Оборудование <5 лет', 'Доступность НТИ'],
+        datasets: [
+          { label: 'Уровень', data: [72, 64, 57, 62], backgroundColor: colors.primary }
+        ]
+      },
+      options: { plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => v + '%' } } } }
+    });
+
+    new Chart(document.getElementById('chart-mech-index'), {
+      type: 'radar',
+      data: {
+        labels: ['План–факт', 'Совместность', 'Эффект выручки', 'Налоги', 'Приоритеты'],
+        datasets: [{ label: 'Индекс', data: [68, 74, 70, 66, 78], backgroundColor: 'rgba(21,101,255,0.15)', borderColor: colors.primary }]
+      },
+      options: { plugins: { legend: { display: false } }, scales: { r: { suggestedMin: 50, suggestedMax: 90 } } }
+    });
+
+    new Chart(document.getElementById('chart-foiv-coop'), {
+      type: 'bar',
+      data: {
+        labels: ['Минпром', 'Минцифра', 'Минобр', 'ФОИВ-B', 'ФОИВ-C'],
+        datasets: [
+          { label: 'Совместные проекты', data: [72, 66, 48, 42, 34], backgroundColor: colors.primary },
+          { label: 'Бюджет / внебюджет (коэфф.)', data: [0.82, 0.94, 0.76, 0.68, 0.71], type: 'line', borderColor: colors.secondary, yAxisID: 'y1', tension: 0.3 }
+        ]
+      },
+      options: {
+        plugins: { legend: { position: 'bottom' } },
+        scales: {
+          y: { position: 'left', ticks: { callback: v => v + ' пр.' } },
+          y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { callback: v => v }, title: { display: true, text: 'коэфф.' } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('chart-tech-dep'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{ label: 'Индекс тех. зависимости', data: [0.52, 0.50, 0.48, 0.46, 0.44], borderColor: colors.warning, tension: 0.35, fill: false }]
+      },
+      options: { plugins: { legend: { position: 'bottom' } } }
+    });
+
+    new Chart(document.getElementById('chart-ruble-eff'), {
+      type: 'bar',
+      data: {
+        labels: ['AI', 'Материалы', 'Био', 'Энерго', 'Транспорт'],
+        datasets: [
+          { label: 'Эффект (выручка/налоги), %', data: [8.1, 7.4, 6.8, 6.1, 5.5], backgroundColor: colors.primary },
+          { label: 'Расход бюджета, млрд ₽', data: [180, 150, 128, 142, 120], type: 'line', borderColor: colors.secondary, yAxisID: 'y1', tension: 0.3 }
+        ]
+      },
+      options: {
+        plugins: { legend: { position: 'bottom' } },
+        scales: {
+          y: { position: 'left', ticks: { callback: v => v + '%' }, title: { display: true, text: 'Эффект' } },
+          y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { callback: v => v + ' ₽' }, title: { display: true, text: 'Бюджет' } }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+

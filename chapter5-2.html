@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подраздел 5.2 — Рассмотрение годового отчёта и итогового доклада РАН по Программе ФНИ</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .header-section {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-24);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: var(--space-4) 0 var(--space-6) 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-6);
+      height: var(--control-height);
+      padding: 0 var(--space-16);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-family: var(--font-main);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      text-decoration: none;
+      cursor: pointer;
+      background-color: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-primary);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn--primary {
+      background-color: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .section-block {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      margin-top: var(--space-24);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-16) 0;
+    }
+
+    .kpi-main-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: var(--space-24);
+      margin-top: var(--space-24);
+    }
+
+    .kpi-main {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-32);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-20);
+    }
+
+    .kpi-main__title {
+      font-family: var(--font-alt);
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .kpi-main__value {
+      font-family: var(--font-alt);
+      font-size: 64px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .kpi-main__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-main__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-main__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-main__status {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+      margin-top: var(--space-8);
+    }
+
+    .kpi-main__progress {
+      margin-top: var(--space-16);
+    }
+
+    .kpi-main__progress-bar {
+      width: 100%;
+      height: 16px;
+      background: var(--material-neutral-highlight-primary);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .kpi-main__progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.6s ease;
+      position: relative;
+    }
+
+    .kpi-main__progress-fill--yellow {
+      background: var(--color-warning-300);
+    }
+
+    .kpi-main__progress-fill--red {
+      background: var(--color-negative-300);
+    }
+
+    .kpi-main__progress-fill--green {
+      background: var(--color-positive-300);
+    }
+
+    .cluster {
+      margin-top: var(--space-24);
+    }
+
+    .cluster__title {
+      font-family: var(--font-alt);
+      font-size: 22px;
+      line-height: 30px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-20) 0;
+      padding-bottom: var(--space-12);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .kpi-grid--cluster-b {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-20);
+    }
+
+    .kpi-card--tall {
+      grid-row: span 2;
+    }
+
+    .kpi-card--full-width {
+      grid-column: 1 / -1;
+    }
+
+    .kpi-card--with-divider {
+      border-right: 1px solid var(--material-neutral-border-primary);
+    }
+
+    @media (max-width: 900px) {
+      .kpi-card--with-divider {
+        border-right: none;
+        border-bottom: 1px solid var(--material-neutral-border-primary);
+      }
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-card__title {
+      font-size: var(--font-size-body);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .kpi-card__value {
+      font-family: var(--font-alt);
+      font-size: 36px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 1;
+    }
+
+    .kpi-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-card__trend {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .kpi-card__trend--positive {
+      color: var(--color-positive-500);
+    }
+
+    .kpi-card__trend--negative {
+      color: var(--color-negative-500);
+    }
+
+    .kpi-card__sparkline {
+      height: 40px;
+      margin-top: var(--space-8);
+    }
+
+    .kpi-card__sparkline canvas {
+      width: 100% !important;
+      height: 40px !important;
+    }
+
+    .table {
+      width: 100%;
+      max-width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-body);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table th,
+    .table td {
+      padding: var(--space-12) var(--space-16);
+      text-align: left;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .table th {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label-xl);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+    }
+
+    .table td {
+      color: var(--material-neutral-content-primary);
+      background-color: var(--material-neutral-surface-primary);
+    }
+
+    .table tbody tr:hover {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .table th:nth-child(2),
+    .table td:nth-child(2),
+    .table th:nth-child(3),
+    .table td:nth-child(3) {
+      text-align: center;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+    }
+
+    .status-badge--success {
+      background-color: rgba(0, 201, 81, 0.1);
+      color: var(--color-positive-500);
+    }
+
+    .status-badge--warning {
+      background-color: rgba(255, 185, 106, 0.1);
+      color: var(--color-warning-500);
+    }
+
+    .status-badge--progress {
+      background-color: rgba(81, 162, 255, 0.1);
+      color: var(--color-info-500);
+    }
+
+    .status-badge--incomplete {
+      background-color: rgba(251, 44, 54, 0.1);
+      color: var(--color-negative-500);
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-20);
+      position: relative;
+      padding-left: var(--space-32);
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 8px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--material-neutral-border-primary);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: var(--space-24);
+    }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -24px;
+      top: 4px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--material-neutral-surface-primary);
+      border: 3px solid var(--material-neutral-border-primary);
+      z-index: 1;
+    }
+
+    .timeline-item--completed::before {
+      background: var(--color-positive-400);
+      border-color: var(--color-positive-400);
+    }
+
+    .timeline-item--in-progress::before {
+      background: var(--color-warning-400);
+      border-color: var(--color-warning-400);
+    }
+
+    .timeline-item--pending::before {
+      background: var(--material-neutral-content-tertiary);
+      border-color: var(--material-neutral-border-primary);
+    }
+
+    .timeline-item__period {
+      font-size: var(--font-size-label);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin-bottom: var(--space-4);
+    }
+
+    .timeline-item__description {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .documents-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .document-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-12);
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      color: var(--material-neutral-content-primary);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .document-item:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .document-item__icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .document-item__text {
+      flex: 1;
+      font-size: var(--font-size-body);
+    }
+
+    .risk-table {
+      width: 100%;
+    }
+
+    .risk-table th:nth-child(2),
+    .risk-table td:nth-child(2),
+    .risk-table th:nth-child(3),
+    .risk-table td:nth-child(3) {
+      text-align: center;
+    }
+
+    .risk-level {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+    }
+
+    .risk-level--high {
+      background-color: rgba(251, 44, 54, 0.1);
+      color: var(--color-negative-500);
+    }
+
+    .risk-level--medium {
+      background-color: rgba(255, 185, 106, 0.1);
+      color: var(--color-warning-500);
+    }
+
+    .risk-level--low {
+      background-color: rgba(0, 201, 81, 0.1);
+      color: var(--color-positive-500);
+    }
+
+    .data-types {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      align-items: center;
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      margin-top: var(--space-24);
+    }
+
+    .data-type {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .report-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      margin-top: var(--space-24);
+    }
+
+    .report-card__title {
+      font-family: var(--font-alt);
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-16) 0;
+    }
+
+    .chart-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .chart-card--horizontal {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-20);
+    }
+
+    .chart-card__chart-wrapper {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chart-card canvas {
+      width: 100% !important;
+      height: 200px !important;
+      display: block;
+    }
+
+    .chart-card--horizontal canvas {
+      height: 180px !important;
+    }
+
+    .chart-card__legend {
+      width: 100%;
+    }
+
+    .chart-card__title {
+      font-size: var(--font-size-label);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    @media (max-width: 900px) {
+      .header-section {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-grid--cluster-b {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-card--tall {
+        grid-row: span 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="header-section">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="chapter5.html">
+                <span class="back-link__icon"></span>
+                К разделу 5
+              </a>
+              <span class="meta-pill">Подраздел 5.2</span>
+            </div>
+            <h1>5.2. Рассмотрение годового отчёта и итогового доклада РАН по Программе ФНИ</h1>
+            <p>Мониторинг выполнения целей Программы фундаментальных научных исследований РФ (2021–2030 гг.), оценки её вклада в международную научную конкурентоспособность и готовности отчётных документов РАН.</p>
+            <div class="meta-row">
+              <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+              <span class="meta-pill">Источники: РАН, институты РАН, Росстат, WoS, Scopus</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Основные KPI готовности -->
+      <div class="kpi-main-grid">
+        <section class="kpi-main">
+          <h2 class="kpi-main__title">Готовность годового отчёта ФНИ (%)</h2>
+          <div class="kpi-main__value kpi-main__value--yellow">92%</div>
+          <div class="kpi-main__status">Версия 0.5 — на согласовании</div>
+          <div class="kpi-main__progress">
+            <div class="kpi-main__progress-bar">
+              <div class="kpi-main__progress-fill kpi-main__progress-fill--yellow" style="width: 92%;"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="kpi-main">
+          <h2 class="kpi-main__title">Готовность итогового доклада ФНИ (%)</h2>
+          <div class="kpi-main__value kpi-main__value--yellow">88%</div>
+          <div class="kpi-main__status">Раздел 3 требует уточнений данных от институтов РАН</div>
+          <div class="kpi-main__progress">
+            <div class="kpi-main__progress-bar">
+              <div class="kpi-main__progress-fill kpi-main__progress-fill--yellow" style="width: 88%;"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Кластер A: Международная научная конкурентоспособность -->
+      <section class="cluster">
+        <h2 class="cluster__title">Кластер А — Международная научная конкурентоспособность</h2>
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-card--full-width">
+            <h3 class="kpi-card__title">Место РФ по численности исследователей (FTE) среди ведущих стран (OECD)</h3>
+            <div class="kpi-card__value kpi-card__value--green">9-е</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ Стабильно</div>
+            <div class="chart-card">
+              <canvas id="chart-fte"></canvas>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Удельный вес статей РФ в Web of Science по приоритетам НТР</h3>
+            <div class="kpi-card__value kpi-card__value--green">4.2%</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ +0.3 п.п. YoY</div>
+            <div class="kpi-card__sparkline">
+              <canvas id="sparkline-wos"></canvas>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Удельный вес статей РФ в Scopus по приоритетам НТР</h3>
+            <div class="kpi-card__value kpi-card__value--green">4.5%</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ +0.2 п.п. YoY</div>
+            <div class="kpi-card__sparkline">
+              <canvas id="sparkline-scopus"></canvas>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Доля публикаций в национальных журналах среди статей, индексируемых международными системами</h3>
+            <div class="kpi-card__value kpi-card__value--yellow">68%</div>
+            <div class="kpi-card__trend">→ Без изменений</div>
+            <div class="kpi-card__sparkline">
+              <canvas id="sparkline-national"></canvas>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Доля статей в соавторстве с иностранными учёными</h3>
+            <div class="kpi-card__value kpi-card__value--green">42%</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ +2 п.п. YoY</div>
+            <div class="kpi-card__sparkline">
+              <canvas id="sparkline-collab"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Кластер B: Кадровый потенциал -->
+      <section class="cluster">
+        <h2 class="cluster__title">Кластер B — Кадровый потенциал фундаментальной науки</h2>
+        <div class="kpi-grid kpi-grid--cluster-b">
+          <div class="kpi-card kpi-card--tall">
+            <h3 class="kpi-card__title">Доля исследователей до 39 лет в программе ФНИ</h3>
+            <div class="kpi-card__value kpi-card__value--green">42%</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ +1.5 п.п. YoY</div>
+            <div class="chart-card">
+              <div class="chart-card__chart-wrapper">
+                <canvas id="chart-age"></canvas>
+              </div>
+              <div class="chart-card__legend" id="chart-age-legend"></div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Доля молодых кандидатов наук среди исследователей в ФНИ</h3>
+            <div class="kpi-card__value kpi-card__value--green">28%</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ +0.8 п.п. YoY</div>
+            <div class="kpi-card__sparkline">
+              <canvas id="sparkline-candidates"></canvas>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Доля учёных с публикациями Q1/Q2 в рамках реализации госпрограммы НТР</h3>
+            <div class="kpi-card__value kpi-card__value--green">58%</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ +3 п.п. YoY</div>
+            <div class="kpi-card__sparkline">
+              <canvas id="sparkline-q1q2"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Кластер C: Финансирование -->
+      <section class="cluster">
+        <h2 class="cluster__title">Кластер C — Финансирование фундаментальных исследований</h2>
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Вклад программы ФНИ в удельный вес бюджетных расходов на фундаментальные исследования в ВВП</h3>
+            <div class="kpi-card__value kpi-card__value--yellow">0.28%</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ +0.02 п.п. YoY</div>
+            <div class="chart-card">
+              <canvas id="chart-finance"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Кластер D: Научные результаты -->
+      <section class="cluster">
+        <h2 class="cluster__title">Кластер D — Научные результаты и их распространение</h2>
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Количество публикаций в высокорейтинговых журналах (Q1/Q2)</h3>
+            <div class="kpi-card__value kpi-card__value--green">1,245</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ +12% YoY</div>
+            <div class="kpi-card__sparkline">
+              <canvas id="sparkline-q1q2-pub"></canvas>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Темпы роста числа исследователей с публикационной активностью уровня А*</h3>
+            <div class="kpi-card__value kpi-card__value--green">+15%</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ Рост</div>
+            <div class="kpi-card__sparkline">
+              <canvas id="sparkline-astar"></canvas>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <h3 class="kpi-card__title">Количество новых методик / результатов в рамках ФНИ (по данным РАН)</h3>
+            <div class="kpi-card__value kpi-card__value--green">342</div>
+            <div class="kpi-card__trend kpi-card__trend--positive">↑ +8% YoY</div>
+            <div class="kpi-card__sparkline">
+              <canvas id="sparkline-methods"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Готовность отчётных документов -->
+      <section class="section-block">
+        <h2 class="section-block__title">Готовность отчётных документов РАН</h2>
+        
+        <div class="report-card">
+          <h3 class="report-card__title">📘 Годовой отчёт ФНИ (2021–2030)</h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Компонент отчёта</th>
+                <th>Статус</th>
+                <th>%</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Анализ фундаментальных исследований</td>
+                <td><span class="status-badge status-badge--progress">в работе</span></td>
+                <td>70%</td>
+              </tr>
+              <tr>
+                <td>Мониторинг научных результатов</td>
+                <td><span class="status-badge status-badge--success">завершено</span></td>
+                <td>100%</td>
+              </tr>
+              <tr>
+                <td>Международные сопоставления</td>
+                <td><span class="status-badge status-badge--warning">требуется уточнение</span></td>
+                <td>55%</td>
+              </tr>
+              <tr>
+                <td>Финансовый раздел</td>
+                <td><span class="status-badge status-badge--success">завершено</span></td>
+                <td>100%</td>
+              </tr>
+              <tr>
+                <td>Согласование с институтами РАН</td>
+                <td><span class="status-badge status-badge--progress">в работе</span></td>
+                <td>40%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="report-card">
+          <h3 class="report-card__title">📙 Итоговый доклад ФНИ</h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Компонент</th>
+                <th>%</th>
+                <th>Статус</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Прогресс реализации целей Программы</td>
+                <td>60%</td>
+                <td><span class="status-badge status-badge--progress">в работе</span></td>
+              </tr>
+              <tr>
+                <td>Оценка вклада в НТР</td>
+                <td>45%</td>
+                <td><span class="status-badge status-badge--warning">требуется уточнение</span></td>
+              </tr>
+              <tr>
+                <td>Вклад в международное позиционирование РФ</td>
+                <td>30%</td>
+                <td><span class="status-badge status-badge--progress">начат</span></td>
+              </tr>
+              <tr>
+                <td>Приложения и аналитические таблицы</td>
+                <td>80%</td>
+                <td><span class="status-badge status-badge--success">почти завершено</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Источники данных -->
+      <section class="section-block">
+        <h2 class="section-block__title">Источники данных</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Институт</th>
+              <th>Данные</th>
+              <th>Корректность</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ИПМ РАН</td>
+              <td>12/12</td>
+              <td>100%</td>
+              <td><span class="status-badge status-badge--success">✔ завершено</span></td>
+            </tr>
+            <tr>
+              <td>ИФАН</td>
+              <td>9/13</td>
+              <td>70%</td>
+              <td><span class="status-badge status-badge--warning">⚠ требуется уточнение</span></td>
+            </tr>
+            <tr>
+              <td>ФИАН</td>
+              <td>15/15</td>
+              <td>100%</td>
+              <td><span class="status-badge status-badge--success">✔ завершено</span></td>
+            </tr>
+            <tr>
+              <td>ИППИ</td>
+              <td>4/8</td>
+              <td>50%</td>
+              <td><span class="status-badge status-badge--progress">⏳ в работе</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Временная шкала -->
+      <section class="section-block">
+        <h2 class="section-block__title">Временная шкала подготовки</h2>
+        <div class="timeline">
+          <div class="timeline-item timeline-item--completed">
+            <div class="timeline-item__period">I квартал</div>
+            <div class="timeline-item__description">Сбор и очистка данных от институтов РАН</div>
+          </div>
+          <div class="timeline-item timeline-item--completed">
+            <div class="timeline-item__period">II квартал</div>
+            <div class="timeline-item__description">Подготовка чернового анализа</div>
+          </div>
+          <div class="timeline-item timeline-item--in-progress">
+            <div class="timeline-item__period">III квартал</div>
+            <div class="timeline-item__description">Внешнее согласование</div>
+          </div>
+          <div class="timeline-item timeline-item--pending">
+            <div class="timeline-item__period">IV квартал</div>
+            <div class="timeline-item__description">Представление отчёта и доклада</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Риски -->
+      <section class="section-block">
+        <h2 class="section-block__title">Блок рисков и узких мест</h2>
+        <table class="table risk-table">
+          <thead>
+            <tr>
+              <th>Риск</th>
+              <th>Влияние</th>
+              <th>Вероятность</th>
+              <th>Митигирующие меры</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Неполнота данных институтов</td>
+              <td><span class="risk-level risk-level--high">высокое</span></td>
+              <td><span class="risk-level risk-level--medium">средняя</span></td>
+              <td>Ускоренные запросы</td>
+            </tr>
+            <tr>
+              <td>Разночтения в методиках расчёта публикационной активности</td>
+              <td><span class="risk-level risk-level--medium">среднее</span></td>
+              <td><span class="risk-level risk-level--high">высокая</span></td>
+              <td>Выравнивание методик</td>
+            </tr>
+            <tr>
+              <td>Задержка согласований</td>
+              <td><span class="risk-level risk-level--high">высокое</span></td>
+              <td><span class="risk-level risk-level--high">высокая</span></td>
+              <td>Параллельные циклы согласования</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Документы -->
+      <section class="section-block">
+        <h2 class="section-block__title">Документы и выгрузки</h2>
+        <div class="documents-list">
+          <a href="#" class="document-item">
+            <span class="document-item__icon">📄</span>
+            <span class="document-item__text">Проект годового отчёта (.pdf)</span>
+          </a>
+          <a href="#" class="document-item">
+            <span class="document-item__icon">📄</span>
+            <span class="document-item__text">Проект итогового доклада (.pdf)</span>
+          </a>
+          <a href="#" class="document-item">
+            <span class="document-item__icon">🗂</span>
+            <span class="document-item__text">Набор данных ФНИ (.xlsx)</span>
+          </a>
+          <a href="#" class="document-item">
+            <span class="document-item__icon">📘</span>
+            <span class="document-item__text">Методика оценки вклада ФНИ</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Типы данных -->
+      <div class="data-types">
+        <span class="data-type">📊 KPI</span>
+        <span class="data-type">📈 Тренды</span>
+        <span class="data-type">📉 Sparklines</span>
+        <span class="data-type">🗂 Таблицы</span>
+        <span class="data-type">🕒 Таймлайн</span>
+        <span class="data-type">📝 Документы</span>
+      </div>
+    </main>
+  </div>
+  <script>
+    // Sparkline конфигурация
+    const sparklineOptions = {
+      type: 'line',
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false }
+        },
+        scales: {
+          x: { display: false },
+          y: { display: false }
+        },
+        elements: {
+          point: { radius: 0 },
+          line: { borderWidth: 2, tension: 0.4 }
+        }
+      }
+    };
+
+    // Sparklines для кластера A
+    const sparklineData = {
+      wos: [3.8, 3.9, 4.0, 4.1, 4.2],
+      scopus: [4.2, 4.3, 4.3, 4.4, 4.5],
+      national: [68, 68, 68, 68, 68],
+      collab: [38, 39, 40, 41, 42],
+      candidates: [26.5, 27.0, 27.2, 27.5, 28.0],
+      q1q2: [52, 54, 55, 56, 58],
+      q1q2pub: [1100, 1150, 1200, 1220, 1245],
+      astar: [0, 5, 10, 12, 15],
+      methods: [310, 320, 330, 335, 342]
+    };
+
+    Object.keys(sparklineData).forEach((key, index) => {
+      const canvas = document.getElementById(`sparkline-${key}`);
+      if (canvas) {
+        new Chart(canvas, {
+          ...sparklineOptions,
+          data: {
+            labels: ['2021', '2022', '2023', '2024', '2025'],
+            datasets: [{
+              data: sparklineData[key],
+              borderColor: '#0066ff',
+              backgroundColor: 'transparent'
+            }]
+          }
+        });
+      }
+    });
+
+    // График FTE сравнение
+    const fteCanvas = document.getElementById('chart-fte');
+    if (fteCanvas) {
+      new Chart(fteCanvas, {
+        type: 'bar',
+        data: {
+          labels: ['США', 'Китай', 'Япония', 'Германия', 'РФ', 'Франция'],
+          datasets: [{
+            label: 'FTE (тыс.)',
+            data: [1250, 980, 650, 420, 380, 310],
+            backgroundColor: ['#0066ff', '#0066ff', '#0066ff', '#0066ff', '#00c951', '#0066ff']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    // График возрастной структуры
+    const ageCanvas = document.getElementById('chart-age');
+    const ageLegend = document.getElementById('chart-age-legend');
+    if (ageCanvas) {
+      const ageChart = new Chart(ageCanvas, {
+        type: 'doughnut',
+        data: {
+          labels: ['До 39 лет', '40-49 лет', '50-59 лет', '60+ лет'],
+          datasets: [{
+            data: [42, 28, 20, 10],
+            backgroundColor: ['#00c951', '#51a2ff', '#ff9900', '#fb2c36']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { 
+              display: false
+            }
+          }
+        }
+      });
+
+      // Создаём кастомную легенду под диаграммой
+      if (ageLegend && ageChart) {
+        const legendItems = ageChart.data.labels.map((label, index) => {
+          const value = ageChart.data.datasets[0].data[index];
+          const color = ageChart.data.datasets[0].backgroundColor[index];
+          return { label, value, color };
+        });
+
+        ageLegend.innerHTML = `
+          <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 16px;">
+            ${legendItems.map(item => `
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 14px;">
+                <span style="width: 12px; height: 12px; border-radius: 50%; background-color: ${item.color}; display: inline-block; flex-shrink: 0;"></span>
+                <span style="color: var(--material-neutral-content-secondary);">${item.label}</span>
+                <span style="font-weight: 600; color: var(--material-neutral-content-primary);">${item.value}%</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+    }
+
+    // График финансирования
+    const financeCanvas = document.getElementById('chart-finance');
+    if (financeCanvas) {
+      new Chart(financeCanvas, {
+        type: 'line',
+        data: {
+          labels: ['2021', '2022', '2023', '2024', '2025'],
+          datasets: [{
+            label: '% ВВП',
+            data: [0.24, 0.25, 0.26, 0.27, 0.28],
+            borderColor: '#0066ff',
+            backgroundColor: 'rgba(0, 102, 255, 0.1)',
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: false }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
+

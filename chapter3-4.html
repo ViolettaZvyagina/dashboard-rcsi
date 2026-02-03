@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подраздел 3.4 — Подготовка перечней для представления с учётом Стратегии НТР</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .section-block {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .section-block__description {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-20);
+    }
+
+    @media (max-width: 1200px) {
+      .kpi-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-card__label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .kpi-card__value {
+      font-family: var(--font-alt);
+      font-size: 42px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 48px;
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+    }
+
+    .kpi-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-card__trend {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .charts-grid--two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .chart-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .chart-card__title {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .chart-card canvas {
+      width: 100% !important;
+      height: 260px !important;
+      display: block;
+    }
+
+    .passport-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-16);
+      margin-top: var(--space-16);
+    }
+
+    .passport-item {
+      padding: var(--space-16);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .passport-item__label {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      text-transform: uppercase;
+      letter-spacing: var(--letter-spacing-caption);
+      font-weight: 600;
+    }
+
+    .passport-item__value {
+      font-family: var(--font-alt);
+      font-size: 28px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      font-size: var(--font-size-body);
+      font-weight: 600;
+      width: fit-content;
+    }
+
+    .status-badge--ready {
+      background: rgba(0, 201, 81, 0.1);
+      color: var(--color-positive-700);
+      border: 1px solid rgba(0, 201, 81, 0.3);
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .status-dot--green {
+      background-color: var(--color-positive-400);
+    }
+
+    @media (max-width: 1024px) {
+      .charts-grid--two {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3-1-4.html">
+              <span class="back-link__icon"></span>
+              Назад к группе 3.1–3.4
+            </a>
+            <span class="meta-pill">Подраздел 3.4</span>
+          </div>
+          <h1>3.4. Подготовка перечней для представления с учётом Стратегии НТР</h1>
+          <p style="margin: 0; color: var(--material-neutral-content-secondary); font-size: var(--font-size-body-lg); line-height: var(--line-height-body-lg); max-width: 1100px;">
+            Финальная сборка перечня, проверка на соответствие стратегическим целям страны. Комплексная оценка готовности перечня к представлению.
+          </p>
+          <div class="meta-row">
+            <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+            <span class="meta-pill">Источники: Стратегия НТР, ФОИВ, Минобрнауки, Росстат</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="kpi-grid">
+          <article class="kpi-card">
+            <div class="kpi-card__label">Покрытие Стратегии НТР</div>
+            <div class="kpi-card__value kpi-card__value--green">85%</div>
+            <div class="kpi-card__trend">Высокое покрытие</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Кадровая обеспеченность</div>
+            <div class="kpi-card__value kpi-card__value--green">72%</div>
+            <div class="kpi-card__trend">+2.1 п.п. YoY</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Технологический суверенитет</div>
+            <div class="kpi-card__value kpi-card__value--green">68%</div>
+            <div class="kpi-card__trend">+2.3 п.п. YoY</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Доля отечественной высокотехпродукции</div>
+            <div class="kpi-card__value kpi-card__value--green">68%</div>
+            <div class="kpi-card__trend">+2.1 п.п. YoY</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">High-tech сектор: изменение доли</div>
+            <div class="kpi-card__value kpi-card__value--green">+1.4 п.п.</div>
+            <div class="kpi-card__trend">Положительная динамика</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Количество отечественных технологий</div>
+            <div class="kpi-card__value kpi-card__value--green">127</div>
+            <div class="kpi-card__trend">+8 за год</div>
+          </article>
+      </section>
+
+      <section class="section-block">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
+          <h2 class="section-block__title" style="margin: 0;">Паспортная панель перечня</h2>
+          <span class="status-badge status-badge--ready">
+            <span class="status-dot status-dot--green"></span>
+            Готов к представлению
+          </span>
+        </div>
+        <p class="section-block__description">Комплексная сводка ключевых показателей перечня приоритетов НТР и ВНТ.</p>
+        
+        <div class="passport-summary">
+          <div class="passport-item">
+            <div class="passport-item__label">Ключевых технологий</div>
+            <div class="passport-item__value">127</div>
+          </div>
+          <div class="passport-item">
+            <div class="passport-item__label">Покрытие Стратегии НТР</div>
+            <div class="passport-item__value">85%</div>
+          </div>
+          <div class="passport-item">
+            <div class="passport-item__label">Кадровая обеспеченность</div>
+            <div class="passport-item__value">72%</div>
+          </div>
+          <div class="passport-item">
+            <div class="passport-item__label">Технологический суверенитет</div>
+            <div class="passport-item__value">68%</div>
+          </div>
+          <div class="passport-item">
+            <div class="passport-item__label">Доля отечественной высокотехпродукции</div>
+            <div class="passport-item__value">68%</div>
+          </div>
+          <div class="passport-item">
+            <div class="passport-item__label">High-tech в ВВП</div>
+            <div class="passport-item__value">12.9%</div>
+          </div>
+          <div class="passport-item">
+            <div class="passport-item__label">Внедрений</div>
+            <div class="passport-item__value">1,240</div>
+          </div>
+          <div class="passport-item">
+            <div class="passport-item__label">РИД по приоритетам</div>
+            <div class="passport-item__value">2,840</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Комплексные индикаторы</h2>
+        <p class="section-block__description">Интегральная оценка перечня по ключевым направлениям.</p>
+        <div class="charts-grid charts-grid--two">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Комплексные индикаторы по стратегическим блокам</h3>
+            <canvas id="chart-complex-indicators"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Покрытие Стратегии НТР по направлениям</h3>
+            <canvas id="chart-strategy-coverage"></canvas>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Кадровая обеспеченность и экосистема</h2>
+        <p class="section-block__description">Оценка кадрового потенциала и системной экосистемы вокруг приоритетов.</p>
+        <div class="charts-grid charts-grid--two">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Кадровая обеспеченность по отраслям, %</h3>
+            <canvas id="chart-personnel-sectors"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Экосистема: организации и инфраструктура</h3>
+            <canvas id="chart-ecosystem"></canvas>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const colors = {
+      primary: '#1565FF',
+      secondary: '#00C951',
+      neutral: '#8A94A6',
+      warning: '#F5A524',
+      danger: '#F44336'
+    };
+
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+
+    // Комплексные индикаторы
+    new Chart(document.getElementById('chart-complex-indicators'), {
+      type: 'radar',
+      data: {
+        labels: ['Покрытие Стратегии', 'Кадры', 'Суверенитет', 'Внедрения', 'Экономика', 'РИД'],
+        datasets: [{
+          label: 'Комплексные индикаторы',
+          data: [85, 72, 68, 75, 70, 78],
+          backgroundColor: 'rgba(0, 201, 81, 0.15)',
+          borderColor: colors.secondary,
+          pointBackgroundColor: colors.secondary,
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: colors.secondary
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          r: { beginAtZero: true, max: 100 }
+        }
+      }
+    });
+
+    // Покрытие Стратегии НТР
+    new Chart(document.getElementById('chart-strategy-coverage'), {
+      type: 'bar',
+      data: {
+        labels: ['Энергетика', 'Атом', 'Авиастроение', 'Материалы', 'Связь', 'Медицина', 'Химия', 'АПК'],
+        datasets: [{
+          label: 'Покрытие, %',
+          data: [92, 88, 85, 82, 78, 75, 72, 70],
+          backgroundColor: colors.primary
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, max: 100 }
+        }
+      }
+    });
+
+    // Кадровая обеспеченность по отраслям
+    new Chart(document.getElementById('chart-personnel-sectors'), {
+      type: 'bar',
+      data: {
+        labels: ['Атом', 'Авиастроение', 'Энергетика', 'Материалы', 'Связь', 'Медицина', 'Химия'],
+        datasets: [{
+          label: 'Обеспеченность, %',
+          data: [78, 75, 72, 70, 68, 65, 62],
+          backgroundColor: colors.secondary
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, max: 100 }
+        }
+      }
+    });
+
+    // Экосистема
+    new Chart(document.getElementById('chart-ecosystem'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Научные организации', 'Вузы', 'Промышленные предприятия', 'Инфраструктурные объекты'],
+        datasets: [{
+          data: [420, 380, 520, 280],
+          backgroundColor: [colors.primary, colors.secondary, colors.warning, colors.neutral]
+        }]
+      },
+      options: {
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+  </script>
+</body>
+</html>
+

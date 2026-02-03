@@ -1,0 +1,2419 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подраздел 4.2 — Оценка эффективности мер и инструментов государственной политики в области НТР</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .header-section {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--space-24);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: var(--space-4) 0 var(--space-6) 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .service-controls {
+      background: linear-gradient(165deg, rgba(255, 105, 0, 0.12), rgba(0, 102, 255, 0.12));
+      border: 1px solid var(--color-warning-200);
+      border-radius: var(--radius-lg);
+      padding: var(--space-16);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      min-width: 280px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-controls__group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .service-controls__label {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label);
+    }
+
+    .service-controls__select {
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .service-controls__actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-6);
+      height: var(--control-height);
+      padding: 0 var(--space-16);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-family: var(--font-main);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      text-decoration: none;
+      cursor: pointer;
+      background-color: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-primary);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn--primary {
+      background-color: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn--small {
+      height: 32px;
+      padding: 0 var(--space-12);
+      font-size: var(--font-size-caption);
+    }
+
+    .filter-bar {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .filter-bar__title {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .filter-bar__row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-16);
+      align-items: flex-start;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .filter-group__label {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label);
+    }
+
+    .filter-group__chips {
+      display: flex;
+      gap: var(--space-6);
+      flex-wrap: wrap;
+    }
+
+    .filter-group__chips--no-wrap {
+      flex-wrap: nowrap;
+    }
+
+    .filter-group:has(.filter-group__chips--no-wrap) {
+      min-width: 350px;
+    }
+
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-12);
+      border-radius: var(--radius-md);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .filter-chip:hover {
+      border-color: var(--color-accent-400);
+      color: var(--material-neutral-content-primary);
+    }
+
+    .filter-chip--active {
+      background: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .filter-dropdown {
+      position: relative;
+    }
+
+    .filter-dropdown__button {
+      width: 100%;
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-8);
+    }
+
+    .filter-dropdown__button:hover {
+      border-color: var(--color-accent-400);
+    }
+
+    .filter-dropdown__button::after {
+      content: "▼";
+      font-size: 10px;
+      color: var(--material-neutral-content-tertiary);
+      transition: transform 0.2s ease;
+    }
+
+    .filter-dropdown__button--open::after {
+      transform: rotate(180deg);
+    }
+
+    .filter-dropdown__menu {
+      position: absolute;
+      top: calc(100% + var(--space-4));
+      left: 0;
+      right: 0;
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      padding: var(--space-8);
+      gap: var(--space-4);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .filter-dropdown__menu--open {
+      display: flex;
+    }
+
+    .filter-dropdown__item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      padding: var(--space-6) var(--space-8);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .filter-dropdown__item:hover {
+      background: var(--material-neutral-highlight-primary);
+    }
+
+    .filter-dropdown__item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .filter-dropdown__item label {
+      cursor: pointer;
+      flex: 1;
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--space-20);
+      align-items: stretch;
+    }
+
+    @media (min-width: 1400px) {
+      .kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-card__label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .kpi-card__hint {
+      color: var(--material-neutral-content-tertiary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      margin-top: var(--space-2);
+    }
+
+    .kpi-card__value {
+      font-family: var(--font-alt);
+      font-size: 42px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 48px;
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+      margin-top: auto;
+    }
+
+    .kpi-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-card__trend {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .kpi-card__status {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      margin-top: var(--space-4);
+    }
+
+    .tabs {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    .tabs__header {
+      display: flex;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-highlight-primary);
+    }
+
+    .tabs__tab {
+      padding: var(--space-12) var(--space-20);
+      border: none;
+      background: transparent;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      font-weight: var(--font-weight-label);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+
+    .tabs__tab:hover {
+      color: var(--material-neutral-content-primary);
+      background: var(--material-neutral-surface-primary);
+    }
+
+    .tabs__tab--active {
+      color: var(--color-accent-600);
+      border-bottom-color: var(--color-accent-600);
+      background: var(--material-neutral-surface-primary);
+      font-weight: 600;
+    }
+
+    .tabs__content {
+      padding: var(--space-24);
+      display: none;
+    }
+
+    .tabs__content--active {
+      display: block;
+    }
+
+    .tabs__content .section-block + .section-block {
+      margin-top: var(--space-24);
+    }
+
+    .two-column-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-24);
+      align-items: stretch;
+    }
+
+    .two-column-layout > .section-block {
+      margin-top: 0 !important;
+    }
+
+    .two-column-layout > .section-block {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .two-column-layout > .section-block {
+      gap: 0;
+      padding-top: var(--space-20);
+      padding-bottom: var(--space-20);
+      padding-left: var(--space-20);
+      padding-right: var(--space-20);
+    }
+
+    .two-column-layout > .section-block > .section-block__title {
+      margin-bottom: var(--space-16);
+      margin-top: 0;
+    }
+
+    .two-column-layout > .section-block > div[style*="overflow-x"] {
+      margin-top: 0;
+    }
+
+    .two-column-layout > .section-block > .chart-card {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      margin-top: 0;
+      padding: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+    }
+
+    .two-column-layout > .section-block > .chart-card canvas {
+      height: 400px !important;
+      min-height: 400px;
+      max-height: 400px;
+      flex-shrink: 0;
+      width: 100%;
+    }
+
+    .section-block {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .section-block__description {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-body);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table th,
+    .table td {
+      padding: var(--space-10) var(--space-12);
+      text-align: left;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .table th {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label-xl);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+    }
+
+    .table th:not(:last-child) {
+      border-right: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .table td {
+      color: var(--material-neutral-content-primary);
+      background-color: var(--material-neutral-surface-primary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .table td:not(:last-child) {
+      border-right: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .table td:first-child {
+      font-weight: 400;
+    }
+
+    .table td:first-child strong {
+      font-weight: 400;
+    }
+
+    .table tbody tr {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+    }
+
+    .table tbody tr:hover {
+      background-color: var(--material-neutral-highlight-primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .table tbody tr:hover td {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .heatmap-cell {
+      padding: var(--space-8) var(--space-12);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      text-align: center;
+      min-height: 40px;
+    }
+
+    .heatmap-cell--high {
+      background-color: rgba(251, 44, 54, 0.2);
+    }
+
+    .heatmap-cell--medium {
+      background-color: rgba(245, 165, 36, 0.2);
+    }
+
+    .heatmap-cell--low {
+      background-color: rgba(0, 201, 81, 0.2);
+    }
+
+    /* Стили для ячеек таблицы с цветовой индикацией */
+    .table td.effect-cell {
+      padding: var(--space-6) var(--space-8);
+      text-align: center;
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      box-sizing: border-box;
+    }
+
+    .table td.effect-cell--high {
+      background: var(--material-lite-negative-surface);
+      color: var(--material-lite-negative-content-primary);
+    }
+
+    .table td.effect-cell--medium {
+      background: var(--material-lite-warning-surface);
+      color: var(--material-lite-warning-content-primary);
+    }
+
+    .table td.effect-cell--low {
+      background: var(--material-lite-positive-surface);
+      color: var(--material-lite-positive-content-primary);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+    }
+
+    .status-badge--high {
+      background-color: rgba(0, 201, 81, 0.1);
+      color: var(--color-positive-500);
+    }
+
+    .status-badge--medium {
+      background-color: rgba(245, 165, 36, 0.1);
+      color: var(--color-warning-500);
+    }
+
+    .status-badge--low {
+      background-color: rgba(251, 44, 54, 0.1);
+      color: var(--color-negative-500);
+    }
+
+    .chart-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .chart-card canvas {
+      width: 100% !important;
+      height: 400px !important;
+      display: block;
+    }
+
+    .chart-card__title {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .sidebar {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 400px;
+      height: 100vh;
+      background: var(--material-neutral-surface-primary);
+      border-left: 1px solid var(--material-neutral-border-primary);
+      box-shadow: -4px 0 16px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      transition: transform 0.3s ease, visibility 0.3s ease;
+      overflow-y: auto;
+      padding: var(--space-24);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-20);
+      transform: translateX(100%);
+      visibility: hidden;
+    }
+
+    .sidebar--open {
+      transform: translateX(0);
+      visibility: visible;
+    }
+
+    .sidebar__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: var(--space-16);
+      border-bottom: 1px solid var(--material-neutral-border-primary);
+    }
+
+    .sidebar__title {
+      font-family: var(--font-alt);
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .sidebar__close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--material-neutral-content-secondary);
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+    }
+
+    .sidebar__close:hover {
+      background: var(--material-neutral-highlight-primary);
+    }
+
+    .sidebar__section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .sidebar__section-title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .sidebar__metric {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-8);
+      background: var(--material-neutral-highlight-primary);
+      border-radius: var(--radius-sm);
+    }
+
+    .sidebar__metric-label {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .sidebar__metric-value {
+      font-size: var(--font-size-body);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+    }
+
+    .summary-section {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-20);
+    }
+
+    .summary-section__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .summary-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .summary-card__title {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+    }
+
+    .summary-card__title--positive {
+      color: var(--color-positive-500);
+    }
+
+    .summary-card__title--negative {
+      color: var(--color-negative-500);
+    }
+
+    .summary-card__title--warning {
+      color: var(--color-warning-500);
+    }
+
+    .summary-card__list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .summary-card__item {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+      padding-left: var(--space-20);
+      position: relative;
+    }
+
+    .summary-card__item::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--material-neutral-content-tertiary);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 24px;
+      background: var(--material-neutral-highlight-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--material-neutral-border-primary);
+      position: relative;
+    }
+
+    .progress-bar__fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-accent-500), var(--color-positive-500));
+      border-radius: var(--radius-md);
+      transition: width 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: var(--space-8);
+      color: white;
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+    }
+
+    .progress-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .progress-item__label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-primary);
+    }
+
+    .progress-item__value {
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+    }
+
+    .progress-item__target {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .before-after-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-24);
+    }
+
+    .before-after-card {
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .before-after-card__title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .before-after-card__value {
+      font-family: var(--font-alt);
+      font-size: 32px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 40px;
+    }
+
+    .before-after-card__value--before {
+      color: var(--color-warning-500);
+    }
+
+    .before-after-card__value--after {
+      color: var(--color-positive-500);
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .popup--open {
+      display: flex;
+    }
+
+    .popup__content {
+      background: var(--material-neutral-surface-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+    }
+
+    .popup__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-20);
+      padding-bottom: var(--space-16);
+      border-bottom: 1px solid var(--material-neutral-border-primary);
+    }
+
+    .popup__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .popup__close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--material-neutral-content-secondary);
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+    }
+
+    .popup__close:hover {
+      background: var(--material-neutral-highlight-primary);
+    }
+
+    .popup__text {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+      margin: 0;
+    }
+
+    @media (max-width: 1024px) {
+      .two-column-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .header-section {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        width: 100%;
+        right: -100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <!-- Шапка страницы -->
+      <section class="header-section">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="chapter4.html">
+                <span class="back-link__icon"></span>
+                Назад к разделу 4
+              </a>
+              <span class="meta-pill">Подраздел 4.2</span>
+            </div>
+            <h1>4.2. Оценка эффективности мер и инструментов госполитики в области НТР</h1>
+            <p>Сопоставление затрат на меры поддержки с научными, технологическими, кадровыми и экономическими результатами по приоритетам НТР.</p>
+            <div class="meta-row">
+              <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+              <span class="meta-pill">Источники: Минобрнауки, Росстат, ФОИВ, ЕГИСУ НИОКТР</span>
+            </div>
+          </div>
+        </div>
+        <aside class="service-controls">
+          <div class="service-controls__group">
+            <label class="service-controls__label">Период</label>
+            <select class="service-controls__select">
+              <option>2025</option>
+              <option>2024</option>
+              <option>2023-2025</option>
+            </select>
+          </div>
+          <div class="service-controls__group">
+            <label class="service-controls__label">Масштаб</label>
+            <select class="service-controls__select">
+              <option>РФ</option>
+              <option>По ФОИВ</option>
+              <option>По отраслям</option>
+            </select>
+          </div>
+          <div class="service-controls__actions">
+            <button class="btn btn--primary btn--small">Экспорт отчета по эффективности</button>
+            <button class="btn btn--small">Сравнить инструменты</button>
+            <button class="btn btn--small" id="methodology-btn">Методика оценки</button>
+          </div>
+        </aside>
+      </section>
+
+      <!-- Панель быстрых фильтров -->
+      <section class="filter-bar">
+        <div class="filter-bar__row">
+          <div class="filter-group">
+            <label class="filter-group__label">Тип инструмента / меры</label>
+            <div class="filter-group__chips">
+              <button class="filter-chip filter-chip--active" data-filter="type" data-value="all">Все</button>
+              <button class="filter-chip" data-filter="type" data-value="grants">Гранты и субсидии</button>
+              <button class="filter-chip" data-filter="type" data-value="infra">Инфраструктура</button>
+              <button class="filter-chip" data-filter="type" data-value="tax">Налоговые льготы</button>
+              <button class="filter-chip" data-filter="type" data-value="personnel">Кадровые меры</button>
+              <button class="filter-chip" data-filter="type" data-value="competitions">Технологические конкурсы</button>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label class="filter-group__label">ФОИВ-инициатор / куратор</label>
+            <div class="filter-group__chips">
+              <button class="filter-chip filter-chip--active" data-filter="foiv" data-value="all">Все</button>
+              <button class="filter-chip" data-filter="foiv" data-value="minobrnauki">Минобрнауки</button>
+              <button class="filter-chip" data-filter="foiv" data-value="minselhoz">Минсельхоз</button>
+              <button class="filter-chip" data-filter="foiv" data-value="minpromtorg">Минпромторг</button>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label class="filter-group__label">Приоритет / отрасль</label>
+            <div class="filter-group__chips">
+              <button class="filter-chip filter-chip--active" data-filter="priority" data-value="all">Все</button>
+              <button class="filter-chip" data-filter="priority" data-value="chemistry">Химия</button>
+              <button class="filter-chip" data-filter="priority" data-value="tek">ТЭК</button>
+              <button class="filter-chip" data-filter="priority" data-value="apk">АПК</button>
+              <button class="filter-chip" data-filter="priority" data-value="bas">БАС</button>
+            </div>
+          </div>
+        </div>
+        <div class="filter-bar__row">
+          <div class="filter-group">
+            <label class="filter-group__label">Тип эффекта</label>
+            <div class="filter-dropdown">
+              <button type="button" class="filter-dropdown__button" id="effect-types-button">
+                <span id="effect-types-text">Все типы выбраны (5)</span>
+              </button>
+              <div class="filter-dropdown__menu" id="effect-types-menu">
+                <div class="filter-dropdown__item">
+                  <input type="checkbox" id="effect-science" checked>
+                  <label for="effect-science">Научные результаты</label>
+                </div>
+                <div class="filter-dropdown__item">
+                  <input type="checkbox" id="effect-tech" checked>
+                  <label for="effect-tech">Технологический суверенитет</label>
+                </div>
+                <div class="filter-dropdown__item">
+                  <input type="checkbox" id="effect-economy" checked>
+                  <label for="effect-economy">Экономика и экспорт</label>
+                </div>
+                <div class="filter-dropdown__item">
+                  <input type="checkbox" id="effect-infra" checked>
+                  <label for="effect-infra">Инфраструктура и данные</label>
+                </div>
+                <div class="filter-dropdown__item">
+                  <input type="checkbox" id="effect-personnel" checked>
+                  <label for="effect-personnel">Кадры и образование</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label class="filter-group__label">Период анализа</label>
+            <div class="filter-group__chips filter-group__chips--no-wrap">
+              <button class="filter-chip filter-chip--active" data-filter="period" data-value="year">За год</button>
+              <button class="filter-chip" data-filter="period" data-value="full">За весь период</button>
+              <button class="filter-chip" data-filter="period" data-value="before-after">До/после запуска</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Верхний блок: индекс эффективности инструментов -->
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-card__label">Индекс эффективности мер НТР (интегральный)</div>
+          <div class="kpi-card__hint">Рассчитывается из набора «результатных» показателей относительно объема поддержки</div>
+          <div class="kpi-card__value kpi-card__value--yellow">0.72</div>
+          <div class="kpi-card__trend">+0.05 к прошлому периоду</div>
+          <div class="kpi-card__status">В целевом коридоре</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Эффективность бюджетных инструментов</div>
+          <div class="kpi-card__hint">Эффект / 1 млрд руб. бюджетного финансирования</div>
+          <div class="kpi-card__value kpi-card__value--green">1.24</div>
+          <div class="kpi-card__trend">+0.12 к прошлому периоду</div>
+          <div class="kpi-card__status">Выше целевого уровня</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Эффективность внебюджетного плеча</div>
+          <div class="kpi-card__hint">Рост НИОКР при увеличении доли внебюджетных источников</div>
+          <div class="kpi-card__value kpi-card__value--green">1.18</div>
+          <div class="kpi-card__trend">+0.08 к прошлому периоду</div>
+          <div class="kpi-card__status">Выше целевого уровня</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Научный результат на единицу поддержки</div>
+          <div class="kpi-card__hint">Публикации A*, патенты, РИД / млрд руб.</div>
+          <div class="kpi-card__value kpi-card__value--yellow">156</div>
+          <div class="kpi-card__trend">+12 к прошлому периоду</div>
+          <div class="kpi-card__status">В целевом коридоре</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Технологический суверенитет на единицу поддержки</div>
+          <div class="kpi-card__hint">Изменение уровней тех. независимости / млрд руб.</div>
+          <div class="kpi-card__value kpi-card__value--green">0.42</div>
+          <div class="kpi-card__trend">+0.06 к прошлому периоду</div>
+          <div class="kpi-card__status">Выше целевого уровня</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Кадровый эффект мер</div>
+          <div class="kpi-card__hint">Изменение доли молодых ученых, кадровой обеспеченности</div>
+          <div class="kpi-card__value kpi-card__value--yellow">0.68</div>
+          <div class="kpi-card__trend">+0.04 к прошлому периоду</div>
+          <div class="kpi-card__status">В целевом коридоре</div>
+        </article>
+      </section>
+
+      <!-- Центральный блок: структура «инструмент → эффекты» -->
+      <section class="tabs">
+        <div class="tabs__header">
+          <button class="tabs__tab tabs__tab--active" data-tab="general">Общая эффективность</button>
+          <button class="tabs__tab" data-tab="types">По типам и инструментам</button>
+          <button class="tabs__tab" data-tab="sovereignty">Технологический суверенитет</button>
+          <button class="tabs__tab" data-tab="personnel">Кадровые и образовательные эффекты</button>
+          <button class="tabs__tab" data-tab="digital">Цифровизация статистики и инфраструктура данных</button>
+        </div>
+
+        <!-- Вкладка "Общая эффективность" -->
+        <div class="tabs__content tabs__content--active" data-content="general">
+          <div class="two-column-layout">
+            <div class="section-block">
+              <h3 class="section-block__title">Матрица «Инструмент × эффект»</h3>
+              <div style="overflow-x: auto;">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Инструмент</th>
+                      <th>Научный эффект</th>
+                      <th>Технологический эффект</th>
+                      <th>Экономический эффект</th>
+                      <th>Кадровый эффект</th>
+                      <th>Инфраструктура</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr data-instrument="grants">
+                      <td>Гранты и субсидии</td>
+                      <td class="effect-cell effect-cell--high">Высокий</td>
+                      <td class="effect-cell effect-cell--medium">Средний</td>
+                      <td class="effect-cell effect-cell--medium">Средний</td>
+                      <td class="effect-cell effect-cell--high">Высокий</td>
+                      <td class="effect-cell effect-cell--low">Низкий</td>
+                    </tr>
+                    <tr data-instrument="infra">
+                      <td>Инфраструктура (ЦКП, УНУ)</td>
+                      <td class="effect-cell effect-cell--high">Высокий</td>
+                      <td class="effect-cell effect-cell--high">Высокий</td>
+                      <td class="effect-cell effect-cell--medium">Средний</td>
+                      <td class="effect-cell effect-cell--medium">Средний</td>
+                      <td class="effect-cell effect-cell--high">Высокий</td>
+                    </tr>
+                    <tr data-instrument="tax">
+                      <td>Налоговые льготы</td>
+                      <td class="effect-cell effect-cell--low">Низкий</td>
+                      <td class="effect-cell effect-cell--medium">Средний</td>
+                      <td class="effect-cell effect-cell--high">Высокий</td>
+                      <td class="effect-cell effect-cell--low">Низкий</td>
+                      <td class="effect-cell effect-cell--low">Низкий</td>
+                    </tr>
+                    <tr data-instrument="personnel">
+                      <td>Кадровые меры</td>
+                      <td class="effect-cell effect-cell--medium">Средний</td>
+                      <td class="effect-cell effect-cell--low">Низкий</td>
+                      <td class="effect-cell effect-cell--low">Низкий</td>
+                      <td class="effect-cell effect-cell--high">Высокий</td>
+                      <td class="effect-cell effect-cell--low">Низкий</td>
+                    </tr>
+                    <tr data-instrument="competitions">
+                      <td>Технологические конкурсы</td>
+                      <td class="effect-cell effect-cell--medium">Средний</td>
+                      <td class="effect-cell effect-cell--high">Высокий</td>
+                      <td class="effect-cell effect-cell--high">Высокий</td>
+                      <td class="effect-cell effect-cell--medium">Средний</td>
+                      <td class="effect-cell effect-cell--medium">Средний</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="section-block">
+              <h3 class="section-block__title">Затраты → эффекты</h3>
+              <div class="chart-card">
+                <canvas id="chart-costs-effects"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Вкладка "По типам и инструментам" -->
+        <div class="tabs__content" data-content="types">
+          <div class="two-column-layout">
+            <div class="section-block">
+              <h3 class="section-block__title">Эффект на 1 млрд руб. по типам инструментов</h3>
+              <div class="chart-card">
+                <canvas id="chart-by-types"></canvas>
+              </div>
+            </div>
+            <div class="section-block">
+              <h3 class="section-block__title">Сравнение инструментов</h3>
+              <div style="overflow-x: auto;">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Инструмент</th>
+                      <th>Финансирование, млрд руб.</th>
+                      <th>Индекс эффективности</th>
+                      <th>Статус</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Гранты и субсидии</strong></td>
+                      <td>124.5</td>
+                      <td>0.85</td>
+                      <td><span class="status-badge status-badge--high">Выше плана</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Инфраструктура</strong></td>
+                      <td>98.2</td>
+                      <td>0.78</td>
+                      <td><span class="status-badge status-badge--medium">В коридоре</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Налоговые льготы</strong></td>
+                      <td>156.8</td>
+                      <td>0.65</td>
+                      <td><span class="status-badge status-badge--low">Ниже плана</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Кадровые меры</strong></td>
+                      <td>67.3</td>
+                      <td>0.72</td>
+                      <td><span class="status-badge status-badge--medium">В коридоре</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Технологические конкурсы</strong></td>
+                      <td>89.1</td>
+                      <td>0.91</td>
+                      <td><span class="status-badge status-badge--high">Выше плана</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Вкладка "Технологический суверенитет" -->
+        <div class="tabs__content" data-content="sovereignty">
+          <div class="section-block">
+            <h3 class="section-block__title">Уровни технологической независимости и связь с инструментами</h3>
+            <div style="overflow-x: auto;">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Направление</th>
+                    <th>Уровень независимости</th>
+                    <th>Ключевые технологии</th>
+                    <th>Внедрения</th>
+                    <th>Основные меры поддержки</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Производство средств производства</strong></td>
+                    <td>62%</td>
+                    <td>45</td>
+                    <td>128</td>
+                    <td>Инфраструктура, НИОКР-проекты</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Новые материалы и химия</strong></td>
+                    <td>58%</td>
+                    <td>38</td>
+                    <td>95</td>
+                    <td>Гранты, конкурсы БАС</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Продовольственная безопасность</strong></td>
+                    <td>71%</td>
+                    <td>52</td>
+                    <td>156</td>
+                    <td>Кадровые программы, инфраструктура</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Новые атомные технологии</strong></td>
+                    <td>68%</td>
+                    <td>28</td>
+                    <td>42</td>
+                    <td>НИОКР-проекты, инфраструктура</td>
+                  </tr>
+                  <tr>
+                    <td><strong>ТЭК, СНЭ, электроэнергетика</strong></td>
+                    <td>65%</td>
+                    <td>41</td>
+                    <td>112</td>
+                    <td>Технологические конкурсы, гранты</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Авиастроение, судостроение</strong></td>
+                    <td>54%</td>
+                    <td>33</td>
+                    <td>78</td>
+                    <td>НИОКР-проекты, инфраструктура</td>
+                  </tr>
+                  <tr>
+                    <td><strong>БАС и спутниковые системы</strong></td>
+                    <td>59%</td>
+                    <td>35</td>
+                    <td>89</td>
+                    <td>Конкурсы БАС, кадровые меры</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="section-block">
+            <h3 class="section-block__title">БАС и спутниковые системы — детализация</h3>
+            <div style="overflow-x: auto;">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Показатель</th>
+                    <th>Значение</th>
+                    <th>Динамика</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Уровень тех. суверенитета в отрасли БАС</td>
+                    <td>59%</td>
+                    <td>+3 п.п. YoY</td>
+                  </tr>
+                  <tr>
+                    <td>Количество опытных образцов и демонстраторов</td>
+                    <td>124</td>
+                    <td>+18 YoY</td>
+                  </tr>
+                  <tr>
+                    <td>Количество вовлечённых организаций</td>
+                    <td>87</td>
+                    <td>+12 YoY</td>
+                  </tr>
+                  <tr>
+                    <td>Количество новых российских решений для интеграции БВС в ЕВП</td>
+                    <td>45</td>
+                    <td>+8 YoY</td>
+                  </tr>
+                  <tr>
+                    <td>Количество космических аппаратов системы связи и ШПД</td>
+                    <td>28</td>
+                    <td>+5 YoY</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Вкладка "Кадровые и образовательные эффекты" -->
+        <div class="tabs__content" data-content="personnel">
+          <div class="section-block">
+            <h3 class="section-block__title">Меры → кадровые индексы</h3>
+            <div class="chart-card">
+              <canvas id="chart-personnel"></canvas>
+            </div>
+          </div>
+          <div class="section-block">
+            <h3 class="section-block__title">Кадровые показатели по инструментам</h3>
+            <div style="overflow-x: auto;">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Инструмент</th>
+                    <th>Доля молодых ученых</th>
+                    <th>Исследователи до 39 лет с уч. степенью</th>
+                    <th>Сокращение дефицита кадров</th>
+                    <th>Трудоустройство по профилю</th>
+                    <th>Индекс кадрового эффекта</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Кадровые меры</strong></td>
+                    <td>42%</td>
+                    <td>38%</td>
+                    <td>-12%</td>
+                    <td>78%</td>
+                    <td>0.85</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Гранты и субсидии</strong></td>
+                    <td>39%</td>
+                    <td>35%</td>
+                    <td>-8%</td>
+                    <td>72%</td>
+                    <td>0.78</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Инфраструктура</strong></td>
+                    <td>36%</td>
+                    <td>32%</td>
+                    <td>-5%</td>
+                    <td>68%</td>
+                    <td>0.72</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Технологические конкурсы</strong></td>
+                    <td>41%</td>
+                    <td>37%</td>
+                    <td>-10%</td>
+                    <td>75%</td>
+                    <td>0.81</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Вкладка "Цифровизация статистики и инфраструктура данных" -->
+        <div class="tabs__content" data-content="digital">
+          <div class="section-block">
+            <h3 class="section-block__title">Линейки прогресса по ключевым целям (цель 2030)</h3>
+            <div style="display: flex; flex-direction: column; gap: var(--space-20);">
+              <div class="progress-item">
+                <div class="progress-item__label">
+                  <span>Доля снижения нагрузки на респондентов статнаблюдения</span>
+                  <div>
+                    <span class="progress-item__value">28%</span>
+                    <span class="progress-item__target"> / 40%</span>
+                  </div>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-bar__fill" style="width: 70%;">70%</div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-item__label">
+                  <span>Доля показателей на основе административных/больших данных</span>
+                  <div>
+                    <span class="progress-item__value">45%</span>
+                    <span class="progress-item__target"> / 60%</span>
+                  </div>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-bar__fill" style="width: 75%;">75%</div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-item__label">
+                  <span>Сроки обработки первичных данных</span>
+                  <div>
+                    <span class="progress-item__value">12 дней</span>
+                    <span class="progress-item__target"> / 7 дней</span>
+                  </div>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-bar__fill" style="width: 58%;">58%</div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-item__label">
+                  <span>Доля показателей через ЦАП в автоматизированном виде</span>
+                  <div>
+                    <span class="progress-item__value">52%</span>
+                    <span class="progress-item__target"> / 80%</span>
+                  </div>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-bar__fill" style="width: 65%;">65%</div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-item__label">
+                  <span>Доля показателей, соответствующих международным стандартам</span>
+                  <div>
+                    <span class="progress-item__value">68%</span>
+                    <span class="progress-item__target"> / 85%</span>
+                  </div>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-bar__fill" style="width: 80%;">80%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-block">
+            <h3 class="section-block__title">Сравнение «до/после» внедрения конкретных мер</h3>
+            <div class="filter-bar" style="margin-bottom: var(--space-20); padding: var(--space-16); background: var(--material-neutral-highlight-primary); border-radius: var(--radius-md);">
+              <div class="filter-group">
+                <label class="filter-group__label">Тип инструмента</label>
+                <div class="filter-group__chips">
+                  <button class="filter-chip filter-chip--active" data-filter="measure-type" data-value="all">Все</button>
+                  <button class="filter-chip" data-filter="measure-type" data-value="digital">Цифровизация</button>
+                  <button class="filter-chip" data-filter="measure-type" data-value="infra">Инфраструктура</button>
+                  <button class="filter-chip" data-filter="measure-type" data-value="grants">Гранты</button>
+                </div>
+              </div>
+            </div>
+            <div class="before-after-comparison">
+              <div class="before-after-card">
+                <div class="before-after-card__title">До внедрения мер</div>
+                <div class="before-after-card__value before-after-card__value--before" id="before-value">35%</div>
+                <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);" id="before-label">
+                  Доля показателей через ЦАП
+                </div>
+              </div>
+              <div class="before-after-card">
+                <div class="before-after-card__title">После внедрения мер</div>
+                <div class="before-after-card__value before-after-card__value--after" id="after-value">52%</div>
+                <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);" id="after-label">
+                  Доля показателей через ЦАП
+                </div>
+              </div>
+            </div>
+            <div style="margin-top: var(--space-16); padding: var(--space-12); background: var(--material-neutral-highlight-primary); border-radius: var(--radius-md);">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: var(--font-size-body); color: var(--material-neutral-content-secondary);">Прирост:</span>
+                <span style="font-size: var(--font-size-label); font-weight: 600; color: var(--color-positive-500);" id="growth-value">+17 п.п.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-block">
+            <h3 class="section-block__title">Таблица «меры → цифровые эффекты»</h3>
+            <div style="overflow-x: auto;">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Мера / инструмент</th>
+                    <th>Доля снижения нагрузки на респондентов</th>
+                    <th>Доля показателей на основе больших данных</th>
+                    <th>Сроки обработки данных</th>
+                    <th>Доля показателей через ЦАП</th>
+                    <th>Соответствие международным стандартам</th>
+                    <th>Индекс цифрового эффекта</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Цифровизация статистики (ЦАП)</strong></td>
+                    <td>+12 п.п.</td>
+                    <td>+18 п.п.</td>
+                    <td>-3 дня</td>
+                    <td>+17 п.п.</td>
+                    <td>+8 п.п.</td>
+                    <td><span class="status-badge status-badge--high">0.92</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Инфраструктура данных</strong></td>
+                    <td>+8 п.п.</td>
+                    <td>+12 п.п.</td>
+                    <td>-2 дня</td>
+                    <td>+10 п.п.</td>
+                    <td>+5 п.п.</td>
+                    <td><span class="status-badge status-badge--high">0.85</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Гранты на цифровизацию</strong></td>
+                    <td>+5 п.п.</td>
+                    <td>+8 п.п.</td>
+                    <td>-1 день</td>
+                    <td>+6 п.п.</td>
+                    <td>+3 п.п.</td>
+                    <td><span class="status-badge status-badge--medium">0.72</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Технологические конкурсы (БАС)</strong></td>
+                    <td>+3 п.п.</td>
+                    <td>+5 п.п.</td>
+                    <td>0 дней</td>
+                    <td>+4 п.п.</td>
+                    <td>+2 п.п.</td>
+                    <td><span class="status-badge status-badge--medium">0.68</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="section-block">
+            <h3 class="section-block__title">Инфраструктурные индикаторы</h3>
+            <div style="overflow-x: auto;">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Показатель</th>
+                    <th>Значение</th>
+                    <th>Динамика</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Индекс доступности и востребованности научной и НТ инфраструктуры и информации</td>
+                    <td>0.72</td>
+                    <td>+0.05 YoY</td>
+                  </tr>
+                  <tr>
+                    <td>Доля машин и оборудования до 5 лет</td>
+                    <td>42%</td>
+                    <td>+3 п.п. YoY</td>
+                  </tr>
+                  <tr>
+                    <td>Доля инфраструктурных объектов</td>
+                    <td>68%</td>
+                    <td>+2 п.п. YoY</td>
+                  </tr>
+                  <tr>
+                    <td>Коэффициент загрузки оборудования</td>
+                    <td>68%</td>
+                    <td>+4 п.п. YoY</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Блок "Управленческие выводы" -->
+      <section class="summary-section">
+        <h2 class="summary-section__title">Управленческие выводы</h2>
+        <div class="summary-cards">
+          <article class="summary-card">
+            <h3 class="summary-card__title summary-card__title--positive">
+              <span>↑</span>
+              <span>Инструменты с наибольшей эффективностью</span>
+            </h3>
+            <ul class="summary-card__list">
+              <li class="summary-card__item">Технологические конкурсы: индекс эффективности 0.91, высокий технологический и экономический эффект</li>
+              <li class="summary-card__item">Гранты и субсидии: индекс 0.85, сильный научный и кадровый эффект</li>
+              <li class="summary-card__item">Инфраструктура (ЦКП, УНУ): индекс 0.78, высокий эффект по технологиям и инфраструктуре</li>
+            </ul>
+          </article>
+
+          <article class="summary-card">
+            <h3 class="summary-card__title summary-card__title--negative">
+              <span>↓</span>
+              <span>Инструменты с низкой эффективностью</span>
+            </h3>
+            <ul class="summary-card__list">
+              <li class="summary-card__item">Налоговые льготы: индекс 0.65, ниже планового уровня, требуется пересмотр механизмов</li>
+              <li class="summary-card__item">Отдельные кадровые программы: недостаточный эффект по технологическому суверенитету</li>
+            </ul>
+          </article>
+
+          <article class="summary-card">
+            <h3 class="summary-card__title summary-card__title--warning">
+              <span>⚠</span>
+              <span>Направления, требующие внимания</span>
+            </h3>
+            <ul class="summary-card__list">
+              <li class="summary-card__item">Авиастроение и судостроение: уровень независимости 54%, требуется усиление мер поддержки</li>
+              <li class="summary-card__item">Новые материалы и химия: уровень 58%, необходимо увеличение финансирования НИОКР</li>
+              <li class="summary-card__item">Цифровизация статистики: прогресс 65-80%, требуется ускорение внедрения ЦАП</li>
+            </ul>
+          </article>
+
+          <article class="summary-card">
+            <h3 class="summary-card__title summary-card__title--positive">
+              <span>✓</span>
+              <span>Рекомендации</span>
+            </h3>
+            <ul class="summary-card__list">
+              <li class="summary-card__item">Увеличить долю финансирования технологических конкурсов и грантов</li>
+              <li class="summary-card__item">Пересмотреть механизмы налоговых льгот для повышения эффективности</li>
+              <li class="summary-card__item">Усилить кадровые меры в отраслях с низким уровнем технологической независимости</li>
+              <li class="summary-card__item">Ускорить цифровизацию статистики и внедрение ЦАП</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Боковая панель "Паспорт инструмента" -->
+  <aside class="sidebar" id="instrument-sidebar">
+    <div class="sidebar__header">
+      <h2 class="sidebar__title" id="sidebar-title">Паспорт инструмента</h2>
+      <button class="sidebar__close" id="sidebar-close">×</button>
+    </div>
+    <div class="sidebar__section">
+      <h3 class="sidebar__section-title">Общая информация</h3>
+      <div class="sidebar__metric">
+        <span class="sidebar__metric-label">Тип инструмента</span>
+        <span class="sidebar__metric-value" id="sidebar-type">—</span>
+      </div>
+      <div class="sidebar__metric">
+        <span class="sidebar__metric-label">ФОИВ-куратор</span>
+        <span class="sidebar__metric-value" id="sidebar-foiv">—</span>
+      </div>
+      <div class="sidebar__metric">
+        <span class="sidebar__metric-label">Бюджетное финансирование</span>
+        <span class="sidebar__metric-value" id="sidebar-budget">—</span>
+      </div>
+      <div class="sidebar__metric">
+        <span class="sidebar__metric-label">Внебюджетное финансирование</span>
+        <span class="sidebar__metric-value" id="sidebar-extrabudget">—</span>
+      </div>
+    </div>
+    <div class="sidebar__section">
+      <h3 class="sidebar__section-title">Научный эффект</h3>
+      <div class="sidebar__metric">
+        <span class="sidebar__metric-label">Публикации A*</span>
+        <span class="sidebar__metric-value" id="sidebar-pubs">—</span>
+      </div>
+      <div class="sidebar__metric">
+        <span class="sidebar__metric-label">Патенты</span>
+        <span class="sidebar__metric-value" id="sidebar-patents">—</span>
+      </div>
+      <div class="sidebar__metric">
+        <span class="sidebar__metric-label">РИД</span>
+        <span class="sidebar__metric-value" id="sidebar-rid">—</span>
+      </div>
+    </div>
+    <div class="sidebar__section">
+      <h3 class="sidebar__section-title">Технологический эффект</h3>
+      <div class="sidebar__metric">
+        <span class="sidebar__metric-label">Ключевые технологии</span>
+        <span class="sidebar__metric-value" id="sidebar-tech">—</span>
+      </div>
+      <div class="sidebar__metric">
+        <span class="sidebar__metric-label">Внедрения</span>
+        <span class="sidebar__metric-value" id="sidebar-implementations">—</span>
+      </div>
+    </div>
+    <div class="sidebar__section">
+      <h3 class="sidebar__section-title">Экономический эффект</h3>
+      <div class="sidebar__metric">
+        <span class="sidebar__metric-label">Выручка компаний</span>
+        <span class="sidebar__metric-value" id="sidebar-revenue">—</span>
+      </div>
+      <div class="sidebar__metric">
+        <span class="sidebar__metric-label">Экспорт</span>
+        <span class="sidebar__metric-value" id="sidebar-export">—</span>
+      </div>
+    </div>
+    <div class="sidebar__section">
+      <h3 class="sidebar__section-title">Кадровый эффект</h3>
+      <div class="sidebar__metric">
+        <span class="sidebar__metric-label">Молодые ученые</span>
+        <span class="sidebar__metric-value" id="sidebar-young">—</span>
+      </div>
+      <div class="sidebar__metric">
+        <span class="sidebar__metric-label">Выпускники</span>
+        <span class="sidebar__metric-value" id="sidebar-graduates">—</span>
+      </div>
+    </div>
+    <div style="margin-top: auto; padding-top: var(--space-20);">
+      <button class="btn btn--primary" style="width: 100%;">Сформировать аналитическую записку</button>
+    </div>
+  </aside>
+
+  <!-- Pop-up "Методика оценки" -->
+  <div class="popup" id="methodology-popup">
+    <div class="popup__content">
+      <div class="popup__header">
+        <h2 class="popup__title">Методика оценки эффективности</h2>
+        <button class="popup__close" id="popup-close">×</button>
+      </div>
+      <div>
+        <p class="popup__text">
+          <strong>Индекс эффективности мер НТР</strong> рассчитывается как интегральный показатель, объединяющий результаты по научным, технологическим, экономическим, кадровым и инфраструктурным показателям относительно объема поддержки.
+        </p>
+        <p class="popup__text">
+          <strong>Эффективность бюджетных инструментов</strong> — отношение совокупного эффекта (в баллах) к объему бюджетного финансирования в млрд рублей. Целевой коридор: 0.7–0.9.
+        </p>
+        <p class="popup__text">
+          <strong>Эффективность внебюджетного плеча</strong> — коэффициент роста НИОКР, внедрений и технологий при увеличении доли внебюджетных источников на 1 п.п.
+        </p>
+        <p class="popup__text">
+          <strong>Научный результат на единицу поддержки</strong> — суммарное количество публикаций A*, патентов и РИД, деленное на объем финансирования в млрд рублей.
+        </p>
+        <p class="popup__text">
+          <strong>Технологический суверенитет на единицу поддержки</strong> — изменение уровней технологической независимости и числа ключевых технологий относительно объема поддержки.
+        </p>
+        <p class="popup__text">
+          <strong>Кадровый эффект мер</strong> — комплексный показатель, учитывающий изменение доли молодых ученых, кадровой обеспеченности и трудоустройства по профилю.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Данные для боковой панели
+    const instrumentData = {
+      grants: {
+        type: "Гранты и субсидии",
+        foiv: "Минобрнауки",
+        budget: "124.5 млрд руб.",
+        extrabudget: "45.2 млрд руб.",
+        pubs: "1,245",
+        patents: "342",
+        rid: "567",
+        tech: "89",
+        implementations: "234",
+        revenue: "156.8 млрд руб.",
+        export: "45.3 млрд руб.",
+        young: "39%",
+        graduates: "12,450"
+      },
+      infra: {
+        type: "Инфраструктура (ЦКП, УНУ)",
+        foiv: "Минобрнауки",
+        budget: "98.2 млрд руб.",
+        extrabudget: "32.1 млрд руб.",
+        pubs: "892",
+        patents: "234",
+        rid: "445",
+        tech: "112",
+        implementations: "189",
+        revenue: "134.5 млрд руб.",
+        export: "38.7 млрд руб.",
+        young: "36%",
+        graduates: "8,920"
+      },
+      tax: {
+        type: "Налоговые льготы",
+        foiv: "Минфин",
+        budget: "156.8 млрд руб.",
+        extrabudget: "0 млрд руб.",
+        pubs: "234",
+        patents: "156",
+        rid: "189",
+        tech: "67",
+        implementations: "145",
+        revenue: "245.6 млрд руб.",
+        export: "67.8 млрд руб.",
+        young: "28%",
+        graduates: "5,340"
+      },
+      personnel: {
+        type: "Кадровые меры",
+        foiv: "Минобрнауки",
+        budget: "67.3 млрд руб.",
+        extrabudget: "12.4 млрд руб.",
+        pubs: "456",
+        patents: "89",
+        rid: "123",
+        tech: "34",
+        implementations: "78",
+        revenue: "45.2 млрд руб.",
+        export: "12.3 млрд руб.",
+        young: "42%",
+        graduates: "18,560"
+      },
+      competitions: {
+        type: "Технологические конкурсы",
+        foiv: "Минпромторг",
+        budget: "89.1 млрд руб.",
+        extrabudget: "28.7 млрд руб.",
+        pubs: "678",
+        patents: "445",
+        rid: "567",
+        tech: "156",
+        implementations: "289",
+        revenue: "178.9 млрд руб.",
+        export: "56.4 млрд руб.",
+        young: "41%",
+        graduates: "9,870"
+      }
+    };
+
+    // Переключение вкладок
+    const tabs = document.querySelectorAll('.tabs__tab');
+    const contents = document.querySelectorAll('.tabs__content');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetTab = tab.getAttribute('data-tab');
+        
+        tabs.forEach(t => t.classList.remove('tabs__tab--active'));
+        contents.forEach(c => c.classList.remove('tabs__content--active'));
+        
+        tab.classList.add('tabs__tab--active');
+        document.querySelector(`[data-content="${targetTab}"]`).classList.add('tabs__content--active');
+      });
+    });
+
+    // Открытие боковой панели при клике на строку таблицы
+    const tableRows = document.querySelectorAll('table tbody tr[data-instrument]');
+    const sidebar = document.getElementById('instrument-sidebar');
+    const sidebarClose = document.getElementById('sidebar-close');
+
+    tableRows.forEach(row => {
+      row.addEventListener('click', () => {
+        const instrument = row.getAttribute('data-instrument');
+        const data = instrumentData[instrument];
+        
+        if (data) {
+          document.getElementById('sidebar-title').textContent = data.type;
+          document.getElementById('sidebar-type').textContent = data.type;
+          document.getElementById('sidebar-foiv').textContent = data.foiv;
+          document.getElementById('sidebar-budget').textContent = data.budget;
+          document.getElementById('sidebar-extrabudget').textContent = data.extrabudget;
+          document.getElementById('sidebar-pubs').textContent = data.pubs;
+          document.getElementById('sidebar-patents').textContent = data.patents;
+          document.getElementById('sidebar-rid').textContent = data.rid;
+          document.getElementById('sidebar-tech').textContent = data.tech;
+          document.getElementById('sidebar-implementations').textContent = data.implementations;
+          document.getElementById('sidebar-revenue').textContent = data.revenue;
+          document.getElementById('sidebar-export').textContent = data.export;
+          document.getElementById('sidebar-young').textContent = data.young;
+          document.getElementById('sidebar-graduates').textContent = data.graduates;
+          
+          sidebar.classList.add('sidebar--open');
+        }
+      });
+    });
+
+    sidebarClose.addEventListener('click', () => {
+      sidebar.classList.remove('sidebar--open');
+    });
+
+    // Pop-up "Методика оценки"
+    const methodologyBtn = document.getElementById('methodology-btn');
+    const methodologyPopup = document.getElementById('methodology-popup');
+    const popupClose = document.getElementById('popup-close');
+
+    methodologyBtn.addEventListener('click', () => {
+      methodologyPopup.classList.add('popup--open');
+    });
+
+    popupClose.addEventListener('click', () => {
+      methodologyPopup.classList.remove('popup--open');
+    });
+
+    methodologyPopup.addEventListener('click', (e) => {
+      if (e.target === methodologyPopup) {
+        methodologyPopup.classList.remove('popup--open');
+      }
+    });
+
+    // Выпадающий список "Тип эффекта"
+    const effectTypesButton = document.getElementById('effect-types-button');
+    const effectTypesMenu = document.getElementById('effect-types-menu');
+    const effectTypesText = document.getElementById('effect-types-text');
+    const effectTypesCheckboxes = document.querySelectorAll('#effect-types-menu input[type="checkbox"]');
+
+    // Функция обновления текста кнопки
+    function updateEffectTypesText() {
+      const checked = Array.from(effectTypesCheckboxes).filter(cb => cb.checked);
+      const total = effectTypesCheckboxes.length;
+      
+      if (checked.length === total) {
+        effectTypesText.textContent = `Все типы выбраны (${total})`;
+      } else if (checked.length === 0) {
+        effectTypesText.textContent = 'Типы не выбраны';
+      } else {
+        effectTypesText.textContent = `Выбрано: ${checked.length} из ${total}`;
+      }
+    }
+
+    // Открытие/закрытие dropdown
+    if (effectTypesButton) {
+      effectTypesButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = effectTypesMenu.classList.contains('filter-dropdown__menu--open');
+        
+        if (isOpen) {
+          effectTypesMenu.classList.remove('filter-dropdown__menu--open');
+          effectTypesButton.classList.remove('filter-dropdown__button--open');
+        } else {
+          effectTypesMenu.classList.add('filter-dropdown__menu--open');
+          effectTypesButton.classList.add('filter-dropdown__button--open');
+        }
+      });
+
+      // Закрытие dropdown при клике вне его
+      document.addEventListener('click', (e) => {
+        if (!effectTypesButton.contains(e.target) && !effectTypesMenu.contains(e.target)) {
+          effectTypesMenu.classList.remove('filter-dropdown__menu--open');
+          effectTypesButton.classList.remove('filter-dropdown__button--open');
+        }
+      });
+
+      // Обновление текста при изменении чекбоксов
+      effectTypesCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateEffectTypesText);
+      });
+
+      // Инициализация текста
+      updateEffectTypesText();
+    }
+
+    // Графики
+    const colors = {
+      primary: '#1565FF',
+      secondary: '#00C951',
+      neutral: '#8A94A6',
+      warning: '#F5A524',
+      danger: '#F44336'
+    };
+
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+
+
+    // График "Затраты → эффекты"
+    const costsEffectsChart = new Chart(document.getElementById('chart-costs-effects'), {
+      type: 'bubble',
+      data: {
+        datasets: [
+          {
+            label: 'Гранты и субсидии',
+            data: [{x: 124.5, y: 0.85, r: 45}],
+            backgroundColor: colors.primary
+          },
+          {
+            label: 'Инфраструктура',
+            data: [{x: 98.2, y: 0.78, r: 32}],
+            backgroundColor: colors.secondary
+          },
+          {
+            label: 'Налоговые льготы',
+            data: [{x: 156.8, y: 0.65, r: 0}],
+            backgroundColor: colors.warning
+          },
+          {
+            label: 'Кадровые меры',
+            data: [{x: 67.3, y: 0.72, r: 12}],
+            backgroundColor: colors.neutral
+          },
+          {
+            label: 'Технологические конкурсы',
+            data: [{x: 89.1, y: 0.91, r: 28}],
+            backgroundColor: colors.danger
+          }
+        ]
+      },
+      options: {
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Объём бюджетного финансирования, млрд руб.'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Интегральный индекс результата'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+
+    // График "По типам инструментов"
+    const byTypesChart = new Chart(document.getElementById('chart-by-types'), {
+      type: 'bar',
+      data: {
+        labels: ['Гранты', 'Инфраструктура', 'Налоговые льготы', 'Кадровые меры', 'Конкурсы'],
+        datasets: [
+          {
+            label: 'Научный эффект',
+            data: [1.24, 1.18, 0.45, 0.89, 1.32],
+            backgroundColor: colors.primary
+          },
+          {
+            label: 'Технологический эффект',
+            data: [0.98, 1.45, 0.67, 0.56, 1.67],
+            backgroundColor: colors.secondary
+          },
+          {
+            label: 'Экономический эффект',
+            data: [1.12, 0.95, 1.56, 0.78, 1.89],
+            backgroundColor: colors.warning
+          }
+        ]
+      },
+      options: {
+        scales: {
+          y: {
+            title: {
+              display: true,
+              text: 'Эффект на 1 млрд руб.'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+
+    // График "Кадровые эффекты"
+    const personnelChart = new Chart(document.getElementById('chart-personnel'), {
+      type: 'bar',
+      data: {
+        labels: ['Кадровые меры', 'Гранты', 'Инфраструктура', 'Конкурсы'],
+        datasets: [
+          {
+            label: 'Доля молодых ученых, %',
+            data: [42, 39, 36, 41],
+            backgroundColor: colors.primary
+          },
+          {
+            label: 'Исследователи до 39 лет с уч. степенью, %',
+            data: [38, 35, 32, 37],
+            backgroundColor: colors.secondary
+          },
+          {
+            label: 'Трудоустройство по профилю, %',
+            data: [78, 72, 68, 75],
+            backgroundColor: colors.warning
+          }
+        ]
+      },
+      options: {
+        scales: {
+          y: {
+            title: {
+              display: true,
+              text: 'Процент'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+
+    // Данные для сравнения "до/после" по типам инструментов
+    const beforeAfterData = {
+      all: {
+        before: 35,
+        after: 52,
+        label: 'Доля показателей через ЦАП'
+      },
+      digital: {
+        before: 28,
+        after: 52,
+        label: 'Доля показателей через ЦАП'
+      },
+      infra: {
+        before: 42,
+        after: 58,
+        label: 'Индекс доступности инфраструктуры'
+      },
+      grants: {
+        before: 38,
+        after: 48,
+        label: 'Доля показателей на основе больших данных'
+      }
+    };
+
+    // Фильтрация "Тип инструмента" в блоке сравнения "до/после"
+    const measureTypeFilters = document.querySelectorAll('[data-filter="measure-type"]');
+    const beforeValueEl = document.getElementById('before-value');
+    const afterValueEl = document.getElementById('after-value');
+    const beforeLabelEl = document.getElementById('before-label');
+    const afterLabelEl = document.getElementById('after-label');
+    const growthValueEl = document.getElementById('growth-value');
+    
+    function updateBeforeAfter(measureType) {
+      const data = beforeAfterData[measureType] || beforeAfterData.all;
+      
+      if (beforeValueEl) {
+        beforeValueEl.textContent = data.before + (data.label.includes('%') ? '%' : '');
+      }
+      if (afterValueEl) {
+        afterValueEl.textContent = data.after + (data.label.includes('%') ? '%' : '');
+      }
+      if (beforeLabelEl) {
+        beforeLabelEl.textContent = data.label;
+      }
+      if (afterLabelEl) {
+        afterLabelEl.textContent = data.label;
+      }
+      
+      // Обновляем прирост
+      const growth = data.after - data.before;
+      if (growthValueEl) {
+        growthValueEl.textContent = '+' + growth + (data.label.includes('%') ? ' п.п.' : '');
+      }
+    }
+
+    measureTypeFilters.forEach(filter => {
+      filter.addEventListener('click', function() {
+        const filterValue = this.getAttribute('data-value');
+        
+        // Убираем активный класс у всех фильтров в группе
+        const filterGroup = this.closest('.filter-group__chips');
+        if (filterGroup) {
+          filterGroup.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.classList.remove('filter-chip--active');
+          });
+        }
+        
+        // Добавляем активный класс к выбранному фильтру
+        this.classList.add('filter-chip--active');
+        
+        // Обновляем данные
+        updateBeforeAfter(filterValue);
+      });
+    });
+  </script>
+</body>
+</html>
+

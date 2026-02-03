@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подраздел 6.7-6.8 — Рассмотрение и согласование предложений о присуждении премий в области науки и технологий</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .header-section {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-24);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: var(--space-4) 0 var(--space-6) 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-20);
+    }
+
+    @media (max-width: 1200px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-card__label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .kpi-card__value {
+      font-family: var(--font-alt);
+      font-size: 42px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 48px;
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+    }
+
+    .kpi-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-card__trend {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .kpi-card__trend--positive {
+      color: var(--color-positive-500);
+    }
+
+    .kpi-card__trend--negative {
+      color: var(--color-negative-500);
+    }
+
+    .kpi-card__metrics {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      margin-top: var(--space-4);
+      padding-top: var(--space-12);
+      border-top: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .kpi-card__metric {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+      gap: var(--space-16);
+    }
+
+    .kpi-card__metric-label {
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .kpi-card__metric-value {
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+    }
+
+    .kpi-card__metric-value--green {
+      color: var(--color-positive-500);
+    }
+
+    .kpi-card__metric-value--yellow {
+      color: var(--color-warning-500);
+    }
+
+    .kpi-card__metric-value--red {
+      color: var(--color-negative-500);
+    }
+
+    .kpi-card__chart {
+      margin-top: var(--space-12);
+      height: 120px;
+      position: relative;
+    }
+
+    .section-block {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      margin-top: var(--space-24);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-16) 0;
+    }
+
+    .chart-container {
+      position: relative;
+      min-height: 300px;
+      padding: var(--space-16);
+    }
+
+    .chart-container canvas {
+      max-height: 300px;
+    }
+
+    .chart-container--large {
+      min-height: 400px;
+    }
+
+    .chart-container--large canvas {
+      max-height: 400px;
+    }
+
+    .funnel-container {
+      position: relative;
+      min-height: 400px;
+      padding: var(--space-16);
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-16);
+      margin-top: var(--space-16);
+    }
+
+    .status-card {
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-16);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .status-card__value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--material-neutral-content-primary);
+      margin-top: auto;
+    }
+
+    .status-card__label {
+      font-size: 14px;
+      color: var(--material-neutral-content-secondary);
+      white-space: nowrap;
+      margin-bottom: var(--space-8);
+    }
+
+    .mini-pie {
+      width: 120px;
+      height: 120px;
+      margin: var(--space-16) auto;
+    }
+
+    .proposal-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-16);
+      margin-bottom: var(--space-16);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .proposal-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .proposal-card__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: var(--space-12);
+    }
+
+    .proposal-card__title {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-4) 0;
+    }
+
+    .proposal-card__meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      margin-top: var(--space-8);
+      align-items: center;
+    }
+
+    .proposal-card__info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-12);
+      margin-top: var(--space-12);
+    }
+
+    .proposal-card__info-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .proposal-card__info-label {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .proposal-card__info-value {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-primary);
+      font-weight: 500;
+    }
+
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-16);
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border-radius: var(--radius-md);
+    }
+
+    .controls-bar__filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      align-items: center;
+    }
+
+    .filter-select {
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-caption);
+      cursor: pointer;
+    }
+
+    .search-input {
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+      min-width: 250px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-8);
+      border-radius: 999px;
+      font-size: var(--font-size-caption);
+      font-weight: 500;
+    }
+
+    .status-badge--approved {
+      background: rgba(0, 201, 81, 0.1);
+      color: var(--color-positive-500);
+    }
+
+    .status-badge--rejected {
+      background: rgba(251, 44, 54, 0.1);
+      color: var(--color-negative-500);
+    }
+
+    .status-badge--revision {
+      background: rgba(255, 185, 106, 0.1);
+      color: var(--color-warning-500);
+    }
+
+    .gauge-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+      position: relative;
+    }
+    
+    .gauge-container canvas {
+      max-width: 150px;
+      max-height: 150px;
+    }
+
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-16);
+      margin-top: var(--space-16);
+    }
+
+    @media (max-width: 1200px) {
+      .insights-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .insights-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .insight-card {
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-16);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .insight-card__title {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .insight-card__list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .insight-card__item {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+      padding-left: var(--space-16);
+      position: relative;
+    }
+
+    .insight-card__item::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--material-neutral-content-tertiary);
+      font-weight: 600;
+    }
+
+    .stacked-bar-container {
+      position: relative;
+      min-height: 400px;
+      padding: var(--space-16);
+    }
+
+    .heatmap-container {
+      overflow-x: auto;
+      margin-top: var(--space-16);
+    }
+
+    .heatmap {
+      width: 100%;
+      min-width: 800px;
+      border-collapse: collapse;
+      font-size: var(--font-size-body);
+    }
+
+    .heatmap th,
+    .heatmap td {
+      padding: var(--space-8) var(--space-12);
+      text-align: center;
+      border: 1px solid var(--material-neutral-border-primary) !important;
+    }
+
+    .heatmap th {
+      background: var(--material-neutral-highlight-primary);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-caption);
+    }
+
+    .heatmap td {
+      color: var(--material-neutral-content-primary);
+      font-weight: 500;
+      border: 1px solid var(--material-neutral-border-primary);
+    }
+
+    .heatmap-cell {
+      border-radius: var(--radius-sm);
+      text-align: center;
+      vertical-align: middle;
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      transition: transform 0.2s ease;
+      box-sizing: border-box;
+      padding: var(--space-8) var(--space-12);
+      min-width: 60px;
+      min-height: 40px;
+      border: 1px solid var(--material-neutral-border-primary) !important;
+    }
+
+    .heatmap-cell:hover {
+      transform: scale(1.05);
+    }
+
+    .heatmap-cell--high {
+      background: var(--material-lite-negative-surface);
+      color: var(--material-lite-negative-content-primary);
+    }
+
+    .heatmap-cell--medium {
+      background: var(--material-lite-warning-surface);
+      color: var(--material-lite-warning-content-primary);
+    }
+
+    .heatmap-cell--low {
+      background: var(--material-lite-positive-surface);
+      color: var(--material-lite-positive-content-primary);
+    }
+
+    .heatmap-cell--very-low {
+      background: var(--material-lite-positive-surface);
+      color: var(--material-lite-positive-content-primary);
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="header-section">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="chapter6.html">
+                <span class="back-link__icon"></span>
+                К разделу 6
+              </a>
+              <span class="meta-pill">Подраздел 6.7-6.8</span>
+            </div>
+            <h1>6.7-6.8 Рассмотрение и согласование предложений о присуждении премий в области науки и технологий</h1>
+            <p>Комиссия обеспечивает экспертное и организационное сопровождение предложений о присуждении государственных, ведомственных или специализированных премий в области науки и технологий. Ключевые процессы: приём и анализ предложений, согласование и вынесение решения, направление итоговых материалов в Минобрнауки, мониторинг структуры предложений и типичных оснований отказов.</p>
+            <div class="meta-row">
+              <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+              <span class="meta-pill">Источники: Минобрнауки, ФОИВ, Научные организации</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 1. Верхние KPI-карточки -->
+      <section class="kpi-grid">
+        <!-- Карточка №1 — Всего рассмотрено предложений -->
+        <article class="kpi-card">
+          <div class="kpi-card__label">Всего рассмотрено предложений</div>
+          <div class="kpi-card__value kpi-card__value--green">
+            34
+          </div>
+          <div class="kpi-card__trend kpi-card__trend--positive">
+            <span>↗</span>
+            <span>+8.2% к прошлому периоду</span>
+          </div>
+          <div class="kpi-card__chart">
+            <canvas id="proposals-trend-chart"></canvas>
+          </div>
+        </article>
+
+        <!-- Карточка №2 — Статус согласования -->
+        <article class="kpi-card">
+          <div class="kpi-card__label">Статус согласования</div>
+          <div style="display: flex; align-items: center; gap: var(--space-24); flex-wrap: wrap;">
+            <div class="kpi-card__metrics" style="max-width: 220px; padding-top: 0; border-top: none;">
+              <div class="kpi-card__metric">
+                <span class="kpi-card__metric-label">Согласовано</span>
+                <span class="kpi-card__metric-value kpi-card__metric-value--green">28</span>
+              </div>
+              <div class="kpi-card__metric">
+                <span class="kpi-card__metric-label">Не согласовано</span>
+                <span class="kpi-card__metric-value kpi-card__metric-value--red">6</span>
+              </div>
+              <div class="kpi-card__metric">
+                <span class="kpi-card__metric-label">На доработке</span>
+                <span class="kpi-card__metric-value kpi-card__metric-value--yellow">0</span>
+              </div>
+            </div>
+            <div class="mini-pie" style="flex-shrink: 0; width: 180px; height: 180px;">
+              <canvas id="approval-status-pie"></canvas>
+            </div>
+          </div>
+        </article>
+
+        <!-- Карточка №3 — Решения, направленные в Минобрнауки -->
+        <article class="kpi-card">
+          <div class="kpi-card__label">Решения, направленные в Минобрнауки</div>
+          <div class="kpi-card__value kpi-card__value--green">
+            28
+          </div>
+          <div class="kpi-card__trend kpi-card__trend--positive">
+            <span>↗</span>
+            <span>82% от рассмотренных</span>
+          </div>
+          <div class="kpi-card__metrics">
+            <div class="kpi-card__metric">
+              <span class="kpi-card__metric-label">Средний срок подготовки решения</span>
+              <span class="kpi-card__metric-value">12 дней</span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- 2. Блок: Воронка процесса -->
+      <section class="section-block">
+        <h2 class="section-block__title">Воронка процесса</h2>
+        <div class="funnel-container">
+          <canvas id="process-funnel-chart"></canvas>
+        </div>
+      </section>
+
+      <!-- 3. Блок: Причины согласования и несогласования -->
+      <section class="section-block">
+        <h2 class="section-block__title">Причины согласования и несогласования</h2>
+        <div class="chart-container--large">
+          <canvas id="approval-reasons-chart"></canvas>
+        </div>
+      </section>
+
+      <!-- 4. Блок: Разрез по типам премий -->
+      <section class="section-block">
+        <h2 class="section-block__title">Разрез по типам премий</h2>
+        <div class="heatmap-container">
+          <table class="heatmap">
+            <thead>
+              <tr>
+                <th>Тип премии</th>
+                <th>Количество предложений</th>
+                <th>Согласовано</th>
+                <th>Не согласовано</th>
+                <th>Доля согласованных</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Государственные премии</td>
+                <td>12</td>
+                <td class="heatmap-cell heatmap-cell--high">10</td>
+                <td class="heatmap-cell heatmap-cell--low">2</td>
+                <td>83%</td>
+              </tr>
+              <tr>
+                <td>Ведомственные премии</td>
+                <td>8</td>
+                <td class="heatmap-cell heatmap-cell--medium">7</td>
+                <td class="heatmap-cell heatmap-cell--very-low">1</td>
+                <td>88%</td>
+              </tr>
+              <tr>
+                <td>Президентские стипендии/гранты</td>
+                <td>6</td>
+                <td class="heatmap-cell heatmap-cell--medium">5</td>
+                <td class="heatmap-cell heatmap-cell--very-low">1</td>
+                <td>83%</td>
+              </tr>
+              <tr>
+                <td>Премии Правительства РФ</td>
+                <td>4</td>
+                <td class="heatmap-cell heatmap-cell--low">3</td>
+                <td class="heatmap-cell heatmap-cell--very-low">1</td>
+                <td>75%</td>
+              </tr>
+              <tr>
+                <td>Премии для молодых учёных</td>
+                <td>2</td>
+                <td class="heatmap-cell heatmap-cell--low">2</td>
+                <td class="heatmap-cell heatmap-cell--very-low">0</td>
+                <td>100%</td>
+              </tr>
+              <tr>
+                <td>Отраслевые премии (Минпромторг, Минэнерго, Минсельхоз)</td>
+                <td>2</td>
+                <td class="heatmap-cell heatmap-cell--low">1</td>
+                <td class="heatmap-cell heatmap-cell--very-low">1</td>
+                <td>50%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 5. Блок: Разрез по ФОИВ и организациям-инициаторам -->
+      <section class="section-block">
+        <h2 class="section-block__title">Разрез по ФОИВ и организациям-инициаторам</h2>
+        <div class="stacked-bar-container">
+          <canvas id="foiv-stacked-bar-chart"></canvas>
+        </div>
+      </section>
+
+      <!-- 6. Блок: Среднее время прохождения процедуры -->
+      <section class="section-block">
+        <h2 class="section-block__title">Среднее время прохождения процедуры</h2>
+        <div class="chart-container">
+          <canvas id="processing-time-chart"></canvas>
+        </div>
+      </section>
+
+      <!-- 7. Блок: Качество входящих материалов -->
+      <section class="section-block">
+        <h2 class="section-block__title">Качество входящих материалов</h2>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-16); margin-bottom: var(--space-24);">
+          <div class="gauge-container" style="min-height: 200px;">
+            <canvas id="revision-gauge"></canvas>
+            <div style="text-align: center; margin-top: var(--space-8);">
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);">% предложений, требующих доработки документов</div>
+              <div style="font-size: 24px; font-weight: 600; color: var(--material-neutral-content-primary);">18%</div>
+            </div>
+          </div>
+          <div class="gauge-container" style="min-height: 200px;">
+            <canvas id="return-gauge"></canvas>
+            <div style="text-align: center; margin-top: var(--space-8);">
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);">% предложений, возвращённых по формальным причинам</div>
+              <div style="font-size: 24px; font-weight: 600; color: var(--material-neutral-content-primary);">12%</div>
+            </div>
+          </div>
+          <div class="gauge-container" style="min-height: 200px;">
+            <canvas id="cycles-gauge"></canvas>
+            <div style="text-align: center; margin-top: var(--space-8);">
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);">Среднее количество циклов доработки</div>
+              <div style="font-size: 24px; font-weight: 600; color: var(--material-neutral-content-primary);">1.4</div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="quality-histogram"></canvas>
+        </div>
+      </section>
+
+      <!-- 8. Блок: Детальный список предложений -->
+      <section class="section-block">
+        <h2 class="section-block__title">Детальный список предложений</h2>
+        <div class="controls-bar">
+          <div class="controls-bar__filters">
+            <select class="filter-select" id="filter-premium-type">
+              <option value="">Все типы премий</option>
+              <option value="Государственные премии">Государственные премии</option>
+              <option value="Ведомственные премии">Ведомственные премии</option>
+              <option value="Президентские стипендии/гранты">Президентские стипендии/гранты</option>
+              <option value="Премии Правительства РФ">Премии Правительства РФ</option>
+              <option value="Премии для молодых учёных">Премии для молодых учёных</option>
+              <option value="Отраслевые премии">Отраслевые премии</option>
+            </select>
+            <select class="filter-select" id="filter-foiv">
+              <option value="">Все ФОИВ</option>
+              <option value="Минобрнауки">Минобрнауки</option>
+              <option value="Минпромторг">Минпромторг</option>
+              <option value="Минцифры">Минцифры</option>
+              <option value="РАН">РАН</option>
+            </select>
+            <select class="filter-select" id="filter-status">
+              <option value="">Все решения</option>
+              <option value="Согласовано">Согласовано</option>
+              <option value="Не согласовано">Не согласовано</option>
+              <option value="На доработке">На доработке</option>
+            </select>
+            <select class="filter-select" id="filter-region">
+              <option value="">Все регионы</option>
+              <option value="Москва">Москва</option>
+              <option value="Санкт-Петербург">Санкт-Петербург</option>
+              <option value="Новосибирская область">Новосибирская область</option>
+            </select>
+            <select class="filter-select" id="filter-science-field">
+              <option value="">Все направления науки</option>
+              <option value="Физика">Физика</option>
+              <option value="Химия">Химия</option>
+              <option value="Биология">Биология</option>
+              <option value="Математика">Математика</option>
+              <option value="Информатика">Информатика</option>
+              <option value="Материаловедение">Материаловедение</option>
+            </select>
+            <input type="date" class="filter-select" id="filter-date" style="min-width: 150px;">
+          </div>
+          <input type="text" class="search-input" id="search-input" placeholder="Поиск по ключевым словам, авторам, организациям...">
+        </div>
+        <div id="proposals-list">
+          <!-- Примеры карточек предложений -->
+          <div class="proposal-card" data-premium-type="Государственные премии" data-foiv="Минобрнауки" data-status="Согласовано" data-region="Москва" data-author="Иванов" data-organization="МГУ" data-date="2025-10-15" data-science-field="Материаловедение">
+            <div class="proposal-card__header">
+              <div>
+                <h3 class="proposal-card__title">Разработка инновационных методов синтеза наноматериалов</h3>
+                <div class="proposal-card__meta">
+                  <span class="status-badge status-badge--approved">Согласовано</span>
+                  <span style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);">Государственная премия</span>
+                </div>
+              </div>
+            </div>
+            <div class="proposal-card__info">
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Автор / коллектив</span>
+                <span class="proposal-card__info-value">Проф. Иванов И.И., д.т.н.</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Организация</span>
+                <span class="proposal-card__info-value">МГУ им. М.В. Ломоносова</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Тип премии</span>
+                <span class="proposal-card__info-value">Государственная премия</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Дата поступления</span>
+                <span class="proposal-card__info-value">15.10.2025</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Решение Комиссии</span>
+                <span class="proposal-card__info-value">Согласовано</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">ФОИВ-инициатор</span>
+                <span class="proposal-card__info-value">Минобрнауки</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Направление науки</span>
+                <span class="proposal-card__info-value">Материаловедение</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Основание решения</span>
+                <span class="proposal-card__info-value">Соответствует критериям, высокий научный уровень</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Связанные документы</span>
+                <span class="proposal-card__info-value">
+                  <a href="#" style="color: var(--color-accent-500); text-decoration: underline; margin-right: var(--space-8);">Заявка.pdf</a>
+                  <a href="#" style="color: var(--color-accent-500); text-decoration: underline; margin-right: var(--space-8);">Экспертное заключение.pdf</a>
+                  <a href="#" style="color: var(--color-accent-500); text-decoration: underline;">Решение.pdf</a>
+                </span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Статус направления в Минобрнауки</span>
+                <span class="proposal-card__info-value" style="color: var(--color-positive-500);">Направлено</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="proposal-card" data-premium-type="Ведомственные премии" data-foiv="Минцифры" data-status="Согласовано" data-region="Санкт-Петербург" data-author="Петров" data-organization="ИТМО" data-date="2025-10-22" data-science-field="Информатика">
+            <div class="proposal-card__header">
+              <div>
+                <h3 class="proposal-card__title">Создание новых алгоритмов машинного обучения</h3>
+                <div class="proposal-card__meta">
+                  <span class="status-badge status-badge--approved">Согласовано</span>
+                  <span style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);">Ведомственная премия</span>
+                </div>
+              </div>
+            </div>
+            <div class="proposal-card__info">
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Автор / коллектив</span>
+                <span class="proposal-card__info-value">Коллектив под руководством проф. Петрова П.П.</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Организация</span>
+                <span class="proposal-card__info-value">ИТМО</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Тип премии</span>
+                <span class="proposal-card__info-value">Ведомственная премия</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Дата поступления</span>
+                <span class="proposal-card__info-value">22.10.2025</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Решение Комиссии</span>
+                <span class="proposal-card__info-value">Согласовано</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">ФОИВ-инициатор</span>
+                <span class="proposal-card__info-value">Минцифры</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Направление науки</span>
+                <span class="proposal-card__info-value">Информатика</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Основание решения</span>
+                <span class="proposal-card__info-value">Значимость результата, наличие внедрения</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Связанные документы</span>
+                <span class="proposal-card__info-value">
+                  <a href="#" style="color: var(--color-accent-500); text-decoration: underline; margin-right: var(--space-8);">Заявка.pdf</a>
+                  <a href="#" style="color: var(--color-accent-500); text-decoration: underline; margin-right: var(--space-8);">Презентация.pdf</a>
+                  <a href="#" style="color: var(--color-accent-500); text-decoration: underline;">Решение.pdf</a>
+                </span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Статус направления в Минобрнауки</span>
+                <span class="proposal-card__info-value" style="color: var(--color-positive-500);">Направлено</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="proposal-card" data-premium-type="Государственные премии" data-foiv="РАН" data-status="Не согласовано" data-region="Москва" data-author="Сидоров" data-organization="ФИАН" data-date="2025-11-05" data-science-field="Физика">
+            <div class="proposal-card__header">
+              <div>
+                <h3 class="proposal-card__title">Исследование в области квантовых технологий</h3>
+                <div class="proposal-card__meta">
+                  <span class="status-badge status-badge--rejected">Не согласовано</span>
+                  <span style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);">Государственная премия</span>
+                </div>
+              </div>
+            </div>
+            <div class="proposal-card__info">
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Автор / коллектив</span>
+                <span class="proposal-card__info-value">Проф. Сидоров С.С., д.ф.-м.н.</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Организация</span>
+                <span class="proposal-card__info-value">ФИАН</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Тип премии</span>
+                <span class="proposal-card__info-value">Государственная премия</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Дата поступления</span>
+                <span class="proposal-card__info-value">05.11.2025</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Решение Комиссии</span>
+                <span class="proposal-card__info-value">Не согласовано</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">ФОИВ-инициатор</span>
+                <span class="proposal-card__info-value">РАН</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Направление науки</span>
+                <span class="proposal-card__info-value">Физика</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Основание решения</span>
+                <span class="proposal-card__info-value">Недостаточное обоснование научной новизны</span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Связанные документы</span>
+                <span class="proposal-card__info-value">
+                  <a href="#" style="color: var(--color-accent-500); text-decoration: underline; margin-right: var(--space-8);">Заявка.pdf</a>
+                  <a href="#" style="color: var(--color-accent-500); text-decoration: underline; margin-right: var(--space-8);">Экспертное заключение.pdf</a>
+                </span>
+              </div>
+              <div class="proposal-card__info-item">
+                <span class="proposal-card__info-label">Статус направления в Минобрнауки</span>
+                <span class="proposal-card__info-value" style="color: var(--color-negative-500);">Не направлено</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. Итоговый аналитический блок -->
+      <section class="section-block">
+        <h2 class="section-block__title">Итоговые выводы и рекомендации</h2>
+        <div class="insights-grid">
+          <div class="insight-card">
+            <h3 class="insight-card__title">Выявленные проблемы</h3>
+            <ul class="insight-card__list">
+              <li class="insight-card__item">Нехватка обоснований научной новизны в 18% предложений</li>
+              <li class="insight-card__item">Слабые подтверждающие документы в 15% случаев</li>
+              <li class="insight-card__item">Фрагментарные заявки из некоторых регионов</li>
+              <li class="insight-card__item">Высокая доля возвратов по формальным причинам (12%)</li>
+            </ul>
+          </div>
+          <div class="insight-card">
+            <h3 class="insight-card__title">Рекомендации Комиссии</h3>
+            <ul class="insight-card__list">
+              <li class="insight-card__item">Стандартизировать пакеты документов для всех типов премий</li>
+              <li class="insight-card__item">Повысить качество отраслевой экспертизы на этапе подачи</li>
+              <li class="insight-card__item">Обучить региональные организации правильной подаче заявок</li>
+              <li class="insight-card__item">Внедрить предварительную консультацию для заявителей</li>
+            </ul>
+          </div>
+          <div class="insight-card">
+            <h3 class="insight-card__title">Узкие места процесса</h3>
+            <ul class="insight-card__list">
+              <li class="insight-card__item">Задержки на согласовании (средний срок 12 дней)</li>
+              <li class="insight-card__item">Перегруженность отдельных ФОИВ (Минобрнауки, Минпромторг)</li>
+              <li class="insight-card__item">Недостаточная коммуникация с региональными министерствами</li>
+              <li class="insight-card__item">Длительные циклы доработки документов (1.4 цикла в среднем)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // График тренда рассмотренных предложений
+    const proposalsTrendCtx = document.getElementById('proposals-trend-chart');
+    if (proposalsTrendCtx) {
+      new Chart(proposalsTrendCtx, {
+        type: 'line',
+        data: {
+          labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+          datasets: [{
+            label: 'Рассмотрено предложений',
+            data: [2, 3, 2, 4, 3, 2, 3, 4, 3, 4, 2, 2],
+            borderColor: 'rgba(0, 201, 81, 1)',
+            backgroundColor: 'rgba(0, 201, 81, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Круговая диаграмма статусов согласования
+    const approvalStatusPieCtx = document.getElementById('approval-status-pie');
+    if (approvalStatusPieCtx) {
+      new Chart(approvalStatusPieCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Согласовано', 'Не согласовано', 'На доработке'],
+          datasets: [{
+            data: [28, 6, 0],
+            backgroundColor: [
+              'rgba(0, 201, 81, 0.8)',
+              'rgba(251, 44, 54, 0.8)',
+              'rgba(255, 185, 106, 0.8)'
+            ],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+
+    // Воронка процесса
+    const processFunnelCtx = document.getElementById('process-funnel-chart');
+    if (processFunnelCtx) {
+      new Chart(processFunnelCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Получено', 'Рассмотрено экспертно', 'Согласовано', 'Несогласовано', 'Направлено в Минобрнауки'],
+          datasets: [{
+            label: 'Количество',
+            data: [38, 34, 28, 6, 28],
+            backgroundColor: [
+              'rgba(0, 102, 255, 0.8)',
+              'rgba(0, 201, 81, 0.8)',
+              'rgba(0, 201, 81, 0.6)',
+              'rgba(251, 44, 54, 0.8)',
+              'rgba(0, 201, 81, 0.4)'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    // Причины согласования и несогласования
+    const approvalReasonsCtx = document.getElementById('approval-reasons-chart');
+    if (approvalReasonsCtx) {
+      new Chart(approvalReasonsCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Соответствие критериям', 'Значимость результата', 'Публикационная активность', 'Наличие внедрения', 'Формальные требования', 'Полнота документов'],
+          datasets: [{
+            label: 'Согласовано',
+            data: [25, 22, 20, 18, 28, 26],
+            backgroundColor: 'rgba(0, 201, 81, 0.8)'
+          }, {
+            label: 'Не согласовано',
+            data: [3, 4, 2, 4, 2, 2],
+            backgroundColor: 'rgba(251, 44, 54, 0.8)'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    // Разрез по ФОИВ (stacked bar)
+    const foivStackedBarCtx = document.getElementById('foiv-stacked-bar-chart');
+    if (foivStackedBarCtx) {
+      new Chart(foivStackedBarCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Минобрнауки', 'Минпромторг', 'Минцифры', 'РАН', 'Региональные органы', 'Университеты', 'Научные организации'],
+          datasets: [{
+            label: 'Согласовано',
+            data: [12, 8, 4, 2, 1, 1, 0],
+            backgroundColor: 'rgba(0, 201, 81, 0.8)'
+          }, {
+            label: 'Не согласовано',
+            data: [2, 2, 1, 1, 0, 0, 0],
+            backgroundColor: 'rgba(251, 44, 54, 0.8)'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: {
+            legend: {
+              position: 'top'
+            }
+          },
+          scales: {
+            x: {
+              stacked: true,
+              beginAtZero: true
+            },
+            y: {
+              stacked: true
+            }
+          }
+        }
+      });
+    }
+
+    // Среднее время прохождения процедуры
+    const processingTimeCtx = document.getElementById('processing-time-chart');
+    if (processingTimeCtx) {
+      new Chart(processingTimeCtx, {
+        type: 'line',
+        data: {
+          labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+          datasets: [{
+            label: 'Средний срок рассмотрения',
+            data: [14, 13, 12, 11, 12, 13, 12, 11, 12, 12, 12, 12],
+            borderColor: 'rgba(0, 102, 255, 1)',
+            backgroundColor: 'rgba(0, 102, 255, 0.1)',
+            tension: 0.4,
+            fill: true
+          }, {
+            label: 'Средний срок подготовки решения',
+            data: [15, 14, 13, 12, 13, 14, 13, 12, 13, 12, 12, 12],
+            borderColor: 'rgba(0, 201, 81, 1)',
+            backgroundColor: 'rgba(0, 201, 81, 0.1)',
+            tension: 0.4,
+            fill: true
+          }, {
+            label: 'Средний срок направления в Минобрнауки',
+            data: [16, 15, 14, 13, 14, 15, 14, 13, 14, 13, 13, 13],
+            borderColor: 'rgba(255, 185, 106, 1)',
+            backgroundColor: 'rgba(255, 185, 106, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Дни'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Gauge для качества материалов
+    function createGauge(ctx, value, maxValue, color) {
+      return new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          datasets: [{
+            data: [value, maxValue - value],
+            backgroundColor: [color, 'rgba(200, 200, 200, 0.2)'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '75%',
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+
+    const revisionGaugeCtx = document.getElementById('revision-gauge');
+    if (revisionGaugeCtx) {
+      createGauge(revisionGaugeCtx, 18, 100, 'rgba(255, 185, 106, 0.8)');
+    }
+
+    const returnGaugeCtx = document.getElementById('return-gauge');
+    if (returnGaugeCtx) {
+      createGauge(returnGaugeCtx, 12, 100, 'rgba(251, 44, 54, 0.8)');
+    }
+
+    const cyclesGaugeCtx = document.getElementById('cycles-gauge');
+    if (cyclesGaugeCtx) {
+      createGauge(cyclesGaugeCtx, 70, 100, 'rgba(0, 102, 255, 0.8)'); // 1.4 из 2.0 = 70%
+    }
+
+    // Гистограмма качества материалов
+    const qualityHistogramCtx = document.getElementById('quality-histogram');
+    if (qualityHistogramCtx) {
+      new Chart(qualityHistogramCtx, {
+        type: 'bar',
+        data: {
+          labels: ['0 циклов', '1 цикл', '2 цикла', '3 цикла', '4+ цикла'],
+          datasets: [{
+            label: 'Количество предложений',
+            data: [28, 4, 2, 0, 0],
+            backgroundColor: [
+              'rgba(0, 201, 81, 0.8)',
+              'rgba(255, 185, 106, 0.8)',
+              'rgba(255, 105, 0, 0.8)',
+              'rgba(251, 44, 54, 0.8)',
+              'rgba(251, 44, 54, 0.8)'
+            ],
+            borderColor: [
+              'rgba(0, 201, 81, 1)',
+              'rgba(255, 185, 106, 1)',
+              'rgba(255, 105, 0, 1)',
+              'rgba(251, 44, 54, 1)',
+              'rgba(251, 44, 54, 1)'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            title: {
+              display: true,
+              text: 'Распределение предложений по количеству циклов доработки',
+              font: {
+                size: 16
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
+              },
+              title: {
+                display: true,
+                text: 'Количество предложений'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Количество циклов доработки'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Фильтрация и поиск предложений
+    (function() {
+      const filterPremiumType = document.getElementById('filter-premium-type');
+      const filterFoiv = document.getElementById('filter-foiv');
+      const filterStatus = document.getElementById('filter-status');
+      const filterRegion = document.getElementById('filter-region');
+      const filterScienceField = document.getElementById('filter-science-field');
+      const filterDate = document.getElementById('filter-date');
+      const searchInput = document.getElementById('search-input');
+      const proposalsList = document.getElementById('proposals-list');
+      const proposalCards = proposalsList.querySelectorAll('.proposal-card');
+
+      function filterProposals() {
+        const premiumTypeValue = filterPremiumType.value;
+        const foivValue = filterFoiv.value;
+        const statusValue = filterStatus.value;
+        const regionValue = filterRegion.value;
+        const scienceFieldValue = filterScienceField.value;
+        const dateValue = filterDate.value;
+        const searchValue = searchInput.value.toLowerCase().trim();
+
+        proposalCards.forEach(card => {
+          const premiumType = card.getAttribute('data-premium-type') || '';
+          const foiv = card.getAttribute('data-foiv') || '';
+          const status = card.getAttribute('data-status') || '';
+          const region = card.getAttribute('data-region') || '';
+          const scienceField = card.getAttribute('data-science-field') || '';
+          const date = card.getAttribute('data-date') || '';
+          const author = card.getAttribute('data-author') || '';
+          const organization = card.getAttribute('data-organization') || '';
+          const title = card.querySelector('.proposal-card__title')?.textContent || '';
+          const allText = (title + ' ' + author + ' ' + organization).toLowerCase();
+
+          // Проверка фильтров
+          const matchesPremiumType = !premiumTypeValue || premiumType === premiumTypeValue;
+          const matchesFoiv = !foivValue || foiv === foivValue;
+          const matchesStatus = !statusValue || status === statusValue;
+          const matchesRegion = !regionValue || region === regionValue;
+          const matchesScienceField = !scienceFieldValue || scienceField === scienceFieldValue;
+          const matchesDate = !dateValue || date === dateValue;
+          const matchesSearch = !searchValue || allText.includes(searchValue);
+
+          // Показываем/скрываем карточку
+          if (matchesPremiumType && matchesFoiv && matchesStatus && matchesRegion && matchesScienceField && matchesDate && matchesSearch) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      }
+
+      // Добавляем обработчики событий
+      if (filterPremiumType) filterPremiumType.addEventListener('change', filterProposals);
+      if (filterFoiv) filterFoiv.addEventListener('change', filterProposals);
+      if (filterStatus) filterStatus.addEventListener('change', filterProposals);
+      if (filterRegion) filterRegion.addEventListener('change', filterProposals);
+      if (filterScienceField) filterScienceField.addEventListener('change', filterProposals);
+      if (filterDate) filterDate.addEventListener('change', filterProposals);
+      if (searchInput) searchInput.addEventListener('input', filterProposals);
+    })();
+  </script>
+</body>
+</html>
+

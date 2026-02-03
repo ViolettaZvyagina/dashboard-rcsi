@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Группа 3.1–3.4 — Перечни приоритетов НТР и ВНТ</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .section-block {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .section-block__description {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-20);
+    }
+
+    @media (max-width: 1200px) {
+      .kpi-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-card__label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .kpi-card__value {
+      font-family: var(--font-alt);
+      font-size: 42px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 48px;
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+    }
+
+    .kpi-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-card__trend {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .heatmap-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .heatmap-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--font-size-body);
+    }
+
+    .heatmap-table th {
+      background: var(--material-neutral-highlight-primary);
+      padding: var(--space-12);
+      text-align: center;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-size: var(--font-size-label);
+    }
+
+    .heatmap-table td {
+      padding: var(--space-12);
+      text-align: center;
+      border: 1px solid var(--material-neutral-border-primary);
+      font-weight: 500;
+    }
+
+    .heatmap-cell {
+      padding: var(--space-8) var(--space-12);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-caption);
+    }
+
+    .heatmap-cell--high {
+      background: rgba(0, 201, 81, 0.2);
+      color: var(--color-positive-700);
+    }
+
+    .heatmap-cell--medium {
+      background: rgba(255, 185, 106, 0.2);
+      color: var(--color-warning-700);
+    }
+
+    .heatmap-cell--low {
+      background: rgba(251, 44, 54, 0.1);
+      color: var(--color-negative-700);
+    }
+
+    .mini-heatmap .heatmap-table {
+      font-size: 10px;
+    }
+
+    .mini-heatmap .heatmap-table th {
+      padding: var(--space-6) var(--space-8);
+      font-size: 10px;
+    }
+
+    .mini-heatmap .heatmap-table td {
+      padding: var(--space-6) var(--space-8);
+    }
+
+    .mini-heatmap .heatmap-cell {
+      padding: var(--space-4) var(--space-6);
+      font-size: 9px;
+    }
+
+    .heatmap-legend {
+      display: flex;
+      gap: var(--space-12);
+      align-items: center;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      margin-top: var(--space-12);
+    }
+
+    .heatmap-legend__bar {
+      flex: 1;
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #e2e8f0 0%, #8ec5ff 50%, #00c951 100%);
+    }
+
+    .heatmap-legend__labels {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      color: var(--material-neutral-content-tertiary);
+    }
+
+    .subsection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: var(--space-24);
+    }
+
+    @media (min-width: 1200px) {
+      .subsection-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .subsection-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .subsection-card__header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .subsection-card__title {
+      font-family: var(--font-alt);
+      font-size: 20px;
+      line-height: 28px;
+      letter-spacing: -0.2px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .subsection-card__desc {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .mini-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: var(--space-12);
+    }
+
+    .mini-metric {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      padding: var(--space-10);
+      border-radius: var(--radius-md);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+    }
+
+    .mini-metric__label {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      line-height: 1.4;
+    }
+
+    .mini-metric__value {
+      font-family: var(--font-alt);
+      font-size: 20px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 1.2;
+    }
+
+    .mini-chart {
+      width: 100%;
+      height: 120px;
+      margin: var(--space-8) 0;
+    }
+
+    .mini-chart canvas {
+      width: 100% !important;
+      height: 120px !important;
+    }
+
+    .subsection-card__footer {
+      margin-top: auto;
+      padding-top: var(--space-12);
+      border-top: 1px solid var(--material-neutral-border-primary);
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .subsection-card__annotation {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      font-style: italic;
+    }
+
+    .focus-block {
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .focus-block__title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .focus-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+    }
+
+    .focus-item {
+      display: inline-flex;
+      align-items: center;
+      padding: var(--space-6) var(--space-12);
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      font-weight: var(--font-weight-label);
+      white-space: nowrap;
+    }
+
+    .risk-block {
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .risk-block__title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .risk-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+
+    .risk-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .risk-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .risk-dot--high {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.12);
+    }
+
+    .risk-dot--medium {
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 185, 106, 0.15);
+    }
+
+    .risk-dot--low {
+      background-color: var(--color-positive-400);
+      box-shadow: 0 0 0 4px rgba(0, 201, 81, 0.15);
+    }
+
+    .kpi-large {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-12);
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+    }
+
+    .kpi-large__label {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+      flex: 1;
+    }
+
+    .kpi-large__value {
+      font-family: var(--font-alt);
+      font-size: 32px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .kpi-icon {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      white-space: nowrap;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-6);
+      height: var(--control-height);
+      padding: 0 var(--space-16);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-family: var(--font-main);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      text-decoration: none;
+      cursor: pointer;
+      background-color: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-primary);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn--primary {
+      background-color: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3.html">
+              <span class="back-link__icon"></span>
+              Назад к разделу 3
+            </a>
+            <span class="meta-pill">Группа 3.1–3.4</span>
+          </div>
+          <h1>3.1-3.4. Перечни приоритетов НТР и ВНТ</h1>
+          <p>Комплексная работа по формированию, рассмотрению, корректировке и стратегической оценке перечней приоритетных направлений научно-технологического развития и важнейших технологий с учётом Стратегии НТР и ключевых показателей суверенитета.</p>
+          <div class="meta-row">
+            <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+            <span class="meta-pill">Источники: Стратегия НТР, Минобрнауки, Роспатент, Росстат</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="kpi-grid">
+          <article class="kpi-card">
+            <div class="kpi-card__label">Индекс технологической зависимости</div>
+            <div class="kpi-card__value kpi-card__value--yellow">0.42</div>
+            <div class="kpi-card__trend">Снижение зависимости</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Важнейших наукоёмких технологий</div>
+            <div class="kpi-card__value kpi-card__value--green">127</div>
+            <div class="kpi-card__trend">+8 за год</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Доля отечественной высокотехпродукции</div>
+            <div class="kpi-card__value kpi-card__value--green">68%</div>
+            <div class="kpi-card__trend">+3.2 п.п. YoY</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">РИД / патенты по приоритетам</div>
+            <div class="kpi-card__value kpi-card__value--green">2,840</div>
+            <div class="kpi-card__trend">+12% YoY</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Технологические инновации в промышленности</div>
+            <div class="kpi-card__value kpi-card__value--green">24.8%</div>
+            <div class="kpi-card__trend">Рост активности</div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-card__label">Изменение доли high-tech сектора</div>
+            <div class="kpi-card__value kpi-card__value--green">+1.4 п.п.</div>
+            <div class="kpi-card__trend">Положительная динамика</div>
+          </article>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Покрытие Стратегии НТР перечнями</h2>
+        <p class="section-block__description">Матрица соответствия стратегических блоков перечням приоритетов (3.1–3.4).</p>
+        <div class="heatmap-container">
+          <table class="heatmap-table">
+            <thead>
+              <tr>
+                <th>Стратегический блок</th>
+                <th>3.1</th>
+                <th>3.2</th>
+                <th>3.3</th>
+                <th>3.4</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="text-align: left; font-weight: 600;">Энергетика</td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+              </tr>
+              <tr>
+                <td style="text-align: left; font-weight: 600;">Материалы</td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+              </tr>
+              <tr>
+                <td style="text-align: left; font-weight: 600;">Связь и ИТ</td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+              </tr>
+              <tr>
+                <td style="text-align: left; font-weight: 600;">АПК</td>
+                <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+              </tr>
+              <tr>
+                <td style="text-align: left; font-weight: 600;">Атомные технологии</td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+              </tr>
+              <tr>
+                <td style="text-align: left; font-weight: 600;">Авиастроение</td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+              </tr>
+              <tr>
+                <td style="text-align: left; font-weight: 600;">Химические технологии</td>
+                <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+                <td><span class="heatmap-cell heatmap-cell--low">Низкое</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+              </tr>
+              <tr>
+                <td style="text-align: left; font-weight: 600;">БАС</td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+              </tr>
+              <tr>
+                <td style="text-align: left; font-weight: 600;">Медицинские технологии</td>
+                <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+                <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Подразделы группы</h2>
+        <p class="section-block__description">Детализация процессов формирования и оценки перечней приоритетов.</p>
+        <div class="subsection-grid">
+          <article class="subsection-card">
+            <div class="subsection-card__header">
+              <h3 class="subsection-card__title">3.1. Представление проектов перечней приоритетов НТР и ВНТ в Совет при Президенте РФ</h3>
+            </div>
+            <div>
+              <p class="subsection-card__desc" style="margin-bottom: var(--space-8);"><strong>Цель процесса:</strong> Сформировать первичный проект перечня приоритетов и обосновать включение каждого направления.</p>
+            </div>
+            <div class="focus-block">
+              <div class="focus-block__title">Основной фокус</div>
+              <ul class="focus-list">
+                <li class="focus-item">Научно-технологический задел</li>
+                <li class="focus-item">Патенты</li>
+                <li class="focus-item">РИД</li>
+                <li class="focus-item">Ключевые технологии</li>
+              </ul>
+            </div>
+            <div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-6); font-weight: 600;">Патенты (YoY) — мини-линейный график</div>
+              <div class="mini-chart" style="height: 80px;">
+                <canvas id="chart-3-1-line"></canvas>
+              </div>
+            </div>
+            <div style="margin-top: var(--space-16);">
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-6); font-weight: 600;">Вклад направлений в перечень — топ-5</div>
+              <div class="mini-chart" style="height: 120px;">
+                <canvas id="chart-3-1-bars"></canvas>
+              </div>
+            </div>
+            <div class="kpi-large">
+              <div class="kpi-large__label">Ключевые технологии — шт.</div>
+              <div class="kpi-large__value">127</div>
+            </div>
+            <div class="kpi-large">
+              <div class="kpi-large__label">Уровень зависимости — %</div>
+              <div class="kpi-icon">
+                <span class="risk-dot risk-dot--medium"></span>
+                <div class="kpi-large__value">42%</div>
+              </div>
+            </div>
+            <div class="risk-block">
+              <div class="risk-block__title">Риски</div>
+              <ul class="risk-list">
+                <li class="risk-item">
+                  <span class="risk-dot risk-dot--medium"></span>
+                  <span>Недостаточная обновляемость оборудования: средний</span>
+                </li>
+                <li class="risk-item">
+                  <span class="risk-dot risk-dot--low"></span>
+                  <span>Цифровизация статистики: низкий</span>
+                </li>
+              </ul>
+            </div>
+            <div class="subsection-card__footer">
+              <a href="chapter3-1.html" class="btn btn--primary">Перейти в подраздел</a>
+            </div>
+          </article>
+
+          <article class="subsection-card">
+            <div class="subsection-card__header">
+              <h3 class="subsection-card__title">3.2. Рассмотрение НПА о порядке разработки и корректировки перечня</h3>
+            </div>
+            <div>
+              <p class="subsection-card__desc" style="margin-bottom: var(--space-8);"><strong>Цель процесса:</strong> Нормативная оценка и проверка корректности подхода к формированию перечня.</p>
+            </div>
+            <div class="focus-block">
+              <div class="focus-block__title">Основной фокус</div>
+              <ul class="focus-list">
+                <li class="focus-item">Соответствие Стратегии НТР</li>
+                <li class="focus-item">Сбалансированность по направлениям</li>
+                <li class="focus-item">Технологический суверенитет</li>
+              </ul>
+            </div>
+            <div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-6); font-weight: 600;">Стратегические блоки × покрытия (heatmap)</div>
+              <div class="mini-heatmap" style="height: 140px; overflow: auto;">
+                <table class="heatmap-table" style="font-size: 10px;">
+                  <thead>
+                    <tr>
+                      <th>Направление</th>
+                      <th>3.1</th>
+                      <th>3.2</th>
+                      <th>3.3</th>
+                      <th>3.4</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="text-align: left; font-weight: 600;">ИИ</td>
+                      <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                      <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+                      <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                      <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align: left; font-weight: 600;">БАС</td>
+                      <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                      <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                      <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+                      <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align: left; font-weight: 600;">Квантовые</td>
+                      <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                      <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+                      <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                      <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align: left; font-weight: 600;">Медицинские</td>
+                      <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+                      <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+                      <td><span class="heatmap-cell heatmap-cell--high">Высокое</span></td>
+                      <td><span class="heatmap-cell heatmap-cell--medium">Среднее</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div style="margin-top: var(--space-16);">
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-6); font-weight: 600;">Суверенитет по блокам — radial mini-chart</div>
+              <div style="height: 230px; width: 230px; margin-left: auto; margin-right: auto; position: relative;">
+                <canvas id="chart-3-2-radar"></canvas>
+              </div>
+            </div>
+            <div class="kpi-large">
+              <div class="kpi-large__label">Доля отечественных технологий — %</div>
+              <div class="kpi-large__value">68%</div>
+            </div>
+            <div class="kpi-large">
+              <div class="kpi-large__label">Уровень технологической зависимости</div>
+              <div class="kpi-icon">
+                <span class="risk-dot risk-dot--medium"></span>
+                <div class="kpi-large__value">42%</div>
+              </div>
+            </div>
+            <div class="subsection-card__footer">
+              <a href="chapter3-2.html" class="btn btn--primary">Перейти в подраздел</a>
+            </div>
+          </article>
+
+          <article class="subsection-card">
+            <div class="subsection-card__header">
+              <h3 class="subsection-card__title">3.3. Рассмотрение проектов перечней приоритетов НТР и ВНТ</h3>
+            </div>
+            <div>
+              <p class="subsection-card__desc" style="margin-bottom: var(--space-8);"><strong>Цель процесса:</strong> Оценка качества представленных перечней.</p>
+            </div>
+            <div class="focus-block">
+              <div class="focus-block__title">Основной фокус</div>
+              <ul class="focus-list">
+                <li class="focus-item">Внедрения</li>
+                <li class="focus-item">Экономический эффект</li>
+                <li class="focus-item">Технологическая независимость</li>
+                <li class="focus-item">Зрелость направлений</li>
+              </ul>
+            </div>
+            <div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-6); font-weight: 600;">Объём высокотехнологичной продукции — млрд руб (мини-бар)</div>
+              <div class="mini-chart" style="height: 120px;">
+                <canvas id="chart-3-3-high-tech"></canvas>
+              </div>
+            </div>
+            <div style="margin-top: var(--space-16);">
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-6); font-weight: 600;">Внедрения по блокам — top-бар</div>
+              <div class="mini-chart" style="height: 120px;">
+                <canvas id="chart-3-3-bars"></canvas>
+              </div>
+            </div>
+            <div class="kpi-large">
+              <div class="kpi-large__label">Технологический суверенитет</div>
+              <div class="kpi-large__value">68%</div>
+            </div>
+            <div class="kpi-large">
+              <div class="kpi-large__label">Количество отечественных технологий</div>
+              <div class="kpi-large__value">127</div>
+            </div>
+            <div class="subsection-card__footer">
+              <a href="chapter3-3.html" class="btn btn--primary">Перейти в подраздел</a>
+            </div>
+          </article>
+
+          <article class="subsection-card">
+            <div class="subsection-card__header">
+              <h3 class="subsection-card__title">3.4. Подготовка перечней для представления с учётом Стратегии НТР</h3>
+            </div>
+            <div>
+              <p class="subsection-card__desc" style="margin-bottom: var(--space-8);"><strong>Цель процесса:</strong> Финальная сборка перечня, проверка на соответствие стратегическим целям страны.</p>
+            </div>
+            <div class="focus-block">
+              <div class="focus-block__title">Основной фокус</div>
+              <ul class="focus-list">
+                <li class="focus-item">Комплексные индикаторы</li>
+                <li class="focus-item">Покрытие Стратегии НТР</li>
+                <li class="focus-item">Кадровая обеспеченность</li>
+                <li class="focus-item">Системная экосистема вокруг приоритетов</li>
+              </ul>
+            </div>
+            <div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); margin-bottom: var(--space-6); font-weight: 600;">Radar-chart по стратегическим блокам</div>
+              <div style="height: 230px; width: 230px; margin-left: auto; margin-right: auto; position: relative;">
+                <canvas id="chart-3-4-radar"></canvas>
+              </div>
+            </div>
+            <div class="kpi-large">
+              <div class="kpi-large__label">Кадровая обеспеченность — %</div>
+              <div class="kpi-large__value">72%</div>
+            </div>
+            <div class="kpi-large">
+              <div class="kpi-large__label">Доля отечественной высокотехпродукции</div>
+              <div class="kpi-large__value">68%</div>
+            </div>
+            <div class="kpi-large">
+              <div class="kpi-large__label">High-tech сектор: изменение доли</div>
+              <div class="kpi-large__value">+1.4 п.п.</div>
+            </div>
+            <div style="margin-top: var(--space-16); padding: var(--space-12); background: var(--material-neutral-highlight-primary); border: 1px solid var(--material-neutral-border-primary); border-radius: var(--radius-md); display: flex; align-items: center; gap: var(--space-8);">
+              <span class="risk-dot risk-dot--low"></span>
+              <span style="font-size: var(--font-size-body); font-weight: 600; color: var(--material-neutral-content-primary);">Готов к представлению</span>
+            </div>
+            <div class="subsection-card__footer">
+              <a href="chapter3-4.html" class="btn btn--primary">Перейти в подраздел</a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const colors = {
+      primary: '#1565FF',
+      secondary: '#00C951',
+      neutral: '#8A94A6',
+      warning: '#F5A524',
+      danger: '#F44336'
+    };
+
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+
+    // График для 3.1: патенты (YoY) - линейный
+    new Chart(document.getElementById('chart-3-1-line'), {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Патенты',
+          data: [8, 9, 10, 11, 12],
+          borderColor: colors.primary,
+          backgroundColor: 'rgba(21, 101, 255, 0.1)',
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: { beginAtZero: true, max: 15 }
+        }
+      }
+    });
+
+    // График для 3.1: топ-5 направлений
+    new Chart(document.getElementById('chart-3-1-bars'), {
+      type: 'bar',
+      data: {
+        labels: ['Энергетика', 'Материалы', 'Связь и ИТ', 'Атом', 'Авиастроение'],
+        datasets: [{
+          label: 'Вклад в перечень',
+          data: [18, 15, 14, 12, 10],
+          backgroundColor: colors.primary
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: { beginAtZero: true, max: 20 }
+        }
+      }
+    });
+
+    // График для 3.2: радар суверенитета
+    const chart3_2 = document.getElementById('chart-3-2-radar');
+    const chart3_2_instance = new Chart(chart3_2, {
+      type: 'radar',
+      data: {
+        labels: ['Энергетика', 'Материалы', 'Связь', 'АПК', 'Атом', 'Авиастроение'],
+        datasets: [{
+          label: 'Суверенитет',
+          data: [75, 68, 62, 58, 82, 71],
+          backgroundColor: 'rgba(21, 101, 255, 0.15)',
+          borderColor: colors.primary
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          r: { beginAtZero: true, max: 100 }
+        }
+      }
+    });
+    // Принудительно устанавливаем размер canvas
+    chart3_2.style.width = '230px';
+    chart3_2.style.height = '230px';
+    chart3_2_instance.resize();
+
+    // График для 3.3: объём высокотехнологичной продукции
+    new Chart(document.getElementById('chart-3-3-high-tech'), {
+      type: 'bar',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          label: 'Объём, млрд руб',
+          data: [2200, 2280, 2350, 2400, 2450],
+          backgroundColor: colors.primary
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+
+    // График для 3.3: внедрения по блокам
+    new Chart(document.getElementById('chart-3-3-bars'), {
+      type: 'bar',
+      data: {
+        labels: ['Энергетика', 'Материалы', 'Связь', 'Атом', 'Авиастроение'],
+        datasets: [{
+          label: 'Внедрения',
+          data: [24, 22, 20, 18, 16],
+          backgroundColor: colors.secondary
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: { beginAtZero: true, max: 30 }
+        }
+      }
+    });
+
+    // График для 3.4: радар комплексных индикаторов
+    const chart3_4 = document.getElementById('chart-3-4-radar');
+    const chart3_4_instance = new Chart(chart3_4, {
+      type: 'radar',
+      data: {
+        labels: ['Покрытие Стратегии', 'Кадры', 'Суверенитет', 'Внедрения', 'Экономика', 'РИД'],
+        datasets: [{
+          label: 'Комплексные индикаторы',
+          data: [85, 72, 68, 75, 70, 78],
+          backgroundColor: 'rgba(0, 201, 81, 0.15)',
+          borderColor: colors.secondary
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          r: { beginAtZero: true, max: 100 }
+        }
+      }
+    });
+    // Принудительно устанавливаем размер canvas
+    chart3_4.style.width = '230px';
+    chart3_4.style.height = '230px';
+    chart3_4_instance.resize();
+  </script>
+</body>
+</html>
+
+

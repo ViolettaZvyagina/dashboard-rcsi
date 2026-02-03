@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Дашборд координации — Подраздел 1.2</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .management-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-20);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      grid-column: span 2;
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(255, 105, 0, 0.04));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: var(--space-12);
+      margin-bottom: var(--space-6);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+    }
+
+    .filter-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-10);
+      position: relative;
+      z-index: 1;
+      align-items: center;
+    }
+
+    .vnt-filter-select {
+      padding: var(--space-8) var(--space-12);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      cursor: pointer;
+      min-width: 180px;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .vnt-filter-select:hover {
+      border-color: var(--color-accent-400);
+    }
+
+    .vnt-filter-select:focus {
+      outline: none;
+      border-color: var(--color-accent-500);
+      box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-20);
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-card__label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .kpi-card__value {
+      font-family: var(--font-alt);
+      font-size: 42px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 48px;
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+    }
+
+    .kpi-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-card__trend {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .section-block {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 28px;
+      line-height: 36px;
+      letter-spacing: -0.4px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .project-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: var(--space-16);
+    }
+
+    .project-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-16);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .project-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .project-card__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-8);
+    }
+
+    .project-card__title {
+      font-size: var(--font-size-label-lg);
+      font-weight: var(--font-weight-label);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+      flex: 1;
+    }
+
+    .project-card__status {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-8);
+      border-radius: 999px;
+      font-size: var(--font-size-caption);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .project-card__status--on-time {
+      background: var(--material-lite-positive-surface);
+      color: var(--material-lite-positive-content-primary);
+    }
+
+    .project-card__status--risk {
+      background: var(--material-lite-warning-surface);
+      color: var(--material-lite-warning-content-primary);
+    }
+
+    .project-card__status--overdue {
+      background: var(--material-lite-negative-surface);
+      color: var(--material-lite-negative-content-primary);
+    }
+
+    .project-card__foiv {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .project-card__progress {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .project-card__progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--material-neutral-highlight-primary);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .project-card__progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #0066ff, #51a2ff);
+      transition: width 0.6s ease;
+    }
+
+    .project-card__progress-fill--warning {
+      background: linear-gradient(90deg, #ffb96a, #ff9900);
+    }
+
+    .project-card__progress-fill--danger {
+      background: linear-gradient(90deg, #fb2c36, #d91e2a);
+    }
+
+    .project-card__milestones {
+      display: flex;
+      gap: var(--space-8);
+      flex-wrap: wrap;
+    }
+
+    .milestone {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-caption);
+      background: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .milestone--completed {
+      background: var(--material-lite-positive-surface);
+      color: var(--material-lite-positive-content-primary);
+    }
+
+    .milestone--overdue {
+      background: var(--material-lite-negative-surface);
+      color: var(--material-lite-negative-content-primary);
+    }
+
+    .chart-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .chart-card__title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .chart-container {
+      height: 300px;
+      position: relative;
+      padding: var(--space-12);
+    }
+
+    .chart-container--medium {
+      height: 250px;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-20);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-body);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table th,
+    .table td {
+      padding: var(--space-16) var(--space-24);
+      text-align: left;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .table th {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label-xl);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+    }
+
+    .table th:not(:last-child) {
+      border-right: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .table td {
+      color: var(--material-neutral-content-primary);
+      background-color: var(--material-neutral-surface-primary);
+    }
+
+    .table tbody tr {
+      transition: background-color 0.15s ease;
+    }
+
+    .table tbody tr:hover {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .table td:not(:last-child) {
+      border-right: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-4) var(--space-8);
+      border-radius: 999px;
+      font-size: var(--font-size-caption);
+      font-weight: 500;
+    }
+
+    .status-badge--success {
+      background: var(--material-lite-positive-surface);
+      color: var(--material-lite-positive-content-primary);
+    }
+
+    .status-badge--warning {
+      background: var(--material-lite-warning-surface);
+      color: var(--material-lite-warning-content-primary);
+    }
+
+    .status-badge--danger {
+      background: var(--material-lite-negative-surface);
+      color: var(--material-lite-negative-content-primary);
+    }
+
+    .heatmap-container {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-12);
+      overflow-x: auto;
+      align-items: start;
+    }
+
+    .heatmap-labels {
+      display: grid;
+      gap: var(--space-4);
+      grid-template-rows: auto repeat(7, 50px);
+    }
+
+    .heatmap-label-spacer {
+      height: calc(var(--space-8) + 1em);
+    }
+
+    .heatmap-label {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      padding: 0;
+      text-align: right;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      height: 50px;
+      box-sizing: border-box;
+    }
+
+    .heatmap-grid {
+      display: grid;
+      gap: var(--space-4);
+      grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: repeat(7, 50px);
+      min-width: 600px;
+    }
+
+    .heatmap-cell {
+      width: 100%;
+      height: 100%;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      transition: transform 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .heatmap-cell:hover {
+      transform: scale(1.1);
+    }
+
+    .heatmap-cell--low {
+      background: var(--material-lite-positive-surface);
+      color: var(--material-lite-positive-content-primary);
+    }
+
+    .heatmap-cell--medium {
+      background: var(--material-lite-warning-surface);
+      color: var(--material-lite-warning-content-primary);
+    }
+
+    .heatmap-cell--high {
+      background: var(--material-lite-negative-surface);
+      color: var(--material-lite-negative-content-primary);
+    }
+
+    .signals-card {
+      background: linear-gradient(165deg, rgba(255, 105, 0, 0.12), rgba(0, 102, 255, 0.12));
+      border: 1px solid var(--color-warning-200);
+      color: var(--material-neutral-content-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .signals-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .signals-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-8);
+      font-family: var(--font-alt);
+      font-weight: var(--font-weight-label-xl);
+      font-size: var(--font-size-label-xl);
+      line-height: var(--line-height-label-xl);
+      letter-spacing: var(--letter-spacing-label-xl);
+      position: relative;
+      z-index: 1;
+    }
+
+    .signals-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: var(--space-10);
+      position: relative;
+      z-index: 1;
+    }
+
+    .signal-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-8);
+      align-items: center;
+      font-size: var(--font-size-body);
+    }
+
+    .signal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 105, 0, 0.1);
+    }
+
+    .signal-dot--high {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.12);
+    }
+
+    .signal-dot--warning {
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 185, 106, 0.15);
+    }
+
+    @media (max-width: 1200px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .project-cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .management-bar {
+        grid-template-columns: 1fr;
+      }
+
+      .management-panel {
+        grid-column: span 1;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .project-cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-bar">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="chapter1.html">
+                <span class="back-link__icon"></span>
+                К разделу 1
+              </a>
+            </div>
+            <h1>1.2. Координация по ВИП ГЗ</h1>
+            <p class="ty-body-lg ty-muted">
+              Мониторинг реализации важных инновационных проектов государственного значения, координация деятельности федеральных органов исполнительной власти по их выполнению.
+            </p>
+          </div>
+          <div class="meta-row">
+            <span class="meta-pill">Последнее обновление: <strong>12.11.2025</strong></span>
+            <span class="meta-pill">Каналы данных: ФОИВ, ВИП ГЗ</span>
+          </div>
+        </div>
+        <aside class="signals-card">
+          <div class="signals-title">
+            Сигналы и риски
+          </div>
+          <ul class="signals-list">
+            <li class="signal-item">
+              <span class="signal-dot signal-dot--high"></span>
+              Просрочено более 20% этапов в проекте "«Углерод в экосистемах: мониторинг»"
+            </li>
+            <li class="signal-item">
+              <span class="signal-dot signal-dot--warning"></span>
+              Минпромторг системно нарушает сроки исполнения поручений
+            </li>
+            <li class="signal-item">
+              <span class="signal-dot signal-dot--warning"></span>
+              ВИП ГЗ "Российская система климатического мониторинга (РСКМ)" выходит за рамки графика на 5 дней
+            </li>
+            <li class="signal-item">
+              <span class="signal-dot signal-dot--high"></span>
+              Выявлены пробелы в межведомственной координации по 3 проектам
+            </li>
+          </ul>
+        </aside>
+      </section>
+
+      <!-- БЛОК 1: Ключевые KPI -->
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-card__label">Доля решений КНТР, выполненных ФОИВ в срок</div>
+          <div class="kpi-card__value kpi-card__value--green">
+            88<span style="font-size: 24px; font-weight: 400;">%</span>
+          </div>
+          <div class="kpi-card__trend">
+            <span>↗</span>
+            <span>+3% к прошлому кварталу</span>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-card__label">Процент своевременного выполнения этапов ВИП ГЗ</div>
+          <div class="kpi-card__value kpi-card__value--yellow">
+            76<span style="font-size: 24px; font-weight: 400;">%</span>
+          </div>
+          <div class="kpi-card__trend">
+            <span>→</span>
+            <span>Без изменений</span>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-card__label">Доля межведомственных проектов на графике</div>
+          <div class="kpi-card__value kpi-card__value--yellow">
+            68<span style="font-size: 24px; font-weight: 400;">%</span>
+          </div>
+          <div class="kpi-card__trend">
+            <span>↗</span>
+            <span>+5% к прошлому кварталу</span>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-card__label">Среднее отклонение сроков проектов</div>
+          <div class="kpi-card__value kpi-card__value--yellow">
+            8<span style="font-size: 24px; font-weight: 400;"> дней</span>
+          </div>
+          <div class="kpi-card__trend">
+            <span>↘</span>
+            <span>-2 дня к прошлому кварталу</span>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-card__label">Доля аналитических отчетов, подготовленных в срок</div>
+          <div class="kpi-card__value kpi-card__value--green">
+            92<span style="font-size: 24px; font-weight: 400;">%</span>
+          </div>
+          <div class="kpi-card__trend">
+            <span>↗</span>
+            <span>+4% к прошлому кварталу</span>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-card__label">Количество ВИП ГЗ в реализации</div>
+          <div class="kpi-card__value kpi-card__value--green">
+            9
+          </div>
+          <div class="kpi-card__trend">
+            <span>→</span>
+            <span>Активных проектов</span>
+          </div>
+        </article>
+      </section>
+
+      <!-- БЛОК 2: Карта ключевых проектов ВИП ГЗ -->
+      <section class="section-block">
+        <h2 class="section-block__title">Карта ключевых проектов ВИП ГЗ</h2>
+        <div class="project-cards-grid">
+          <article class="project-card">
+            <div class="project-card__header">
+              <h3 class="project-card__title">«Углерод в экосистемах: мониторинг»</h3>
+              <span class="project-card__status project-card__status--overdue">Просрочка</span>
+            </div>
+            <div class="project-card__foiv">Ответственный: Минобрнауки России</div>
+            <div class="project-card__progress">
+              <div class="project-card__progress-bar">
+                <div class="project-card__progress-fill project-card__progress-fill--danger" style="width: 65%"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);">
+                <span>Готовность: 65%</span>
+                <span>Отклонение: +18 дней</span>
+              </div>
+            </div>
+            <div class="project-card__milestones">
+              <span class="milestone milestone--completed">Этап 1</span>
+              <span class="milestone milestone--completed">Этап 2</span>
+              <span class="milestone milestone--overdue">Этап 3</span>
+              <span class="milestone">Этап 4</span>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-card__header">
+              <h3 class="project-card__title">Российская система климатического мониторинга (РСКМ)</h3>
+              <span class="project-card__status project-card__status--risk">Риски</span>
+            </div>
+            <div class="project-card__foiv">Ответственный: Минцифры России</div>
+            <div class="project-card__progress">
+              <div class="project-card__progress-bar">
+                <div class="project-card__progress-fill project-card__progress-fill--warning" style="width: 72%"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);">
+                <span>Готовность: 72%</span>
+                <span>Отклонение: +5 дней</span>
+              </div>
+            </div>
+            <div class="project-card__milestones">
+              <span class="milestone milestone--completed">Этап 1</span>
+              <span class="milestone milestone--completed">Этап 2</span>
+              <span class="milestone">Этап 3</span>
+              <span class="milestone">Этап 4</span>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-card__header">
+              <h3 class="project-card__title">Сеть стационарных и мобильных полигонов ВИП ГЗ</h3>
+              <span class="project-card__status project-card__status--on-time">В сроки</span>
+            </div>
+            <div class="project-card__foiv">Ответственный: Минобрнауки России</div>
+            <div class="project-card__progress">
+              <div class="project-card__progress-bar">
+                <div class="project-card__progress-fill" style="width: 85%"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);">
+                <span>Готовность: 85%</span>
+                <span>Отклонение: 0 дней</span>
+              </div>
+            </div>
+            <div class="project-card__milestones">
+              <span class="milestone milestone--completed">Этап 1</span>
+              <span class="milestone milestone--completed">Этап 2</span>
+              <span class="milestone milestone--completed">Этап 3</span>
+              <span class="milestone">Этап 4</span>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-card__header">
+              <h3 class="project-card__title">Лабораторный блок ВИП ГЗ</h3>
+              <span class="project-card__status project-card__status--on-time">В сроки</span>
+            </div>
+            <div class="project-card__foiv">Ответственный: Минобрнауки России</div>
+            <div class="project-card__progress">
+              <div class="project-card__progress-bar">
+                <div class="project-card__progress-fill" style="width: 78%"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);">
+                <span>Готовность: 78%</span>
+                <span>Отклонение: -2 дня</span>
+              </div>
+            </div>
+            <div class="project-card__milestones">
+              <span class="milestone milestone--completed">Этап 1</span>
+              <span class="milestone milestone--completed">Этап 2</span>
+              <span class="milestone">Этап 3</span>
+              <span class="milestone">Этап 4</span>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-card__header">
+              <h3 class="project-card__title">Дистанционный мониторинг и спутниковые технологии</h3>
+              <span class="project-card__status project-card__status--risk">Риски</span>
+            </div>
+            <div class="project-card__foiv">Ответственный: Роскосмос</div>
+            <div class="project-card__progress">
+              <div class="project-card__progress-bar">
+                <div class="project-card__progress-fill project-card__progress-fill--warning" style="width: 70%"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);">
+                <span>Готовность: 70%</span>
+                <span>Отклонение: +8 дней</span>
+              </div>
+            </div>
+            <div class="project-card__milestones">
+              <span class="milestone milestone--completed">Этап 1</span>
+              <span class="milestone milestone--completed">Этап 2</span>
+              <span class="milestone">Этап 3</span>
+              <span class="milestone">Этап 4</span>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-card__header">
+              <h3 class="project-card__title">Геоинформационная / цифровая платформа (ИАС)</h3>
+              <span class="project-card__status project-card__status--on-time">В сроки</span>
+            </div>
+            <div class="project-card__foiv">Ответственный: Минцифры России</div>
+            <div class="project-card__progress">
+              <div class="project-card__progress-bar">
+                <div class="project-card__progress-fill" style="width: 82%"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);">
+                <span>Готовность: 82%</span>
+                <span>Отклонение: 0 дней</span>
+              </div>
+            </div>
+            <div class="project-card__milestones">
+              <span class="milestone milestone--completed">Этап 1</span>
+              <span class="milestone milestone--completed">Этап 2</span>
+              <span class="milestone milestone--completed">Этап 3</span>
+              <span class="milestone">Этап 4</span>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-card__header">
+              <h3 class="project-card__title">Моделирование углеродного баланса России</h3>
+              <span class="project-card__status project-card__status--on-time">В сроки</span>
+            </div>
+            <div class="project-card__foiv">Ответственный: Минобрнауки России</div>
+            <div class="project-card__progress">
+              <div class="project-card__progress-bar">
+                <div class="project-card__progress-fill" style="width: 75%"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);">
+                <span>Готовность: 75%</span>
+                <span>Отклонение: 0 дней</span>
+              </div>
+            </div>
+            <div class="project-card__milestones">
+              <span class="milestone milestone--completed">Этап 1</span>
+              <span class="milestone milestone--completed">Этап 2</span>
+              <span class="milestone">Этап 3</span>
+              <span class="milestone">Этап 4</span>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-card__header">
+              <h3 class="project-card__title">Обновление национальных коэффициентов выбросов</h3>
+              <span class="project-card__status project-card__status--risk">Риски</span>
+            </div>
+            <div class="project-card__foiv">Ответственный: Минэнерго России</div>
+            <div class="project-card__progress">
+              <div class="project-card__progress-bar">
+                <div class="project-card__progress-fill project-card__progress-fill--warning" style="width: 68%"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);">
+                <span>Готовность: 68%</span>
+                <span>Отклонение: +6 дней</span>
+              </div>
+            </div>
+            <div class="project-card__milestones">
+              <span class="milestone milestone--completed">Этап 1</span>
+              <span class="milestone milestone--completed">Этап 2</span>
+              <span class="milestone">Этап 3</span>
+              <span class="milestone">Этап 4</span>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-card__header">
+              <h3 class="project-card__title">Блок природоохранных и экономических приложений</h3>
+              <span class="project-card__status project-card__status--on-time">В сроки</span>
+            </div>
+            <div class="project-card__foiv">Ответственный: Минцифры России</div>
+            <div class="project-card__progress">
+              <div class="project-card__progress-bar">
+                <div class="project-card__progress-fill" style="width: 80%"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);">
+                <span>Готовность: 80%</span>
+                <span>Отклонение: -1 день</span>
+              </div>
+            </div>
+            <div class="project-card__milestones">
+              <span class="milestone milestone--completed">Этап 1</span>
+              <span class="milestone milestone--completed">Этап 2</span>
+              <span class="milestone milestone--completed">Этап 3</span>
+              <span class="milestone">Этап 4</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- БЛОК 3: Воронка исполнения этапов проектов -->
+      <section class="charts-grid">
+        <article class="chart-card">
+          <h3 class="chart-card__title">Воронка исполнения этапов проектов</h3>
+          <div class="chart-container">
+            <canvas id="chart-funnel"></canvas>
+          </div>
+        </article>
+        <article class="chart-card">
+          <h3 class="chart-card__title">Распределение этапов по статусам</h3>
+          <div class="chart-container">
+            <canvas id="chart-stages"></canvas>
+          </div>
+        </article>
+      </section>
+
+      <!-- БЛОК 4: Межведомственные взаимодействия -->
+      <section class="section-block">
+        <h2 class="section-block__title">Межведомственные взаимодействия</h2>
+        <div class="heatmap-container">
+          <div class="heatmap-labels">
+            <div class="heatmap-label-spacer"></div>
+            <div class="heatmap-label">Минобрнауки</div>
+            <div class="heatmap-label">Минцифры</div>
+            <div class="heatmap-label">Росатом</div>
+            <div class="heatmap-label">Роскосмос</div>
+            <div class="heatmap-label">Минэнерго</div>
+            <div class="heatmap-label">Минздрав</div>
+            <div class="heatmap-label">Минпромторг</div>
+          </div>
+          <div>
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--space-4); margin-bottom: var(--space-8); min-width: 600px;">
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); text-align: center;">Минобрнауки</div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); text-align: center;">Минцифры</div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); text-align: center;">Росатом</div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); text-align: center;">Роскосмос</div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); text-align: center;">Минэнерго</div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); text-align: center;">Минздрав</div>
+              <div style="font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary); text-align: center;">Минпромторг</div>
+            </div>
+            <div class="heatmap-grid">
+              <div class="heatmap-cell heatmap-cell--low" title="Минобрнауки ↔ Минобрнауки">—</div>
+              <div class="heatmap-cell heatmap-cell--medium" title="Минобрнауки ↔ Минцифры">3</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минобрнауки ↔ Росатом">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минобрнауки ↔ Роскосмос">2</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минобрнауки ↔ Минэнерго">1</div>
+              <div class="heatmap-cell heatmap-cell--medium" title="Минобрнауки ↔ Минздрав">2</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минобрнауки ↔ Минпромторг">1</div>
+              
+              <div class="heatmap-cell heatmap-cell--medium" title="Минцифры ↔ Минобрнауки">3</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минцифры ↔ Минцифры">—</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минцифры ↔ Росатом">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минцифры ↔ Роскосмос">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минцифры ↔ Минэнерго">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минцифры ↔ Минздрав">1</div>
+              <div class="heatmap-cell heatmap-cell--medium" title="Минцифры ↔ Минпромторг">2</div>
+              
+              <div class="heatmap-cell heatmap-cell--low" title="Росатом ↔ Минобрнауки">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Росатом ↔ Минцифры">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Росатом ↔ Росатом">—</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Росатом ↔ Роскосмос">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Росатом ↔ Минэнерго">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Росатом ↔ Минздрав">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Росатом ↔ Минпромторг">1</div>
+              
+              <div class="heatmap-cell heatmap-cell--low" title="Роскосмос ↔ Минобрнауки">2</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Роскосмос ↔ Минцифры">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Роскосмос ↔ Росатом">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Роскосмос ↔ Роскосмос">—</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Роскосмос ↔ Минэнерго">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Роскосмос ↔ Минздрав">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Роскосмос ↔ Минпромторг">1</div>
+              
+              <div class="heatmap-cell heatmap-cell--low" title="Минэнерго ↔ Минобрнауки">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минэнерго ↔ Минцифры">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минэнерго ↔ Росатом">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минэнерго ↔ Роскосмос">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минэнерго ↔ Минэнерго">—</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минэнерго ↔ Минздрав">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минэнерго ↔ Минпромторг">1</div>
+              
+              <div class="heatmap-cell heatmap-cell--medium" title="Минздрав ↔ Минобрнауки">2</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минздрав ↔ Минцифры">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минздрав ↔ Росатом">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минздрав ↔ Роскосмос">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минздрав ↔ Минэнерго">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минздрав ↔ Минздрав">—</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минздрав ↔ Минпромторг">1</div>
+              
+              <div class="heatmap-cell heatmap-cell--low" title="Минпромторг ↔ Минобрнауки">1</div>
+              <div class="heatmap-cell heatmap-cell--medium" title="Минпромторг ↔ Минцифры">2</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минпромторг ↔ Росатом">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минпромторг ↔ Роскосмос">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минпромторг ↔ Минэнерго">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минпромторг ↔ Минздрав">1</div>
+              <div class="heatmap-cell heatmap-cell--low" title="Минпромторг ↔ Минпромторг">—</div>
+            </div>
+            <div style="display: flex; gap: var(--space-16); margin-top: var(--space-16); font-size: var(--font-size-caption); color: var(--material-neutral-content-secondary);">
+              <span>Легенда: <span style="display: inline-block; width: 16px; height: 16px; background: var(--material-lite-positive-surface); border-radius: 4px; vertical-align: middle; margin-left: 4px;"></span> Низкая нагрузка</span>
+              <span><span style="display: inline-block; width: 16px; height: 16px; background: var(--material-lite-warning-surface); border-radius: 4px; vertical-align: middle; margin-left: 4px;"></span> Средняя нагрузка</span>
+              <span><span style="display: inline-block; width: 16px; height: 16px; background: var(--material-lite-negative-surface); border-radius: 4px; vertical-align: middle; margin-left: 4px;"></span> Высокая нагрузка</span>
+            </div>
+          </div>
+        </div>
+        <div class="charts-grid" style="margin-top: var(--space-24);">
+          <article class="chart-card">
+            <h3 class="chart-card__title">Средний срок исполнения поручений по ФОИВ</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-assignments"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-card__title">Среднее отклонение сроков по проектам</h3>
+            <div class="chart-container chart-container--medium">
+              <canvas id="chart-deviations"></canvas>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- БЛОК 5: Аналитические отчеты -->
+      <section class="section-block">
+        <h2 class="section-block__title">Аналитические отчеты — контроль исполнения</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Название отчёта</th>
+              <th>Срок сдачи</th>
+              <th>Факт</th>
+              <th>Отклонение</th>
+              <th>ФОИВ</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Отчёт по реализации ВИП ГЗ "«Углерод в экосистемах: мониторинг»"</td>
+              <td>15.10.2025</td>
+              <td>18.10.2025</td>
+              <td>+3 дня</td>
+              <td>Минобрнауки России</td>
+              <td><span class="status-badge status-badge--warning">С опозданием</span></td>
+            </tr>
+            <tr>
+              <td>Отчёт по координации межведомственных проектов</td>
+              <td>20.10.2025</td>
+              <td>20.10.2025</td>
+              <td>0 дней</td>
+              <td>Минцифры России</td>
+              <td><span class="status-badge status-badge--success">В срок</span></td>
+            </tr>
+            <tr>
+              <td>Аналитический отчёт по рискам ВИП ГЗ</td>
+              <td>25.10.2025</td>
+              <td>28.10.2025</td>
+              <td>+3 дня</td>
+              <td>Минпромторг России</td>
+              <td><span class="status-badge status-badge--warning">С опозданием</span></td>
+            </tr>
+            <tr>
+              <td>Отчёт о выполнении этапов проектов</td>
+              <td>05.11.2025</td>
+              <td>05.11.2025</td>
+              <td>0 дней</td>
+              <td>Роскосмос</td>
+              <td><span class="status-badge status-badge--success">В срок</span></td>
+            </tr>
+            <tr>
+              <td>Отчёт по поручениям КНТР</td>
+              <td>10.11.2025</td>
+              <td>10.11.2025</td>
+              <td>0 дней</td>
+              <td>Минздрав России</td>
+              <td><span class="status-badge status-badge--success">В срок</span></td>
+            </tr>
+            <tr>
+              <td>Отчёт по межведомственной координации</td>
+              <td>12.11.2025</td>
+              <td>—</td>
+              <td>—</td>
+              <td>Минэнерго России</td>
+              <td><span class="status-badge status-badge--danger">Просрочено</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- БЛОК 6: Сигналы и риски -->
+      <section class="section-block">
+        <h2 class="section-block__title">Сигналы и риски</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Проект</th>
+              <th>Риск</th>
+              <th>Причина</th>
+              <th>ФОИВ</th>
+              <th>Срок</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>«Углерод в экосистемах: мониторинг»</td>
+              <td><span class="status-badge status-badge--danger">Высокий</span></td>
+              <td>Просрочка этапа</td>
+              <td>Минобрнауки России</td>
+              <td>18 дней</td>
+            </tr>
+            <tr>
+              <td>Российская система климатического мониторинга (РСКМ)</td>
+              <td><span class="status-badge status-badge--warning">Средний</span></td>
+              <td>Задержка со стороны ФОИВ</td>
+              <td>Минцифры России</td>
+              <td>5 дней</td>
+            </tr>
+            <tr>
+              <td>Дистанционный мониторинг и спутниковые технологии</td>
+              <td><span class="status-badge status-badge--warning">Средний</span></td>
+              <td>Требуется согласование</td>
+              <td>Роскосмос</td>
+              <td>8 дней</td>
+            </tr>
+            <tr>
+              <td>Проект X</td>
+              <td><span class="status-badge status-badge--danger">Высокий</span></td>
+              <td>Просрочено >20% этапов</td>
+              <td>Минпромторг России</td>
+              <td>12 дней</td>
+            </tr>
+            <tr>
+              <td>Проект Y</td>
+              <td><span class="status-badge status-badge--warning">Средний</span></td>
+              <td>У ФОИВ системные задержки</td>
+              <td>Минэнерго России</td>
+              <td>7 дней</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+  <script>
+    Chart.defaults.color = '#64748b';
+    Chart.defaults.borderColor = '#f1f5f9';
+    Chart.defaults.font.family = 'system-ui, -apple-system, sans-serif';
+    Chart.defaults.font.size = 12;
+    
+    const commonOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          labels: {
+            usePointStyle: true,
+            padding: 15,
+            font: { size: 12, weight: '500' }
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(15, 23, 42, 0.95)',
+          padding: 12,
+          titleFont: { size: 13, weight: '600' },
+          bodyFont: { size: 12 },
+          cornerRadius: 8,
+          displayColors: true,
+          borderColor: '#e2e8f0',
+          borderWidth: 1
+        }
+      },
+      animation: {
+        duration: 800,
+        easing: 'easeOutQuart'
+      },
+      scales: {
+        x: {
+          grid: {
+            color: '#f1f5f9',
+            drawBorder: false,
+            lineWidth: 1
+          },
+          ticks: {
+            font: { size: 11 },
+            color: '#64748b',
+            padding: 8
+          }
+        },
+        y: {
+          grid: {
+            color: '#f1f5f9',
+            drawBorder: false,
+            lineWidth: 1
+          },
+          ticks: {
+            font: { size: 11 },
+            color: '#64748b',
+            padding: 8
+          }
+        }
+      }
+    };
+
+    // Воронка исполнения этапов проектов
+    new Chart(document.getElementById('chart-funnel'), {
+      type: 'bar',
+      data: {
+        labels: ['Всего этапов', 'В работе', 'Завершено', 'Просрочено', 'Заблокировано'],
+        datasets: [{
+          label: 'Количество этапов',
+          data: [120, 45, 65, 8, 2],
+          backgroundColor: [
+            '#0066ff',
+            '#51a2ff',
+            '#00c951',
+            '#fb2c36',
+            '#ff9900'
+          ],
+          borderRadius: 6,
+          borderSkipped: false,
+          maxBarThickness: 40
+        }]
+      },
+      options: {
+        ...commonOptions,
+        plugins: {
+          ...commonOptions.plugins,
+          legend: {
+            display: false
+          }
+        },
+        indexAxis: 'y',
+        scales: {
+          ...commonOptions.scales,
+          x: { 
+            ...commonOptions.scales.x,
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    // Распределение этапов по статусам
+    new Chart(document.getElementById('chart-stages'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Завершено', 'В работе', 'Просрочено', 'Заблокировано'],
+        datasets: [{
+          data: [65, 45, 8, 2],
+          backgroundColor: [
+            '#00c951',
+            '#0066ff',
+            '#fb2c36',
+            '#ff9900'
+          ],
+          borderWidth: 0,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '65%',
+        plugins: {
+          legend: { 
+            display: true,
+            position: 'bottom',
+            labels: {
+              usePointStyle: true,
+              padding: 20,
+              font: { size: 12, weight: '500' }
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            padding: 12,
+            titleFont: { size: 13, weight: '600' },
+            bodyFont: { size: 12 },
+            cornerRadius: 8,
+            displayColors: true,
+            borderColor: '#e2e8f0',
+            borderWidth: 1
+          }
+        },
+        animation: {
+          duration: 800,
+          easing: 'easeOutQuart'
+        }
+      }
+    });
+
+    // Средний срок исполнения поручений по ФОИВ
+    const ctxAssignments = document.getElementById('chart-assignments').getContext('2d');
+    new Chart(document.getElementById('chart-assignments'), {
+      type: 'bar',
+      data: {
+        labels: ['Минобрнауки', 'Минцифры', 'Росатом', 'Роскосмос', 'Минэнерго', 'Минздрав', 'Минпромторг'],
+        datasets: [{
+          label: 'Средний срок, дней',
+          data: [12, 8, 15, 18, 14, 10, 16],
+          backgroundColor: function(context) {
+            const value = context.parsed.y;
+            if (value > 15) {
+              return '#fb2c36';
+            } else if (value > 12) {
+              return '#ffb96a';
+            } else {
+              return '#00c951';
+            }
+          },
+          borderRadius: 8,
+          borderSkipped: false,
+          maxBarThickness: 32
+        }]
+      },
+      options: {
+        ...commonOptions,
+        indexAxis: 'y',
+        scales: {
+          ...commonOptions.scales,
+          x: { 
+            ...commonOptions.scales.x,
+            beginAtZero: true, 
+            max: 20
+          }
+        }
+      }
+    });
+
+    // Среднее отклонение сроков по проектам
+    new Chart(document.getElementById('chart-deviations'), {
+      type: 'bar',
+      data: {
+        labels: ['Минобрнауки', 'Минцифры', 'Росатом', 'Роскосмос', 'Минэнерго', 'Минздрав', 'Минпромторг'],
+        datasets: [{
+          label: 'Отклонение, дней',
+          data: [8, 5, 3, 8, 2, 0, 12],
+          backgroundColor: function(context) {
+            const value = context.parsed.y;
+            if (value > 10) {
+              return '#fb2c36';
+            } else if (value > 5) {
+              return '#ffb96a';
+            } else {
+              return '#00c951';
+            }
+          },
+          borderRadius: 8,
+          borderSkipped: false,
+          maxBarThickness: 32
+        }]
+      },
+      options: {
+        ...commonOptions,
+        indexAxis: 'y',
+        scales: {
+          ...commonOptions.scales,
+          x: { 
+            ...commonOptions.scales.x,
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+

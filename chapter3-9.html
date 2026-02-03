@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Группа 3.9 — Реализация Стратегии НТР</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .subsection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: var(--space-24);
+    }
+
+    @media (min-width: 1200px) {
+      .subsection-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .subsection-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .subsection-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .subsection-card__header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .subsection-card__title {
+      font-family: var(--font-alt);
+      font-size: 20px;
+      line-height: 28px;
+      letter-spacing: -0.2px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .subsection-card__desc {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .focus-block {
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .focus-block__title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .focus-items {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-10);
+    }
+
+    .focus-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-8);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .focus-item__icon {
+      flex-shrink: 0;
+      font-size: 20px;
+      line-height: 1.4;
+    }
+
+    .focus-item__content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .focus-item__title {
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+    }
+
+    .focus-item__desc {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      line-height: var(--line-height-caption);
+    }
+
+    .indicators-block {
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .indicators-block__title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .indicators-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+
+    .indicators-list__item {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+      padding-left: var(--space-16);
+      position: relative;
+    }
+
+    .indicators-list__item::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--material-neutral-content-tertiary);
+    }
+
+    .status-block {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      margin-top: auto;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-dot--green {
+      background-color: var(--color-positive-400);
+      box-shadow: 0 0 0 4px rgba(0, 201, 81, 0.15);
+    }
+
+    .status-dot--yellow {
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 185, 106, 0.15);
+    }
+
+    .status-dot--red {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.18);
+    }
+
+    .status-text {
+      flex: 1;
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-primary);
+      font-weight: 500;
+    }
+
+    .subsection-card__footer {
+      margin-top: var(--space-12);
+      padding-top: var(--space-12);
+      border-top: 1px solid var(--material-neutral-border-primary);
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-6);
+      height: var(--control-height);
+      padding: 0 var(--space-16);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-family: var(--font-main);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      text-decoration: none;
+      cursor: pointer;
+      background-color: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-primary);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn--primary {
+      background-color: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .section-block {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .section-block__description {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3.html">
+              <span class="back-link__icon"></span>
+              Назад к разделу 3
+            </a>
+            <span class="meta-pill">Группа 3.9</span>
+          </div>
+          <h1>3.9. Реализация Стратегии НТР</h1>
+          <p>Мониторинг выполнения организационных, нормативных и методических мер в рамках Стратегии НТР.</p>
+          <p style="margin: var(--space-4) 0 var(--space-6) 0; color: var(--material-neutral-content-tertiary); font-size: var(--font-size-body); line-height: var(--line-height-body); font-style: italic;">
+            Страница отражает структуру работ по реализации Стратегии НТР и позволяет переходить в каждый подраздел для анализа показателей и статуса выполнения мер.
+          </p>
+          <div class="meta-row">
+            <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+            <span class="meta-pill">Источники: Стратегия НТР, Минобрнауки, ФОИВ</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Подразделы группы</h2>
+        <p class="section-block__description">Комплекс мер организационного, нормативно-правового и методического характера, реализуемых в рамках Стратегии НТР.</p>
+        <div class="subsection-grid">
+          <article class="subsection-card">
+            <div class="subsection-card__header">
+              <h3 class="subsection-card__title">3.9.1. Реализация Стратегии НТР</h3>
+              <p class="subsection-card__desc">Мониторинг выполнения комплекса организационных, нормативно-правовых и методических мер, обеспечивающих достижение целей Стратегии НТР.</p>
+            </div>
+
+            <div class="focus-block">
+              <div class="focus-block__title">Основной фокус подраздела</div>
+              <div class="focus-items">
+                <div class="focus-item">
+                  <span class="focus-item__icon">📑</span>
+                  <div class="focus-item__content">
+                    <div class="focus-item__title">Организационные меры</div>
+                    <div class="focus-item__desc">Создание проектных офисов, межведомственных групп, центров компетенций. Запуск пилотных механизмов и моделей.</div>
+                  </div>
+                </div>
+                <div class="focus-item">
+                  <span class="focus-item__icon">⚖️</span>
+                  <div class="focus-item__content">
+                    <div class="focus-item__title">Нормативно-правовые меры</div>
+                    <div class="focus-item__desc">Разработка и принятие НПА. Корректировка госпрограмм и паспортов НПТЛ. Формирование регуляторной поддержки.</div>
+                  </div>
+                </div>
+                <div class="focus-item">
+                  <span class="focus-item__icon">📘</span>
+                  <div class="focus-item__content">
+                    <div class="focus-item__title">Методические меры</div>
+                    <div class="focus-item__desc">Утверждение методик расчёта показателей. Разработка стандартов и методрекомендаций. Унификация отраслевых требований.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="indicators-block">
+              <div class="indicators-block__title">📊 Ключевые показатели подраздела</div>
+              <ul class="indicators-list">
+                <li class="indicators-list__item">Внутренние затраты на НИОКР (% ВВП)</li>
+                <li class="indicators-list__item">Место РФ в мире по объёму НИОКР</li>
+                <li class="indicators-list__item">Доля продукции высокотехнологичных отраслей в ВВП</li>
+              </ul>
+            </div>
+
+            <div class="status-block">
+              <span class="status-dot status-dot--green"></span>
+              <span class="status-text">В работе / 2025 / 70% реализации</span>
+            </div>
+
+            <div class="subsection-card__footer">
+              <a href="chapter3-9-1.html" class="btn btn--primary">Перейти в подраздел</a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
+

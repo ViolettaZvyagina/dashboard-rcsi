@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подраздел 4.7 — Реализация проекта ВИП ГЗ «Единая национальная система мониторинга климатически активных веществ»</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .header-section {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--space-24);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: var(--space-4) 0 var(--space-6) 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .service-controls {
+      background: linear-gradient(165deg, rgba(255, 105, 0, 0.12), rgba(0, 102, 255, 0.12));
+      border: 1px solid var(--color-warning-200);
+      border-radius: var(--radius-lg);
+      padding: var(--space-16);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      min-width: 280px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-controls__group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .service-controls__label {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label);
+    }
+
+    .service-controls__select-wrapper {
+      position: relative;
+    }
+
+    .service-controls__select {
+      padding: var(--space-6) var(--space-10);
+      padding-right: calc(var(--space-10) + 20px);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+      cursor: pointer;
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+
+    .service-controls__select-wrapper::after {
+      content: "▼";
+      position: absolute;
+      right: var(--space-10);
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      color: var(--material-neutral-content-tertiary);
+      pointer-events: none;
+    }
+
+    .service-controls__actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      margin-top: auto;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-6);
+      height: var(--control-height);
+      padding: 0 var(--space-16);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-family: var(--font-main);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      text-decoration: none;
+      cursor: pointer;
+      background-color: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-primary);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn--primary {
+      background-color: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn--small {
+      height: 32px;
+      padding: 0 var(--space-12);
+      font-size: var(--font-size-caption);
+    }
+
+    /* Обобщённая картина исполнения */
+    .overview-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-24);
+    }
+
+    @media (max-width: 1024px) {
+      .overview-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .overview-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .overview-card__title {
+      font-size: var(--font-size-body);
+      font-weight: 600;
+      color: var(--material-neutral-content-secondary);
+      margin: 0;
+    }
+
+    .overview-card__value {
+      font-family: var(--font-alt);
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .overview-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .overview-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .overview-card__value--yellow {
+      color: var(--color-warning-500);
+    }
+
+    .overview-card__change {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .overview-card__change--positive {
+      color: var(--color-positive-500);
+    }
+
+    .overview-card__change--negative {
+      color: var(--color-negative-500);
+    }
+
+    .overview-card__description {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      margin: 0;
+    }
+
+    .overview-card__sub-values {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      margin-top: var(--space-4);
+    }
+
+    .overview-card__sub-value {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .overview-card__sparkline {
+      height: 40px;
+      margin-top: var(--space-4);
+    }
+
+    /* Heatmap ответственности ФОИВ */
+    .responsibility-section {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+    }
+
+    .responsibility-section__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-24) 0;
+    }
+
+    .heatmap-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-body);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .heatmap-table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .heatmap-table th,
+    .heatmap-table td {
+      padding: var(--space-12) var(--space-16);
+      text-align: left;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .heatmap-table th {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label-xl);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+      white-space: nowrap;
+    }
+
+    .heatmap-table td {
+      color: var(--material-neutral-content-primary);
+      background-color: var(--material-neutral-surface-primary);
+    }
+
+    .heatmap-table tbody tr:hover {
+      background-color: var(--material-neutral-highlight-primary);
+      cursor: pointer;
+    }
+
+    .heatmap-cell {
+      padding: var(--space-8) var(--space-12);
+      border-radius: var(--radius-sm);
+      text-align: center;
+      font-weight: 600;
+      font-size: var(--font-size-body);
+      min-width: 80px;
+    }
+
+    .heatmap-cell--green {
+      background: rgba(0, 201, 81, 0.2);
+      color: var(--color-positive-700);
+    }
+
+    .heatmap-cell--yellow {
+      background: rgba(245, 165, 36, 0.2);
+      color: var(--color-warning-700);
+    }
+
+    .heatmap-cell--red {
+      background: rgba(251, 44, 54, 0.2);
+      color: var(--color-negative-700);
+    }
+
+    .heatmap-cell--gray {
+      background: rgba(138, 148, 166, 0.2);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    /* Тематика поручений */
+    .topics-section {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+    }
+
+    .topics-section__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-24) 0;
+    }
+
+    .topics-chart {
+      height: 400px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-32);
+    }
+
+    .topics-chart__canvas-wrapper {
+      flex: 0 0 auto;
+      width: 400px;
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .topics-chart canvas {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .topics-chart__legend {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      min-width: 280px;
+    }
+
+    .topics-chart__legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-primary);
+    }
+
+    .topics-chart__legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      border: 2px solid;
+    }
+
+    .topics-chart__legend-label {
+      flex: 1;
+      color: var(--material-neutral-content-secondary);
+    }
+
+    /* Динамика исполнения */
+    .dynamics-section {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+    }
+
+    .dynamics-section__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-24) 0;
+    }
+
+    .dynamics-chart {
+      height: 350px;
+    }
+
+    .dynamics-legend {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: var(--space-16);
+      justify-content: center;
+      margin-top: var(--space-24);
+    }
+
+    .dynamics-legend__item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-primary);
+    }
+
+    .dynamics-legend__color {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      flex-shrink: 0;
+      border: 2px solid;
+      background-color: white;
+      box-sizing: border-box;
+    }
+
+    .dynamics-legend__label {
+      color: var(--material-neutral-content-secondary);
+    }
+
+    /* Реестр поручений */
+    .registry-section {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+    }
+
+    .registry-section__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-20);
+      flex-wrap: wrap;
+      gap: var(--space-16);
+    }
+
+    .registry-section__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .registry-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      align-items: center;
+    }
+
+    .registry-search {
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+      min-width: 250px;
+    }
+
+    .registry-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-body);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .registry-table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .registry-table th,
+    .registry-table td {
+      padding: var(--space-12) var(--space-16);
+      text-align: left;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .registry-table th {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label-xl);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+    }
+
+    .registry-table td {
+      color: var(--material-neutral-content-primary);
+      background-color: var(--material-neutral-surface-primary);
+    }
+
+    .registry-table tbody tr:hover {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+    }
+
+    .status-badge--completed {
+      background-color: rgba(0, 201, 81, 0.1);
+      color: var(--color-positive-500);
+    }
+
+    .status-badge--in-progress {
+      background-color: rgba(245, 165, 36, 0.1);
+      color: var(--color-warning-500);
+    }
+
+    .status-badge--overdue {
+      background-color: rgba(251, 44, 54, 0.1);
+      color: var(--color-negative-500);
+    }
+
+    .status-badge--not-started {
+      background-color: rgba(138, 148, 166, 0.1);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    /* Риски */
+    .risks-section {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+    }
+
+    .risks-section__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-24) 0;
+    }
+
+    .risks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .risk-card {
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-20);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .risk-card--high {
+      border-left: 4px solid var(--color-negative-500);
+    }
+
+    .risk-card--medium {
+      border-left: 4px solid var(--color-warning-500);
+    }
+
+    .risk-card__title {
+      font-size: var(--font-size-body);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .risk-card__reason {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+      margin: 0;
+    }
+
+    .risk-card__foivs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-6);
+    }
+
+    .risk-card__foiv {
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .risk-card__recommendation {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+      line-height: var(--line-height-body);
+      margin: 0;
+      padding-top: var(--space-8);
+      border-top: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    /* Управленческое резюме */
+    .summary-section {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-20);
+    }
+
+    .summary-section__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .summary-card {
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .summary-card__title {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+    }
+
+    .summary-card__title--positive {
+      color: var(--color-positive-500);
+    }
+
+    .summary-card__title--negative {
+      color: var(--color-negative-500);
+    }
+
+    .summary-card__title--warning {
+      color: var(--color-warning-500);
+    }
+
+    .summary-card__list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .summary-card__item {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+      padding-left: var(--space-20);
+      position: relative;
+    }
+
+    .summary-card__item::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--material-neutral-content-tertiary);
+    }
+
+    /* Pop-up для деталей ФОИВ */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .popup--open {
+      display: flex;
+    }
+
+    .popup__content {
+      background: var(--material-neutral-surface-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+    }
+
+    .popup__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-20);
+      padding-bottom: var(--space-16);
+      border-bottom: 1px solid var(--material-neutral-border-primary);
+    }
+
+    .popup__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .popup__close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--material-neutral-content-secondary);
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+    }
+
+    .popup__close:hover {
+      background: var(--material-neutral-highlight-primary);
+    }
+
+    .popup__text {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+      margin: 0 0 var(--space-16) 0;
+    }
+
+    .popup__list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .popup__list-item {
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+    }
+
+    .popup__list-item-title {
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin-bottom: var(--space-8);
+    }
+
+    .popup__list-item-details {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    /* Навигация */
+    .navigation-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-24);
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      flex-wrap: wrap;
+      gap: var(--space-16);
+    }
+
+    .navigation-section__links {
+      display: flex;
+      gap: var(--space-12);
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 1024px) {
+      .header-section {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <!-- Шапка страницы -->
+      <section class="header-section">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="chapter4.html">
+                <span class="back-link__icon"></span>
+                Назад к разделу 4
+              </a>
+              <span class="meta-pill">Подраздел 4.7</span>
+            </div>
+            <h1>Реализация проекта ВИП ГЗ «Единая национальная система мониторинга климатически активных веществ»</h1>
+            <p>Мониторинг исполнения поручений федеральных органов власти и организаций в рамках ГПНТР и ВИП ГЗ.</p>
+            <div class="meta-row">
+              <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+              <span class="meta-pill">Источники: ФОИВ, КНТР, ЕГИСУ НИОКТР</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Правый верхний блок -->
+        <aside class="service-controls">
+          <div class="service-controls__group">
+            <label class="service-controls__label">Период</label>
+            <div class="service-controls__select-wrapper">
+              <select class="service-controls__select" id="period-select">
+                <option>Год</option>
+                <option>Квартал</option>
+                <option>Месяц</option>
+              </select>
+            </div>
+          </div>
+          <div class="service-controls__group">
+            <label class="service-controls__label">Ведомство</label>
+            <div class="service-controls__select-wrapper">
+              <select class="service-controls__select" id="foiv-select">
+                <option>Все ФОИВ</option>
+                <option>Минприроды</option>
+                <option>Минцифры</option>
+                <option>Минобрнауки</option>
+                <option>Росгидромет</option>
+                <option>Росстандарт</option>
+              </select>
+            </div>
+          </div>
+          <div class="service-controls__group">
+            <label class="service-controls__label">Тематика</label>
+            <div class="service-controls__select-wrapper">
+              <select class="service-controls__select" id="topic-select">
+                <option>Все тематики</option>
+                <option>Мониторинг парниковых газов</option>
+                <option>Лабораторные методы</option>
+                <option>Цифровая инфраструктура</option>
+                <option>Нормативно-правовое обеспечение</option>
+              </select>
+            </div>
+          </div>
+          <div class="service-controls__actions">
+            <button class="btn btn--primary btn--small" id="export-btn">Выгрузка отчёта (PDF/Excel)</button>
+            <button class="btn btn--small" id="methodology-btn">Методика мониторинга поручений</button>
+          </div>
+        </aside>
+      </section>
+
+      <!-- Обобщённая картина исполнения -->
+      <section>
+        <div class="overview-cards">
+          <div class="overview-card">
+            <div class="overview-card__title">Общее количество поручений</div>
+            <div class="overview-card__value">27</div>
+            <div class="overview-card__change overview-card__change--positive">↑ +3 к предыдущему периоду</div>
+            <div class="overview-card__description">всего поручений, включённых в мониторинг</div>
+          </div>
+
+          <div class="overview-card">
+            <div class="overview-card__title">Исполнено</div>
+            <div class="overview-card__value overview-card__value--green">22</div>
+            <div class="overview-card__change overview-card__change--positive">81%</div>
+            <div class="overview-card__sparkline">
+              <canvas id="sparkline-completed"></canvas>
+            </div>
+          </div>
+
+          <div class="overview-card">
+            <div class="overview-card__title">Не исполнено / просрочено</div>
+            <div class="overview-card__value overview-card__value--red">5</div>
+            <div class="overview-card__change overview-card__change--negative">19%</div>
+            <div class="overview-card__sub-values">
+              <div class="overview-card__sub-value">
+                <span>Не исполнено</span>
+                <span>2</span>
+              </div>
+              <div class="overview-card__sub-value">
+                <span>Просрочено</span>
+                <span>3</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Карта ответственности ФОИВ -->
+      <section class="responsibility-section">
+        <h2 class="responsibility-section__title">Карта ответственности ФОИВ</h2>
+        <div style="overflow-x: auto;">
+          <table class="heatmap-table" id="responsibility-heatmap">
+            <thead>
+              <tr>
+                <th>ФОИВ / Организация</th>
+                <th>Исполнено</th>
+                <th>В работе</th>
+                <th>Просрочено</th>
+                <th>Не начато</th>
+                <th>Всего</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-foiv="minprirody">
+                <td><strong>Минприроды</strong></td>
+                <td><div class="heatmap-cell heatmap-cell--green">8</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">2</div></td>
+                <td><div class="heatmap-cell heatmap-cell--red">1</div></td>
+                <td><div class="heatmap-cell heatmap-cell--gray">0</div></td>
+                <td><strong>11</strong></td>
+              </tr>
+              <tr data-foiv="mincifry">
+                <td><strong>Минцифры</strong></td>
+                <td><div class="heatmap-cell heatmap-cell--green">5</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">1</div></td>
+                <td><div class="heatmap-cell heatmap-cell--red">1</div></td>
+                <td><div class="heatmap-cell heatmap-cell--gray">0</div></td>
+                <td><strong>7</strong></td>
+              </tr>
+              <tr data-foiv="rosgidromet">
+                <td><strong>Росгидромет</strong></td>
+                <td><div class="heatmap-cell heatmap-cell--green">4</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">1</div></td>
+                <td><div class="heatmap-cell heatmap-cell--red">0</div></td>
+                <td><div class="heatmap-cell heatmap-cell--gray">0</div></td>
+                <td><strong>5</strong></td>
+              </tr>
+              <tr data-foiv="rosstandart">
+                <td><strong>Росстандарт</strong></td>
+                <td><div class="heatmap-cell heatmap-cell--green">3</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">0</div></td>
+                <td><div class="heatmap-cell heatmap-cell--red">1</div></td>
+                <td><div class="heatmap-cell heatmap-cell--gray">0</div></td>
+                <td><strong>4</strong></td>
+              </tr>
+              <tr data-foiv="minobrnauki">
+                <td><strong>Минобрнауки</strong></td>
+                <td><div class="heatmap-cell heatmap-cell--green">2</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">0</div></td>
+                <td><div class="heatmap-cell heatmap-cell--red">0</div></td>
+                <td><div class="heatmap-cell heatmap-cell--gray">0</div></td>
+                <td><strong>2</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Тематика поручений -->
+      <section class="topics-section">
+        <h2 class="topics-section__title">Тематика поручений</h2>
+        <div class="topics-chart">
+          <div class="topics-chart__canvas-wrapper">
+            <canvas id="chart-topics"></canvas>
+          </div>
+          <div class="topics-chart__legend" id="topics-legend"></div>
+        </div>
+      </section>
+
+      <!-- Динамика исполнения поручений -->
+      <section class="dynamics-section">
+        <h2 class="dynamics-section__title">Динамика исполнения поручений</h2>
+        <div class="dynamics-chart">
+          <canvas id="chart-dynamics"></canvas>
+        </div>
+        <div class="dynamics-legend" id="dynamics-legend"></div>
+      </section>
+
+      <!-- Детализированный реестр поручений -->
+      <section class="registry-section">
+        <div class="registry-section__header">
+          <h2 class="registry-section__title">Детализированный реестр поручений</h2>
+          <div class="registry-filters">
+            <input type="text" class="registry-search" placeholder="Поиск по тексту поручения..." id="search-input">
+            <select class="service-controls__select" id="status-filter" style="width: auto;">
+              <option>Все статусы</option>
+              <option>Исполнено</option>
+              <option>В работе</option>
+              <option>Просрочено</option>
+              <option>Не начато</option>
+            </select>
+            <select class="service-controls__select" id="topic-filter" style="width: auto;">
+              <option>Все тематики</option>
+              <option>Мониторинг парниковых газов</option>
+              <option>Лабораторные методы</option>
+              <option>Цифровая инфраструктура</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="registry-table" id="registry-table">
+            <thead>
+              <tr>
+                <th>№</th>
+                <th>Формулировка</th>
+                <th>Тематика</th>
+                <th>ФОИВ</th>
+                <th>Срок исполнения</th>
+                <th>Фактический срок</th>
+                <th>Статус</th>
+                <th>Примечание</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Разработать методику мониторинга парниковых газов</td>
+                <td>Мониторинг парниковых газов</td>
+                <td>Минприроды</td>
+                <td>15.03.2025</td>
+                <td>12.03.2025</td>
+                <td><span class="status-badge status-badge--completed">Исполнено</span></td>
+                <td>Методика утверждена</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Создать систему сбора данных о выбросах</td>
+                <td>Цифровая инфраструктура</td>
+                <td>Минцифры</td>
+                <td>30.04.2025</td>
+                <td>—</td>
+                <td><span class="status-badge status-badge--in-progress">В работе</span></td>
+                <td>В стадии разработки</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Обеспечить лабораторное оборудование для измерений</td>
+                <td>Лабораторные методы</td>
+                <td>Росстандарт</td>
+                <td>20.02.2025</td>
+                <td>—</td>
+                <td><span class="status-badge status-badge--overdue">Просрочено</span></td>
+                <td>Требуется ускорение</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>Подготовить нормативно-правовые акты</td>
+                <td>Нормативно-правовое обеспечение</td>
+                <td>Минприроды</td>
+                <td>10.05.2025</td>
+                <td>08.05.2025</td>
+                <td><span class="status-badge status-badge--completed">Исполнено</span></td>
+                <td>Акты приняты</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>Организовать межведомственное взаимодействие</td>
+                <td>Межведомственное взаимодействие</td>
+                <td>Минприроды</td>
+                <td>15.06.2025</td>
+                <td>—</td>
+                <td><span class="status-badge status-badge--in-progress">В работе</span></td>
+                <td>Согласование в процессе</td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>Разработать модели прогнозирования</td>
+                <td>Моделирование и прогноз</td>
+                <td>Росгидромет</td>
+                <td>25.03.2025</td>
+                <td>22.03.2025</td>
+                <td><span class="status-badge status-badge--completed">Исполнено</span></td>
+                <td>Модели внедрены</td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td>Подготовить отчётность для UNFCCC</td>
+                <td>Международная отчётность</td>
+                <td>Минприроды</td>
+                <td>01.04.2025</td>
+                <td>—</td>
+                <td><span class="status-badge status-badge--overdue">Просрочено</span></td>
+                <td>Требуется доработка</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Риски реализации проекта ВИП ГЗ -->
+      <section class="risks-section">
+        <h2 class="risks-section__title">Риски реализации проекта ВИП ГЗ</h2>
+        <div class="risks-grid">
+          <div class="risk-card risk-card--high">
+            <h3 class="risk-card__title">Замедление формирования единой системы мониторинга парниковых газов</h3>
+            <p class="risk-card__reason">Причина: высокая доля просроченных поручений по направлению «цифровая инфраструктура»</p>
+            <div class="risk-card__foivs">
+              <span class="risk-card__foiv">Минцифры</span>
+              <span class="risk-card__foiv">Минприроды</span>
+            </div>
+            <p class="risk-card__recommendation">Рекомендация: усилить координацию между ведомствами, провести совещание по ускорению реализации поручений</p>
+          </div>
+
+          <div class="risk-card risk-card--medium">
+            <h3 class="risk-card__title">Недостаточная готовность лабораторной базы</h3>
+            <p class="risk-card__reason">Причина: просрочка поручения по обеспечению лабораторным оборудованием</p>
+            <div class="risk-card__foivs">
+              <span class="risk-card__foiv">Росстандарт</span>
+            </div>
+            <p class="risk-card__recommendation">Рекомендация: пересмотреть сроки поставки оборудования, рассмотреть альтернативные варианты</p>
+          </div>
+
+          <div class="risk-card risk-card--medium">
+            <h3 class="risk-card__title">Задержка международной отчётности</h3>
+            <p class="risk-card__reason">Причина: просрочка подготовки отчётности для UNFCCC</p>
+            <div class="risk-card__foivs">
+              <span class="risk-card__foiv">Минприроды</span>
+            </div>
+            <p class="risk-card__recommendation">Рекомендация: выделить дополнительные ресурсы, ускорить процесс согласования</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Управленческое резюме -->
+      <section class="summary-section">
+        <h2 class="summary-section__title">Управленческое резюме</h2>
+        <div class="summary-cards">
+          <article class="summary-card">
+            <h3 class="summary-card__title summary-card__title--positive">
+              <span>✓</span>
+              <span>Что выполнено успешно</span>
+            </h3>
+            <ul class="summary-card__list">
+              <li class="summary-card__item">Тематика «Мониторинг парниковых газов»: 8 из 11 поручений исполнено (73%)</li>
+              <li class="summary-card__item">Росгидромет: 100% исполнение поручений (4 из 4)</li>
+              <li class="summary-card__item">Минобрнауки: все поручения исполнены в срок</li>
+              <li class="summary-card__item">Общий уровень исполнения: 81% (22 из 27 поручений)</li>
+            </ul>
+          </article>
+
+          <article class="summary-card">
+            <h3 class="summary-card__title summary-card__title--warning">
+              <span>⚠</span>
+              <span>Где риски</span>
+            </h3>
+            <ul class="summary-card__list">
+              <li class="summary-card__item">Тематика «Цифровая инфраструктура»: 1 просроченное поручение</li>
+              <li class="summary-card__item">Минцифры: 1 просроченное поручение из 7</li>
+              <li class="summary-card__item">Росстандарт: просрочка по лабораторному оборудованию</li>
+              <li class="summary-card__item">Международная отчётность: задержка подготовки отчёта для UNFCCC</li>
+            </ul>
+          </article>
+
+          <article class="summary-card">
+            <h3 class="summary-card__title summary-card__title--negative">
+              <span>⚠</span>
+              <span>Что требует решения КНТР</span>
+            </h3>
+            <ul class="summary-card__list">
+              <li class="summary-card__item">Критично: ускорить реализацию системы сбора данных (Минцифры)</li>
+              <li class="summary-card__item">Обеспечить поставку лабораторного оборудования (Росстандарт)</li>
+              <li class="summary-card__item">Завершить подготовку международной отчётности (Минприроды)</li>
+              <li class="summary-card__item">Провести координационное совещание по проблемным поручениям</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Pop-up для деталей ФОИВ -->
+  <div class="popup" id="foiv-popup">
+    <div class="popup__content">
+      <div class="popup__header">
+        <h2 class="popup__title" id="popup-foiv-title">ФОИВ</h2>
+        <button class="popup__close" id="popup-close">×</button>
+      </div>
+      <div>
+        <ul class="popup__list" id="popup-assignments-list">
+          <!-- Заполняется через JavaScript -->
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pop-up "Методика мониторинга поручений" -->
+  <div class="popup" id="methodology-popup">
+    <div class="popup__content">
+      <div class="popup__header">
+        <h2 class="popup__title">Методика мониторинга поручений</h2>
+        <button class="popup__close" id="methodology-popup-close">×</button>
+      </div>
+      <div>
+        <p class="popup__text">
+          <strong>Мониторинг поручений</strong> осуществляется на основе данных, предоставляемых федеральными органами исполнительной власти и организациями, ответственными за реализацию проекта ВИП ГЗ «Единая национальная система мониторинга климатически активных веществ».
+        </p>
+        <p class="popup__text">
+          <strong>Статусы поручений:</strong>
+        </p>
+        <ul class="popup__list">
+          <li class="popup__list-item">
+            <div class="popup__list-item-title">Исполнено</div>
+            <div class="popup__list-item-details">Поручение выполнено в установленный срок или досрочно</div>
+          </li>
+          <li class="popup__list-item">
+            <div class="popup__list-item-title">В работе</div>
+            <div class="popup__list-item-details">Поручение находится в стадии исполнения, срок не истёк</div>
+          </li>
+          <li class="popup__list-item">
+            <div class="popup__list-item-title">Просрочено</div>
+            <div class="popup__list-item-details">Срок исполнения истёк, поручение не выполнено</div>
+          </li>
+          <li class="popup__list-item">
+            <div class="popup__list-item-title">Не начато</div>
+            <div class="popup__list-item-details">Поручение зарегистрировано, но работы не начаты</div>
+          </li>
+        </ul>
+        <p class="popup__text">
+          <strong>Расчёт показателей:</strong> Процент исполнения рассчитывается как отношение количества исполненных поручений к общему количеству поручений, умноженное на 100%.
+        </p>
+        <p class="popup__text">
+          <strong>Риски:</strong> Автоматически выявляются на основе анализа просроченных поручений, концентрации рисков по ФОИВ и проблемных тематик.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Настройка Chart.js
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+    const colors = {
+      primary: '#1565FF',
+      secondary: '#00C951',
+      neutral: '#8A94A6',
+      warning: '#F5A524',
+      danger: '#FB2C36'
+    };
+
+    // Данные для pop-up ФОИВ
+    const foivData = {
+      minprirody: {
+        title: 'Минприроды',
+        assignments: [
+          {
+            number: '1',
+            text: 'Разработать методику мониторинга парниковых газов',
+            topic: 'Мониторинг парниковых газов',
+            deadline: '15.03.2025',
+            actual: '12.03.2025',
+            status: 'Исполнено',
+            responsible: 'Департамент экологии',
+            comment: 'Методика утверждена и внедрена'
+          },
+          {
+            number: '4',
+            text: 'Подготовить нормативно-правовые акты',
+            topic: 'Нормативно-правовое обеспечение',
+            deadline: '10.05.2025',
+            actual: '08.05.2025',
+            status: 'Исполнено',
+            responsible: 'Правовой департамент',
+            comment: 'Акты приняты и опубликованы'
+          }
+        ]
+      },
+      mincifry: {
+        title: 'Минцифры',
+        assignments: [
+          {
+            number: '2',
+            text: 'Создать систему сбора данных о выбросах',
+            topic: 'Цифровая инфраструктура',
+            deadline: '30.04.2025',
+            actual: '—',
+            status: 'В работе',
+            responsible: 'Департамент цифрового развития',
+            comment: 'В стадии разработки, ожидается завершение в срок'
+          }
+        ]
+      },
+      rosgidromet: {
+        title: 'Росгидромет',
+        assignments: [
+          {
+            number: '6',
+            text: 'Разработать модели прогнозирования',
+            topic: 'Моделирование и прогноз',
+            deadline: '25.03.2025',
+            actual: '22.03.2025',
+            status: 'Исполнено',
+            responsible: 'Научно-исследовательский отдел',
+            comment: 'Модели внедрены и протестированы'
+          }
+        ]
+      }
+    };
+
+    // Открытие pop-up при клике на строку heatmap
+    const heatmapRows = document.querySelectorAll('#responsibility-heatmap tbody tr');
+    const foivPopup = document.getElementById('foiv-popup');
+    const popupClose = document.getElementById('popup-close');
+    const methodologyPopup = document.getElementById('methodology-popup');
+    const methodologyPopupClose = document.getElementById('methodology-popup-close');
+    const methodologyBtn = document.getElementById('methodology-btn');
+
+    heatmapRows.forEach(row => {
+      row.addEventListener('click', () => {
+        const foivId = row.getAttribute('data-foiv');
+        const data = foivData[foivId];
+
+        if (data && foivPopup) {
+          document.getElementById('popup-foiv-title').textContent = data.title;
+          const list = document.getElementById('popup-assignments-list');
+          list.innerHTML = '';
+
+          data.assignments.forEach(assignment => {
+            const li = document.createElement('li');
+            li.className = 'popup__list-item';
+            li.innerHTML = `
+              <div class="popup__list-item-title">Поручение №${assignment.number}: ${assignment.text}</div>
+              <div class="popup__list-item-details">
+                <div>Тематика: ${assignment.topic}</div>
+                <div>Срок исполнения: ${assignment.deadline}</div>
+                <div>Фактический срок: ${assignment.actual}</div>
+                <div>Статус: ${assignment.status}</div>
+                <div>Ответственный: ${assignment.responsible}</div>
+                <div>Комментарий: ${assignment.comment}</div>
+              </div>
+            `;
+            list.appendChild(li);
+          });
+
+          foivPopup.classList.add('popup--open');
+        }
+      });
+    });
+
+    // Закрытие pop-up
+    if (popupClose) {
+      popupClose.addEventListener('click', () => {
+        foivPopup.classList.remove('popup--open');
+      });
+    }
+
+    if (foivPopup) {
+      foivPopup.addEventListener('click', (e) => {
+        if (e.target === foivPopup) {
+          foivPopup.classList.remove('popup--open');
+        }
+      });
+    }
+
+    // Pop-up "Методика мониторинга поручений"
+    if (methodologyBtn) {
+      methodologyBtn.addEventListener('click', () => {
+        methodologyPopup.classList.add('popup--open');
+      });
+    }
+
+    if (methodologyPopupClose) {
+      methodologyPopupClose.addEventListener('click', () => {
+        methodologyPopup.classList.remove('popup--open');
+      });
+    }
+
+    if (methodologyPopup) {
+      methodologyPopup.addEventListener('click', (e) => {
+        if (e.target === methodologyPopup) {
+          methodologyPopup.classList.remove('popup--open');
+        }
+      });
+    }
+
+    // Кнопка экспорта
+    const exportBtn = document.getElementById('export-btn');
+    if (exportBtn) {
+      exportBtn.addEventListener('click', () => {
+        alert('Функция экспорта будет реализована в следующей версии');
+      });
+    }
+
+    // Спарклайн для исполненных поручений
+    new Chart(document.getElementById('sparkline-completed'), {
+      type: 'line',
+      data: {
+        labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн'],
+        datasets: [{
+          data: [15, 17, 19, 20, 21, 22],
+          borderColor: colors.secondary,
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointRadius: 0,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false }
+        },
+        scales: {
+          x: { display: false },
+          y: { display: false }
+        }
+      }
+    });
+
+    // Диаграмма распределения по тематикам
+    const topicsLabels = [
+      'Мониторинг парниковых газов',
+      'Лабораторные методы',
+      'Цифровая инфраструктура',
+      'Нормативно-правовое обеспечение',
+      'Межведомственное взаимодействие',
+      'Моделирование и прогноз',
+      'Международная отчётность'
+    ];
+    const topicsData = [11, 4, 5, 3, 2, 1, 1];
+    const topicsColors = [
+      'rgba(0, 102, 255, 0.7)',
+      'rgba(0, 201, 81, 0.7)',
+      'rgba(245, 165, 36, 0.7)',
+      'rgba(156, 39, 176, 0.7)',
+      'rgba(255, 87, 34, 0.7)',
+      'rgba(0, 188, 212, 0.7)',
+      'rgba(121, 85, 72, 0.7)'
+    ];
+    const topicsBorderColors = [
+      '#0066ff',
+      '#00c951',
+      '#f5a524',
+      '#9c27b0',
+      '#ff5722',
+      '#00bcd4',
+      '#795548'
+    ];
+
+    new Chart(document.getElementById('chart-topics'), {
+      type: 'doughnut',
+      data: {
+        labels: topicsLabels,
+        datasets: [{
+          data: topicsData,
+          backgroundColor: topicsColors,
+          borderColor: topicsBorderColors,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+          padding: 0
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return context.label + ': ' + context.parsed + ' поручений';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Создаём отдельную легенду
+    const topicsLegend = document.getElementById('topics-legend');
+    if (topicsLegend) {
+      topicsLabels.forEach((label, index) => {
+        const legendItem = document.createElement('div');
+        legendItem.className = 'topics-chart__legend-item';
+        legendItem.innerHTML = `
+          <div class="topics-chart__legend-color" style="background-color: ${topicsColors[index]}; border-color: ${topicsBorderColors[index]};"></div>
+          <span class="topics-chart__legend-label">${label}</span>
+        `;
+        topicsLegend.appendChild(legendItem);
+      });
+    }
+
+    // График динамики исполнения
+    const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь'];
+    const dynamicsLabels = [
+      'Общее количество поручений',
+      'Исполнено',
+      'Просрочено',
+      'В работе'
+    ];
+    const dynamicsColors = [
+      { bg: 'rgba(0, 102, 255, 0.7)', border: '#0066ff' },
+      { bg: 'rgba(0, 201, 81, 0.7)', border: '#00c951' },
+      { bg: 'rgba(251, 44, 54, 0.7)', border: '#fb2c36' },
+      { bg: 'rgba(245, 165, 36, 0.7)', border: '#f5a524' }
+    ];
+
+    new Chart(document.getElementById('chart-dynamics'), {
+      type: 'line',
+      data: {
+        labels: months,
+        datasets: [{
+          label: 'Общее количество поручений',
+          data: [24, 25, 26, 26, 27, 27],
+          borderColor: colors.primary,
+          backgroundColor: 'rgba(21, 101, 255, 0.1)',
+          tension: 0.3,
+          fill: true
+        }, {
+          label: 'Исполнено',
+          data: [15, 17, 19, 20, 21, 22],
+          borderColor: colors.secondary,
+          backgroundColor: 'rgba(0, 201, 81, 0.1)',
+          tension: 0.3,
+          fill: true
+        }, {
+          label: 'Просрочено',
+          data: [2, 2, 2, 3, 3, 3],
+          borderColor: colors.danger,
+          backgroundColor: 'rgba(251, 44, 54, 0.1)',
+          tension: 0.3,
+          fill: true
+        }, {
+          label: 'В работе',
+          data: [7, 6, 5, 3, 3, 2],
+          borderColor: colors.warning,
+          backgroundColor: 'rgba(245, 165, 36, 0.1)',
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Количество поручений'
+            }
+          }
+        }
+      }
+    });
+
+    // Создаём отдельную легенду для динамики
+    const dynamicsLegend = document.getElementById('dynamics-legend');
+    if (dynamicsLegend) {
+      dynamicsLabels.forEach((label, index) => {
+        const legendItem = document.createElement('div');
+        legendItem.className = 'dynamics-legend__item';
+        legendItem.innerHTML = `
+          <div class="dynamics-legend__color" style="border-color: ${dynamicsColors[index].border};"></div>
+          <span class="dynamics-legend__label">${label}</span>
+        `;
+        dynamicsLegend.appendChild(legendItem);
+      });
+    }
+
+    // Фильтрация таблицы реестра
+    const searchInput = document.getElementById('search-input');
+    const statusFilter = document.getElementById('status-filter');
+    const topicFilter = document.getElementById('topic-filter');
+    const registryTable = document.getElementById('registry-table');
+
+    function filterTable() {
+      const searchText = searchInput.value.toLowerCase();
+      const statusValue = statusFilter.value;
+      const topicValue = topicFilter.value;
+      const rows = registryTable.querySelectorAll('tbody tr');
+
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const statusBadge = row.querySelector('.status-badge');
+        const statusText = statusBadge ? statusBadge.textContent.trim() : '';
+        const topicCell = row.cells[2];
+        const topicText = topicCell ? topicCell.textContent.trim() : '';
+
+        const matchesSearch = !searchText || text.includes(searchText);
+        const matchesStatus = statusValue === 'Все статусы' || statusText === statusValue;
+        const matchesTopic = topicValue === 'Все тематики' || topicText === topicValue;
+
+        if (matchesSearch && matchesStatus && matchesTopic) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', filterTable);
+    }
+    if (statusFilter) {
+      statusFilter.addEventListener('change', filterTable);
+    }
+    if (topicFilter) {
+      topicFilter.addEventListener('change', filterTable);
+    }
+  </script>
+</body>
+</html>
+

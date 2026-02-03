@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подраздел 3.12 — Определение контрольных цифр приема</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: var(--space-4) 0 var(--space-6) 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--space-20);
+      align-items: stretch;
+    }
+
+    @media (min-width: 1200px) {
+      .kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-card__label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .kpi-card__hint {
+      color: var(--material-neutral-content-tertiary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      margin-top: var(--space-2);
+    }
+
+    .kpi-card__value {
+      font-family: var(--font-alt);
+      font-size: 42px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 48px;
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+      margin-top: auto;
+    }
+
+    .kpi-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-card__trend {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .section-block {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .section-block__description {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .charts-grid--full {
+      grid-template-columns: 1fr;
+    }
+
+    .chart-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .chart-card canvas {
+      width: 100% !important;
+      height: 300px !important;
+      display: block;
+    }
+
+    .chart-card--large canvas {
+      height: 400px !important;
+    }
+
+    .chart-card__title {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-body);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table th,
+    .table td {
+      padding: var(--space-16) var(--space-16);
+      text-align: left;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .table th {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label-xl);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+    }
+
+    .table td {
+      color: var(--material-neutral-content-primary);
+      background-color: var(--material-neutral-surface-primary);
+    }
+
+    .table tbody tr:hover {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .recommendation {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: var(--font-size-body);
+    }
+
+    .recommendation--increase {
+      background-color: rgba(0, 201, 81, 0.1);
+      color: var(--color-positive-500);
+    }
+
+    .recommendation--stable {
+      background-color: rgba(245, 165, 36, 0.1);
+      color: var(--color-warning-500);
+    }
+
+    .recommendation--decrease {
+      background-color: rgba(251, 44, 54, 0.1);
+      color: var(--color-negative-500);
+    }
+
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--space-8);
+      margin-top: var(--space-16);
+    }
+
+    .heatmap-cell {
+      aspect-ratio: 1;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+    }
+
+    .heatmap-cell--high {
+      background-color: rgba(251, 44, 54, 0.2);
+    }
+
+    .heatmap-cell--medium {
+      background-color: rgba(245, 165, 36, 0.2);
+    }
+
+    .heatmap-cell--low {
+      background-color: rgba(0, 201, 81, 0.2);
+    }
+
+    .heatmap-legend {
+      display: flex;
+      gap: var(--space-12);
+      align-items: center;
+      margin-top: var(--space-12);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .heatmap-legend__item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+    }
+
+    .heatmap-legend__dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .heatmap-legend__dot--high {
+      background-color: rgba(251, 44, 54, 0.3);
+    }
+
+    .heatmap-legend__dot--medium {
+      background-color: rgba(245, 165, 36, 0.3);
+    }
+
+    .heatmap-legend__dot--low {
+      background-color: rgba(0, 201, 81, 0.3);
+    }
+
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .summary-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .summary-card__title {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+    }
+
+    .summary-card__title--positive {
+      color: var(--color-positive-500);
+    }
+
+    .summary-card__title--negative {
+      color: var(--color-negative-500);
+    }
+
+    .summary-card__title--warning {
+      color: var(--color-warning-500);
+    }
+
+    .summary-card__arrow {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .summary-card__arrow--positive {
+      color: var(--color-positive-500);
+    }
+
+    .summary-card__arrow--negative {
+      color: var(--color-negative-500);
+    }
+
+    .summary-card__arrow--warning {
+      color: var(--color-warning-500);
+    }
+
+    .summary-card__list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .summary-card__item {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+      padding-left: var(--space-20);
+      position: relative;
+    }
+
+    .summary-card__item::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--material-neutral-content-tertiary);
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      margin-bottom: var(--space-16);
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .filter-group__label {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label);
+    }
+
+    .filter-group__chips {
+      display: flex;
+      gap: var(--space-6);
+      flex-wrap: wrap;
+    }
+
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-12);
+      border-radius: var(--radius-md);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .filter-chip:hover {
+      border-color: var(--color-accent-400);
+      color: var(--material-neutral-content-primary);
+    }
+
+    .filter-chip--active {
+      background: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    @media (max-width: 1024px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .heatmap-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .summary-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3-12.html">
+              <span class="back-link__icon"></span>
+              Назад к группе 3.12
+            </a>
+            <span class="meta-pill">Подраздел 3.12</span>
+          </div>
+          <h1>3.12. КЦП по приоритетам — определение контрольных цифр приема</h1>
+          <p>Мониторинг кадровых и образовательных трендов, влияющих на формирование КЦП по приоритетным направлениям.</p>
+          <div class="meta-row">
+            <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+            <span class="meta-pill">Источники: Минобрнауки, Росстат, ФОИВ</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Верхний блок — Краткая сводка по кадровому контуру -->
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-card__label">Доля молодых учёных, %<div class="kpi-card__hint">Индикатор обновляемости научного потенциала</div></div>
+          <div class="kpi-card__value kpi-card__value--green">24%</div>
+          <div class="kpi-card__trend">+2.1 п.п. YoY</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Количество граждан, прошедших НПО/ДПО/профобучение (тыс.)<div class="kpi-card__hint">Показывает готовность системы образования поддержать расширение КЦП</div></div>
+          <div class="kpi-card__value kpi-card__value--green">86</div>
+          <div class="kpi-card__trend">+8.5% YoY</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Прирост занятых в отрасли, % к предыдущему году<div class="kpi-card__hint">Отражает спрос экономики: растёт ли потребность в кадрах?</div></div>
+          <div class="kpi-card__value kpi-card__value--green">+3.4%</div>
+          <div class="kpi-card__trend">+0.8 п.п. YoY</div>
+        </article>
+      </section>
+
+      <!-- Основной аналитический блок -->
+      <section class="section-block">
+        <h2 class="section-block__title">Соответствие КЦП кадровым трендам</h2>
+        <p class="section-block__description">Комплексная оценка кадрового резерва, отраслевого спроса и возможностей системы образования.</p>
+        
+        <div class="filter-bar">
+          <div class="filter-group">
+            <div class="filter-group__label">Отрасль</div>
+            <div class="filter-group__chips">
+              <button class="filter-chip filter-chip--active" data-filter="industry" data-value="all">Все отрасли</button>
+              <button class="filter-chip" data-filter="industry" data-value="tech">Технологии</button>
+              <button class="filter-chip" data-filter="industry" data-value="chem">Химтех</button>
+              <button class="filter-chip" data-filter="industry" data-value="avia">Авиация</button>
+              <button class="filter-chip" data-filter="industry" data-value="agro">АПК</button>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <div class="filter-group__label">Уровень подготовки</div>
+            <div class="filter-group__chips">
+              <button class="filter-chip filter-chip--active" data-filter="level" data-value="all">Все уровни</button>
+              <button class="filter-chip" data-filter="level" data-value="spo">СПО</button>
+              <button class="filter-chip" data-filter="level" data-value="vo">ВО</button>
+              <button class="filter-chip" data-filter="level" data-value="dpo">ДПО</button>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <div class="filter-group__label">Регион</div>
+            <div class="filter-group__chips">
+              <button class="filter-chip filter-chip--active" data-filter="region" data-value="all">Все регионы</button>
+              <button class="filter-chip" data-filter="region" data-value="moscow">Москва</button>
+              <button class="filter-chip" data-filter="region" data-value="spb">СПб</button>
+              <button class="filter-chip" data-filter="region" data-value="regions">Регионы</button>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <div class="filter-group__label">Год</div>
+            <div class="filter-group__chips">
+              <button class="filter-chip filter-chip--active" data-filter="year" data-value="all">Все годы</button>
+              <button class="filter-chip" data-filter="year" data-value="2021">2021</button>
+              <button class="filter-chip" data-filter="year" data-value="2022">2022</button>
+              <button class="filter-chip" data-filter="year" data-value="2023">2023</button>
+              <button class="filter-chip" data-filter="year" data-value="2024">2024</button>
+              <button class="filter-chip" data-filter="year" data-value="2025">2025</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="charts-grid charts-grid--full">
+          <article class="chart-card chart-card--large">
+            <h3 class="chart-card__title">Динамика кадровых показателей и соответствие КЦП</h3>
+            <canvas id="chart-kcp-trends"></canvas>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Обоснованность КЦП по направлениям</h2>
+        <p class="section-block__description">Матрица оценки соответствия установленных КЦП кадровым трендам и потребностям отраслей.</p>
+        
+        <div style="overflow-x: auto;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Направление</th>
+                <th>Доля молодых исследователей</th>
+                <th>Прирост занятых</th>
+                <th>Охват НПО/ДПО</th>
+                <th>Итоговая рекомендация по КЦП</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Технологии</strong></td>
+                <td>24%</td>
+                <td>+3.2%</td>
+                <td>12 300</td>
+                <td><span class="recommendation recommendation--increase">↑ увеличить КЦП</span></td>
+              </tr>
+              <tr>
+                <td><strong>Химтех</strong></td>
+                <td>15%</td>
+                <td>-1%</td>
+                <td>4 800</td>
+                <td><span class="recommendation recommendation--stable">= оставить</span></td>
+              </tr>
+              <tr>
+                <td><strong>Авиация</strong></td>
+                <td>32%</td>
+                <td>+7%</td>
+                <td>9 500</td>
+                <td><span class="recommendation recommendation--increase">↑↑ увеличение КЦП</span></td>
+              </tr>
+              <tr>
+                <td><strong>АПК</strong></td>
+                <td>13%</td>
+                <td>+0.5%</td>
+                <td>3 200</td>
+                <td><span class="recommendation recommendation--stable">= стабильный уровень</span></td>
+              </tr>
+              <tr>
+                <td><strong>Энергетика</strong></td>
+                <td>28%</td>
+                <td>+4.5%</td>
+                <td>15 200</td>
+                <td><span class="recommendation recommendation--increase">↑ увеличить КЦП</span></td>
+              </tr>
+              <tr>
+                <td><strong>Материалы</strong></td>
+                <td>19%</td>
+                <td>+1.8%</td>
+                <td>7 600</td>
+                <td><span class="recommendation recommendation--stable">= оставить</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Карта узких мест</h2>
+        <p class="section-block__description">Визуализация проблемных направлений, где требуется дополнительное внимание при формировании КЦП.</p>
+        
+        <div class="heatmap-grid">
+          <div class="heatmap-cell heatmap-cell--low">Технологии</div>
+          <div class="heatmap-cell heatmap-cell--medium">Химтех</div>
+          <div class="heatmap-cell heatmap-cell--low">Авиация</div>
+          <div class="heatmap-cell heatmap-cell--low">Энергетика</div>
+          <div class="heatmap-cell heatmap-cell--medium">Материалы</div>
+          <div class="heatmap-cell heatmap-cell--high">АПК</div>
+          <div class="heatmap-cell heatmap-cell--medium">Медицина</div>
+          <div class="heatmap-cell heatmap-cell--low">Связь и ИТ</div>
+          <div class="heatmap-cell heatmap-cell--medium">Транспорт</div>
+          <div class="heatmap-cell heatmap-cell--low">Атом</div>
+        </div>
+        
+        <div class="heatmap-legend">
+          <div class="heatmap-legend__item">
+            <span class="heatmap-legend__dot heatmap-legend__dot--low"></span>
+            <span>Низкий риск</span>
+          </div>
+          <div class="heatmap-legend__item">
+            <span class="heatmap-legend__dot heatmap-legend__dot--medium"></span>
+            <span>Средний риск</span>
+          </div>
+          <div class="heatmap-legend__item">
+            <span class="heatmap-legend__dot heatmap-legend__dot--high"></span>
+            <span>Высокий риск</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Нижний блок — Управленческий вывод -->
+      <section class="section-block">
+        <h2 class="section-block__title">Управленческий вывод</h2>
+        <p class="section-block__description">Ключевые выводы и рекомендации по формированию КЦП на основе анализа кадровых трендов.</p>
+        
+        <div class="summary-cards">
+          <article class="summary-card">
+            <h3 class="summary-card__title summary-card__title--positive">
+              <span class="summary-card__arrow summary-card__arrow--positive">↑</span>
+              <span>Отрасли с высоким потенциалом роста</span>
+            </h3>
+            <ul class="summary-card__list">
+              <li class="summary-card__item">Авиация: прирост занятых +7%, доля молодых учёных 32%</li>
+              <li class="summary-card__item">Энергетика: стабильный рост спроса +4.5%, хороший кадровый резерв</li>
+              <li class="summary-card__item">Технологии: положительная динамика по всем показателям</li>
+            </ul>
+          </article>
+
+          <article class="summary-card">
+            <h3 class="summary-card__title summary-card__title--negative">
+              <span class="summary-card__arrow summary-card__arrow--negative">↓</span>
+              <span>Отрасли с дефицитом кадров</span>
+            </h3>
+            <ul class="summary-card__list">
+              <li class="summary-card__item">АПК: низкая доля молодых исследователей (13%), требуется поддержка</li>
+              <li class="summary-card__item">Химтех: отрицательный прирост занятых (-1%), нужны меры стимулирования</li>
+            </ul>
+          </article>
+
+          <article class="summary-card">
+            <h3 class="summary-card__title summary-card__title--positive">
+              <span class="summary-card__arrow summary-card__arrow--positive">↑</span>
+              <span>Направления, требующие расширения КЦП</span>
+            </h3>
+            <ul class="summary-card__list">
+              <li class="summary-card__item">Авиация: рекомендуется значительное увеличение КЦП</li>
+              <li class="summary-card__item">Энергетика: умеренное увеличение КЦП</li>
+              <li class="summary-card__item">Технологии: постепенное расширение КЦП</li>
+            </ul>
+          </article>
+
+          <article class="summary-card">
+            <h3 class="summary-card__title summary-card__title--warning">
+              <span class="summary-card__arrow summary-card__arrow--warning">=</span>
+              <span>Направления, где расширение КЦП приведёт к перепроизводству кадров</span>
+            </h3>
+            <ul class="summary-card__list">
+              <li class="summary-card__item">Химтех: сохранить текущий уровень КЦП</li>
+              <li class="summary-card__item">АПК: стабильный уровень, требуется улучшение кадрового резерва</li>
+              <li class="summary-card__item">Материалы: текущий уровень КЦП соответствует потребностям</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const colors = {
+      primary: '#1565FF',
+      secondary: '#00C951',
+      neutral: '#8A94A6',
+      warning: '#F5A524',
+      danger: '#F44336'
+    };
+
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+    const years = ['2021', '2022', '2023', '2024', '2025'];
+
+    // Базовые данные для разных отраслей
+    const baseIndustryData = {
+      'all': {
+        youngScientists: [20, 21, 22, 23, 24],
+        employmentGrowth: [2.1, 2.5, 2.8, 3.0, 3.4],
+        npoDpo: [72, 75, 78, 82, 86]
+      },
+      'tech': {
+        youngScientists: [22, 23, 24, 25, 26],
+        employmentGrowth: [2.5, 3.0, 3.2, 3.5, 3.8],
+        npoDpo: [12, 13, 14, 15, 16]
+      },
+      'chem': {
+        youngScientists: [14, 14.5, 15, 15, 15],
+        employmentGrowth: [-0.5, -0.8, -1.0, -0.9, -1.0],
+        npoDpo: [4.5, 4.6, 4.7, 4.8, 4.8]
+      },
+      'avia': {
+        youngScientists: [28, 29, 30, 31, 32],
+        employmentGrowth: [5.0, 5.5, 6.0, 6.5, 7.0],
+        npoDpo: [8, 8.5, 9, 9.5, 9.5]
+      },
+      'agro': {
+        youngScientists: [12, 12.5, 13, 13, 13],
+        employmentGrowth: [0.3, 0.4, 0.5, 0.5, 0.5],
+        npoDpo: [3, 3.1, 3.2, 3.2, 3.2]
+      }
+    };
+
+    // Множители для уровней подготовки
+    const levelMultipliers = {
+      'all': { youngScientists: 1, employmentGrowth: 1, npoDpo: 1 },
+      'spo': { youngScientists: 0.85, employmentGrowth: 0.9, npoDpo: 1.2 },
+      'vo': { youngScientists: 1.15, employmentGrowth: 1.1, npoDpo: 0.8 },
+      'dpo': { youngScientists: 0.9, employmentGrowth: 0.95, npoDpo: 1.5 }
+    };
+
+    // Множители для регионов
+    const regionMultipliers = {
+      'all': { youngScientists: 1, employmentGrowth: 1, npoDpo: 1 },
+      'moscow': { youngScientists: 1.3, employmentGrowth: 1.2, npoDpo: 1.4 },
+      'spb': { youngScientists: 1.2, employmentGrowth: 1.15, npoDpo: 1.3 },
+      'regions': { youngScientists: 0.85, employmentGrowth: 0.9, npoDpo: 0.8 }
+    };
+
+    // Функция для вычисления данных с учетом всех фильтров
+    function calculateFilteredData(industry, level, region) {
+      const base = baseIndustryData[industry] || baseIndustryData['all'];
+      const levelMult = levelMultipliers[level] || levelMultipliers['all'];
+      const regionMult = regionMultipliers[region] || regionMultipliers['all'];
+
+      return {
+        youngScientists: base.youngScientists.map((val, idx) => 
+          val * levelMult.youngScientists * regionMult.youngScientists
+        ),
+        employmentGrowth: base.employmentGrowth.map((val, idx) => 
+          val * levelMult.employmentGrowth * regionMult.employmentGrowth
+        ),
+        npoDpo: base.npoDpo.map((val, idx) => 
+          val * levelMult.npoDpo * regionMult.npoDpo
+        )
+      };
+    }
+
+    // График соответствия КЦП кадровым трендам
+    const kcpTrendsChart = new Chart(document.getElementById('chart-kcp-trends'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [
+          {
+            label: 'Доля молодых учёных, %',
+            data: calculateFilteredData('all', 'all', 'all').youngScientists,
+            borderColor: colors.primary,
+            backgroundColor: 'rgba(21, 101, 255, 0.1)',
+            yAxisID: 'y',
+            tension: 0.3,
+            fill: false
+          },
+          {
+            label: 'Прирост занятых, %',
+            data: calculateFilteredData('all', 'all', 'all').employmentGrowth,
+            borderColor: colors.secondary,
+            backgroundColor: 'rgba(0, 201, 81, 0.1)',
+            yAxisID: 'y1',
+            tension: 0.3,
+            fill: false
+          },
+          {
+            type: 'bar',
+            label: 'Охват НПО/ДПО, тыс. чел.',
+            data: calculateFilteredData('all', 'all', 'all').npoDpo,
+            backgroundColor: colors.neutral,
+            yAxisID: 'y2'
+          }
+        ]
+      },
+      options: {
+        plugins: {
+          legend: {
+            position: 'bottom'
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false
+          }
+        },
+        scales: {
+          y: {
+            type: 'linear',
+            display: true,
+            position: 'left',
+            title: {
+              display: true,
+              text: 'Доля молодых учёных, %'
+            }
+          },
+          y1: {
+            type: 'linear',
+            display: true,
+            position: 'right',
+            title: {
+              display: true,
+              text: 'Прирост занятых, %'
+            },
+            grid: {
+              drawOnChartArea: false
+            }
+          },
+          y2: {
+            type: 'linear',
+            display: false
+          }
+        },
+        interaction: {
+          mode: 'index',
+          intersect: false
+        }
+      }
+    });
+
+    // Текущие значения фильтров
+    let currentFilters = {
+      industry: 'all',
+      level: 'all',
+      region: 'all',
+      year: 'all'
+    };
+
+    // Функция обновления графика на основе фильтров
+    function updateChart() {
+      // Вычисляем данные с учетом всех фильтров
+      const data = calculateFilteredData(
+        currentFilters.industry,
+        currentFilters.level,
+        currentFilters.region
+      );
+      
+      // Определяем диапазон лет
+      let yearRange = years;
+      if (currentFilters.year !== 'all') {
+        const yearIndex = years.indexOf(currentFilters.year);
+        if (yearIndex !== -1) {
+          yearRange = years.slice(0, yearIndex + 1);
+          // Обрезаем данные до выбранного года
+          kcpTrendsChart.data.labels = yearRange;
+          kcpTrendsChart.data.datasets[0].data = data.youngScientists.slice(0, yearIndex + 1);
+          kcpTrendsChart.data.datasets[1].data = data.employmentGrowth.slice(0, yearIndex + 1);
+          kcpTrendsChart.data.datasets[2].data = data.npoDpo.slice(0, yearIndex + 1);
+        }
+      } else {
+        kcpTrendsChart.data.labels = years;
+        kcpTrendsChart.data.datasets[0].data = data.youngScientists;
+        kcpTrendsChart.data.datasets[1].data = data.employmentGrowth;
+        kcpTrendsChart.data.datasets[2].data = data.npoDpo;
+      }
+      
+      kcpTrendsChart.update();
+    }
+
+    // Обработчики для фильтров
+    const filterChips = document.querySelectorAll('.filter-chip');
+    filterChips.forEach(chip => {
+      chip.addEventListener('click', function() {
+        const filterType = this.getAttribute('data-filter');
+        const filterValue = this.getAttribute('data-value');
+        
+        // Убираем активный класс у всех фильтров в этой группе
+        const filterGroup = this.closest('.filter-group__chips');
+        filterGroup.querySelectorAll('.filter-chip').forEach(c => {
+          c.classList.remove('filter-chip--active');
+        });
+        
+        // Добавляем активный класс к выбранному фильтру
+        this.classList.add('filter-chip--active');
+        
+        // Обновляем текущий фильтр
+        currentFilters[filterType] = filterValue;
+        
+        // Обновляем график
+        updateChart();
+      });
+    });
+  </script>
+</body>
+</html>
+

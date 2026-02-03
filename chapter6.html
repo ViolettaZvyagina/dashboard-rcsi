@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел 6 — Административно-организационные функции</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .management-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-20);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      grid-column: span 2;
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+      align-items: flex-end;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .controls-bar {
+      border-top: 1px solid var(--material-neutral-border-primary);
+      border-bottom: 1px solid var(--material-neutral-border-primary);
+      padding: var(--space-16) var(--space-20);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .controls-bar__filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      align-items: center;
+    }
+
+    .controls-bar__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      align-items: center;
+    }
+
+    .filter-select {
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-caption);
+      cursor: pointer;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-6);
+      height: var(--control-height);
+      padding: 0 var(--space-16);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-family: var(--font-main);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      text-decoration: none;
+      cursor: pointer;
+      background-color: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-primary);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn--primary {
+      background-color: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .risk-card {
+      background: linear-gradient(165deg, rgba(255, 105, 0, 0.12), rgba(0, 102, 255, 0.12));
+      border: 1px solid var(--color-warning-200);
+      color: var(--material-neutral-content-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .risk-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-8);
+      font-family: var(--font-alt);
+      font-weight: var(--font-weight-label-xl);
+      font-size: var(--font-size-label-xl);
+      line-height: var(--line-height-label-xl);
+      letter-spacing: var(--letter-spacing-label-xl);
+    }
+
+    .risk-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: var(--space-10);
+    }
+
+    .risk-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-8);
+      align-items: center;
+      font-size: var(--font-size-body);
+    }
+
+    .risk-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 105, 0, 0.1);
+    }
+
+    .risk-dot--high {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.12);
+    }
+
+    .risk-dot--progress {
+      background-color: var(--color-info-300);
+      box-shadow: 0 0 0 4px rgba(81, 162, 255, 0.12);
+    }
+
+    .risk-legend {
+      display: flex;
+      gap: var(--space-12);
+      flex-wrap: wrap;
+      align-items: center;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      margin-top: auto;
+      padding-top: var(--space-8);
+    }
+
+    .legend {
+      display: flex;
+      gap: var(--space-8);
+      align-items: center;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.12);
+    }
+
+    .status-dot--red {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.18);
+    }
+
+    .status-dot--yellow {
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 185, 106, 0.15);
+    }
+
+    .status-dot--green {
+      background-color: var(--color-positive-400);
+      box-shadow: 0 0 0 4px rgba(0, 201, 81, 0.15);
+    }
+
+    .kpi-main-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-24);
+      margin-top: var(--space-24);
+    }
+
+    @media (max-width: 1200px) {
+      .kpi-main-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .kpi-main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-main {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .kpi-main__title {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      line-height: 26px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .kpi-main__value {
+      font-family: var(--font-alt);
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .kpi-main__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-main__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-main__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-main__details {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      margin-top: var(--space-8);
+    }
+
+    .kpi-main__detail {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .kpi-main__detail strong {
+      color: var(--material-neutral-content-primary);
+      font-weight: 600;
+    }
+
+    .kpi-main__trend {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      margin-top: var(--space-8);
+    }
+
+    .kpi-main__trend--positive {
+      color: var(--color-positive-500);
+    }
+
+    .kpi-main__trend--negative {
+      color: var(--color-negative-500);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: var(--space-24);
+    }
+
+    @media (min-width: 1200px) {
+      .dashboard-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .section-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .section-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .section-card::before {
+      content: attr(data-code);
+      position: absolute;
+      top: var(--space-12);
+      right: var(--space-12);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      letter-spacing: var(--letter-spacing-caption);
+      text-transform: uppercase;
+    }
+
+    .section-card__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.3px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+      max-width: 90%;
+    }
+
+    .section-card__description {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .section-card__purpose {
+      padding: var(--space-8) var(--space-12);
+      background: rgba(0, 102, 255, 0.05);
+      border-left: 3px solid var(--color-accent-400);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      font-style: italic;
+    }
+
+    .micro-metrics {
+      list-style: none;
+      margin: 0;
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-10);
+    }
+
+    .micro-metric {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-16);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .micro-metric span {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .micro-metric strong {
+      color: var(--material-neutral-content-primary);
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .section-card__data-types {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      align-items: center;
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+    }
+
+    .section-card__data-type {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .section-card__status {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+    }
+
+    .section-card__status-text {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .section-card__status-block {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      flex: 1;
+      margin-right: var(--space-12);
+    }
+
+    .section-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+
+    .section-block {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      margin-top: var(--space-24);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-16) 0;
+    }
+
+    .interaction-map {
+      position: relative;
+      min-height: 400px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-24);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .interaction-map__canvas {
+      width: 100%;
+      height: 400px;
+    }
+
+    .radar-chart-container {
+      position: relative;
+      min-height: 300px;
+      padding: var(--space-16);
+    }
+
+    .radar-chart-container canvas {
+      max-height: 300px;
+    }
+
+    .alert-section {
+      background: linear-gradient(145deg, rgba(255, 105, 0, 0.08), rgba(251, 44, 54, 0.05));
+      border: 1px solid var(--color-warning-200);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+    }
+
+    .alert-section__title {
+      font-family: var(--font-alt);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+    }
+
+    .alert-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .alert-item {
+      padding: var(--space-12);
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .alert-item__header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+    }
+
+    .alert-item__body {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    @media (max-width: 900px) {
+      .management-bar {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-bar">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="index.html">
+                <span class="back-link__icon"></span>
+                На главную
+              </a>
+              <span class="meta-pill">Раздел 6</span>
+            </div>
+            <h1>6. Административно-организационные функции</h1>
+            <p>Быстрый обзор административной нагрузки, качества взаимодействия, исполнения поручений, созданных рабочих групп и оперативных решений Комиссии.</p>
+            <div class="meta-row">
+              <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+              <span class="meta-pill">Источники: Комиссия, ФОИВ, субъекты РФ, РАН, фонды</span>
+            </div>
+          </div>
+        </div>
+        <aside class="risk-card">
+          <div class="risk-title">
+            Краткая сводка рисков
+          </div>
+          <ul class="risk-list">
+            <li class="risk-item">
+              <span class="risk-dot risk-dot--high"></span>
+              Задержка ответов от ФОИВ
+            </li>
+            <li class="risk-item">
+              <span class="risk-dot"></span>
+              Низкое качество данных
+            </li>
+            <li class="risk-item">
+              <span class="risk-dot"></span>
+              Частые запросы по одной тематике
+            </li>
+            <li class="risk-item">
+              <span class="risk-dot risk-dot--progress"></span>
+              Перегрузка отдельных подразделений
+            </li>
+          </ul>
+          <div class="risk-legend">
+            <span class="legend"><span class="status-dot status-dot--red"></span> высокий риск</span>
+            <span class="legend"><span class="status-dot status-dot--yellow"></span> средний</span>
+            <span class="legend"><span class="status-dot status-dot--green"></span> низкий</span>
+          </div>
+        </aside>
+      </section>
+
+      <!-- Блок фильтров и кнопок -->
+      <section class="controls-bar">
+        <div class="controls-bar__filters">
+          <select class="filter-select">
+            <option>ФОИВ: Все</option>
+            <option>Минобрнауки</option>
+            <option>Минпромторг</option>
+            <option>Минэнерго</option>
+          </select>
+          <select class="filter-select">
+            <option>Регион: Все</option>
+            <option>Москва</option>
+            <option>Санкт-Петербург</option>
+            <option>Новосибирская область</option>
+          </select>
+          <select class="filter-select">
+            <option>Тип взаимодействия: Все</option>
+            <option>Поручения</option>
+            <option>Запросы информации</option>
+            <option>Совещания</option>
+          </select>
+          <select class="filter-select">
+            <option>Направление: Исходящий / Входящий</option>
+            <option>Исходящий</option>
+            <option>Входящий</option>
+          </select>
+        </div>
+        <div class="controls-bar__actions">
+          <button class="btn btn--primary">Сводный отчёт</button>
+          <button class="btn">Экспорт данных</button>
+        </div>
+      </section>
+
+      <!-- Интегральные KPI раздела -->
+      <section class="kpi-main-grid">
+        <div class="kpi-main">
+          <h2 class="kpi-main__title">Поручения Комиссии</h2>
+          <div class="kpi-main__value kpi-main__value--green">247</div>
+          <div class="kpi-main__details">
+            <div class="kpi-main__detail">
+              <span>Всего поручений:</span>
+              <strong>247</strong>
+            </div>
+            <div class="kpi-main__detail">
+              <span>Доля исполненных:</span>
+              <strong>84%</strong>
+            </div>
+            <div class="kpi-main__detail">
+              <span>Просрочено:</span>
+              <strong style="color: var(--color-negative-300);">18</strong>
+            </div>
+          </div>
+          <div class="kpi-main__trend kpi-main__trend--positive">↑ +5% YoY</div>
+        </div>
+
+        <div class="kpi-main">
+          <h2 class="kpi-main__title">Запросы информации</h2>
+          <div class="kpi-main__value kpi-main__value--green">156</div>
+          <div class="kpi-main__details">
+            <div class="kpi-main__detail">
+              <span>Всего запросов:</span>
+              <strong>156</strong>
+            </div>
+            <div class="kpi-main__detail">
+              <span>ФОИВ:</span>
+              <strong>68</strong>
+            </div>
+            <div class="kpi-main__detail">
+              <span>Субъекты РФ:</span>
+              <strong>45</strong>
+            </div>
+            <div class="kpi-main__detail">
+              <span>Средний срок ответа:</span>
+              <strong>12 дней</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-main">
+          <h2 class="kpi-main__title">Взаимодействие с Госсоветом РФ</h2>
+          <div class="kpi-main__value kpi-main__value--green">24</div>
+          <div class="kpi-main__details">
+            <div class="kpi-main__detail">
+              <span>Совещаний / встреч:</span>
+              <strong>24</strong>
+            </div>
+            <div class="kpi-main__detail">
+              <span>Запросов информации:</span>
+              <strong>18</strong>
+            </div>
+            <div class="kpi-main__detail">
+              <span>Охват регионов:</span>
+              <strong>42 региона</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-main">
+          <h2 class="kpi-main__title">Привлечённые представители</h2>
+          <div class="kpi-main__value kpi-main__value--green">312</div>
+          <div class="kpi-main__details">
+            <div class="kpi-main__detail">
+              <span>Количество:</span>
+              <strong>312</strong>
+            </div>
+            <div class="kpi-main__detail">
+              <span>ФОИВ:</span>
+              <strong>124</strong>
+            </div>
+            <div class="kpi-main__detail">
+              <span>Субъекты РФ:</span>
+              <strong>98</strong>
+            </div>
+            <div class="kpi-main__detail">
+              <span>Научные организации:</span>
+              <strong>67</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-main">
+          <h2 class="kpi-main__title">Межведомственные рабочие группы</h2>
+          <div class="kpi-main__value kpi-main__value--green">18</div>
+          <div class="kpi-main__details">
+            <div class="kpi-main__detail">
+              <span>Создано МРГ:</span>
+              <strong>18</strong>
+            </div>
+            <div class="kpi-main__detail">
+              <span>Активных:</span>
+              <strong>15 (83%)</strong>
+            </div>
+            <div class="kpi-main__detail">
+              <span>Кадровые:</span>
+              <strong>5</strong>
+            </div>
+            <div class="kpi-main__detail">
+              <span>Научные:</span>
+              <strong>7</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-main">
+          <h2 class="kpi-main__title">Оперативные решения Президиума</h2>
+          <div class="kpi-main__value kpi-main__value--green">89</div>
+          <div class="kpi-main__details">
+            <div class="kpi-main__detail">
+              <span>Рассмотрено вопросов:</span>
+              <strong>89</strong>
+            </div>
+            <div class="kpi-main__detail">
+              <span>Средний срок обработки:</span>
+              <strong>8 дней</strong>
+            </div>
+            <div class="kpi-main__detail">
+              <span>Доля с решениями:</span>
+              <strong>92%</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Карточки подразделов 6.1–6.9 -->
+      <section class="dashboard-grid">
+        <!-- Карточка 6.1 -->
+        <article class="section-card" data-code="6.1">
+          <h2 class="section-card__title">Поручения ФОИВ и организаций</h2>
+          <p class="section-card__purpose">📌 Дает поручения ФОИВ и организациям по реализации НТР</p>
+          <p class="section-card__description">Управление поручениями Комиссии федеральным органам исполнительной власти и организациям.</p>
+          
+          <ul class="micro-metrics">
+            <li class="micro-metric"><span>Поручений исполнено:</span><strong>84%</strong></li>
+            <li class="micro-metric"><span>Всего поручений:</span><strong>247</strong></li>
+            <li class="micro-metric"><span>Выполнено вовремя:</span><strong>189</strong></li>
+            <li class="micro-metric"><span>Частично:</span><strong>28</strong></li>
+            <li class="micro-metric"><span>Просрочено:</span><strong style="color: var(--color-negative-300);">18</strong></li>
+          </ul>
+
+          <div class="section-card__data-types">
+            <span class="section-card__data-type">📊 KPI</span>
+            <span class="section-card__data-type">📈 Статусы</span>
+            <span class="section-card__data-type">🗂 Разрез по ФОИВ</span>
+          </div>
+
+          <div class="section-card__status">
+            <span class="section-card__status-text">Топ-5 ФОИВ: Минобрнауки (45), Минпромторг (38), Минэнерго (32)</span>
+          </div>
+
+          <div class="section-card__footer">
+            <div class="section-card__status-block">
+              <span class="status-dot status-dot--green"></span>
+              <span class="section-card__status-text">↑ Улучшение</span>
+            </div>
+            <a href="chapter6-1.html" class="btn btn--primary">Перейти к подразделу</a>
+          </div>
+        </article>
+
+        <!-- Карточка 6.2 -->
+        <article class="section-card" data-code="6.2">
+          <h2 class="section-card__title">Взаимодействие с Комиссиями Госсовета РФ</h2>
+          <p class="section-card__description">Координация работы с комиссиями Государственного совета Российской Федерации.</p>
+          
+          <ul class="micro-metrics">
+            <li class="micro-metric"><span>Совещаний и встреч:</span><strong>24</strong></li>
+            <li class="micro-metric"><span>Запросов информации:</span><strong>18</strong></li>
+            <li class="micro-metric"><span>Охват регионов:</span><strong>42</strong></li>
+            <li class="micro-metric"><span>Индекс соц-экон. развития:</span><strong>0.68</strong></li>
+          </ul>
+
+          <div class="section-card__data-types">
+            <span class="section-card__data-type">📊 KPI</span>
+            <span class="section-card__data-type">📈 Взаимодействие</span>
+            <span class="section-card__data-type">🗺 Регионы</span>
+          </div>
+
+          <div class="section-card__status">
+            <span class="section-card__status-text">Активных взаимодействий: 24</span>
+          </div>
+
+          <div class="section-card__footer">
+            <div class="section-card__status-block">
+              <span class="status-dot status-dot--yellow"></span>
+              <span class="section-card__status-text">→ Стабильность</span>
+            </div>
+            <a href="chapter6-2.html" class="btn btn--primary">Перейти к подразделу</a>
+          </div>
+        </article>
+
+        <!-- Карточка 6.3 -->
+        <article class="section-card" data-code="6.3">
+          <h2 class="section-card__title">Запросы информации и материалов</h2>
+          <p class="section-card__description">Управление запросами информации от различных адресатов по тематикам НТР.</p>
+          
+          <ul class="micro-metrics">
+            <li class="micro-metric"><span>Количество запросов:</span><strong>156</strong></li>
+            <li class="micro-metric"><span>ФОИВ:</span><strong>68</strong></li>
+            <li class="micro-metric"><span>Субъекты РФ:</span><strong>45</strong></li>
+            <li class="micro-metric"><span>РАН:</span><strong>23</strong></li>
+            <li class="micro-metric"><span>Фонды:</span><strong>20</strong></li>
+          </ul>
+
+          <div class="section-card__data-types">
+            <span class="section-card__data-type">📊 KPI</span>
+            <span class="section-card__data-type">📈 Тематики</span>
+            <span class="section-card__data-type">🗂 Адресаты</span>
+          </div>
+
+          <div class="section-card__status">
+            <span class="section-card__status-text">Тематики: кадровая (45), научная (52), технологическая (38)</span>
+          </div>
+
+          <div class="section-card__footer">
+            <div class="section-card__status-block">
+              <span class="status-dot status-dot--green"></span>
+              <span class="section-card__status-text">↑ Улучшение</span>
+            </div>
+            <a href="chapter6-3.html" class="btn btn--primary">Перейти к подразделу</a>
+          </div>
+        </article>
+
+        <!-- Карточка 6.4 -->
+        <article class="section-card" data-code="6.4">
+          <h2 class="section-card__title">Взаимодействие с координационными органами Правительства РФ</h2>
+          <p class="section-card__description">Координация работы с межведомственными координационными органами Правительства.</p>
+          
+          <ul class="micro-metrics">
+            <li class="micro-metric"><span>Запросов информации:</span><strong>42</strong></li>
+            <li class="micro-metric"><span>Средний срок ответа:</span><strong>10 дней</strong></li>
+            <li class="micro-metric"><span>Тематик запросов:</span><strong>8</strong></li>
+            <li class="micro-metric"><span>Органов в работе:</span><strong>12</strong></li>
+          </ul>
+
+          <div class="section-card__data-types">
+            <span class="section-card__data-type">📊 KPI</span>
+            <span class="section-card__data-type">📈 Сроки</span>
+            <span class="section-card__data-type">🗂 Органы</span>
+          </div>
+
+          <div class="section-card__status">
+            <span class="section-card__status-text">Активных взаимодействий: 42</span>
+          </div>
+
+          <div class="section-card__footer">
+            <div class="section-card__status-block">
+              <span class="status-dot status-dot--yellow"></span>
+              <span class="section-card__status-text">→ Стабильность</span>
+            </div>
+            <a href="chapter6-4.html" class="btn btn--primary">Перейти к подразделу</a>
+          </div>
+        </article>
+
+        <!-- Карточка 6.5 -->
+        <article class="section-card" data-code="6.5">
+          <h2 class="section-card__title">Привлечение представителей на заседания</h2>
+          <p class="section-card__description">Управление привлечением представителей различных организаций на заседания Комиссии.</p>
+          
+          <ul class="micro-metrics">
+            <li class="micro-metric"><span>Привлечено представителей:</span><strong>312</strong></li>
+            <li class="micro-metric"><span>ФОИВ:</span><strong>124</strong></li>
+            <li class="micro-metric"><span>Субъекты РФ:</span><strong>98</strong></li>
+            <li class="micro-metric"><span>РАН:</span><strong>45</strong></li>
+            <li class="micro-metric"><span>Влияние на НТР:</span><strong>72%</strong></li>
+          </ul>
+
+          <div class="section-card__data-types">
+            <span class="section-card__data-type">📊 KPI</span>
+            <span class="section-card__data-type">📈 Влияние</span>
+            <span class="section-card__data-type">🗂 Типы организаций</span>
+          </div>
+
+          <div class="section-card__status">
+            <span class="section-card__status-text">KPI влияния на Стратегию НТР: 72%</span>
+          </div>
+
+          <div class="section-card__footer">
+            <div class="section-card__status-block">
+              <span class="status-dot status-dot--green"></span>
+              <span class="section-card__status-text">↑ Улучшение</span>
+            </div>
+            <a href="chapter6-5.html" class="btn btn--primary">Перейти к подразделу</a>
+          </div>
+        </article>
+
+        <!-- Карточка 6.6 -->
+        <article class="section-card" data-code="6.6">
+          <h2 class="section-card__title">Создание межведомственных рабочих групп (МРГ)</h2>
+          <p class="section-card__description">Управление созданием и деятельностью межведомственных рабочих групп по направлениям НТР.</p>
+          
+          <ul class="micro-metrics">
+            <li class="micro-metric"><span>МРГ создано:</span><strong>18</strong></li>
+            <li class="micro-metric"><span>Научные:</span><strong>7</strong></li>
+            <li class="micro-metric"><span>Технологические:</span><strong>6</strong></li>
+            <li class="micro-metric"><span>Кадровые:</span><strong>5</strong></li>
+            <li class="micro-metric"><span>Доля активных:</span><strong>83%</strong></li>
+          </ul>
+
+          <div class="section-card__data-types">
+            <span class="section-card__data-type">📊 KPI</span>
+            <span class="section-card__data-type">📈 Направления</span>
+            <span class="section-card__data-type">🗂 Статусы</span>
+          </div>
+
+          <div class="section-card__status">
+            <span class="section-card__status-text">Активных МРГ: 15 из 18</span>
+          </div>
+
+          <div class="section-card__footer">
+            <div class="section-card__status-block">
+              <span class="status-dot status-dot--green"></span>
+              <span class="section-card__status-text">↑ Улучшение</span>
+            </div>
+            <a href="chapter6-6.html" class="btn btn--primary">Перейти к подразделу</a>
+          </div>
+        </article>
+
+        <!-- Карточка 6.7-6.8 -->
+        <article class="section-card" data-code="6.7-6.8">
+          <h2 class="section-card__title">Рассмотрение предложений о присуждении премий</h2>
+          <p class="section-card__description">Рассмотрение и согласование предложений о присуждении премий в области науки и технологий.</p>
+          
+          <ul class="micro-metrics">
+            <li class="micro-metric"><span>Рассмотрено предложений:</span><strong>34</strong></li>
+            <li class="micro-metric"><span>Согласовано:</span><strong>28</strong></li>
+            <li class="micro-metric"><span>Не согласовано:</span><strong>6</strong></li>
+            <li class="micro-metric"><span>Направлено в Минобрнауки:</span><strong>28</strong></li>
+          </ul>
+
+          <div class="section-card__data-types">
+            <span class="section-card__data-type">📊 KPI</span>
+            <span class="section-card__data-type">📈 Статусы</span>
+            <span class="section-card__data-type">🗂 Реестр</span>
+          </div>
+
+          <div class="section-card__status">
+            <span class="section-card__status-text">Доля согласованных: 82%</span>
+          </div>
+
+          <div class="section-card__footer">
+            <div class="section-card__status-block">
+              <span class="status-dot status-dot--yellow"></span>
+              <span class="section-card__status-text">→ Стабильность</span>
+            </div>
+            <a href="chapter6-7.html" class="btn btn--primary">Перейти к подразделу</a>
+          </div>
+        </article>
+
+        <!-- Карточка 6.9 -->
+        <article class="section-card" data-code="6.9">
+          <h2 class="section-card__title">Деятельность Президиума Комиссии</h2>
+          <p class="section-card__description">Оперативная деятельность Президиума Комиссии по рассмотрению вопросов НТР.</p>
+          
+          <ul class="micro-metrics">
+            <li class="micro-metric"><span>Обобщённых материалов:</span><strong>156</strong></li>
+            <li class="micro-metric"><span>Подготовленных предложений:</span><strong>89</strong></li>
+            <li class="micro-metric"><span>Оперативных решений:</span><strong>89</strong></li>
+            <li class="micro-metric"><span>Влияние на НТР:</span><strong>78%</strong></li>
+          </ul>
+
+          <div class="section-card__data-types">
+            <span class="section-card__data-type">📊 KPI</span>
+            <span class="section-card__data-type">📈 Решения</span>
+            <span class="section-card__data-type">🗂 Материалы</span>
+          </div>
+
+          <div class="section-card__status">
+            <span class="section-card__status-text">KPI влияния на Стратегию НТР: 78%</span>
+          </div>
+
+          <div class="section-card__footer">
+            <div class="section-card__status-block">
+              <span class="status-dot status-dot--red"></span>
+              <span class="section-card__status-text">↓ Ухудшение</span>
+            </div>
+            <a href="chapter6-9.html" class="btn btn--primary">Перейти к подразделу</a>
+          </div>
+        </article>
+      </section>
+
+      <!-- Карта взаимодействий -->
+      <section class="section-block">
+        <h2 class="section-block__title">Карта взаимодействий</h2>
+        <div class="interaction-map">
+          <canvas id="interaction-map-chart" class="interaction-map__canvas"></canvas>
+        </div>
+        <p style="color: var(--material-neutral-content-secondary); font-size: var(--font-size-body); margin-top: var(--space-12);">
+          Интерактивная схема взаимодействий: Комиссия → ФОИВ → субъекты РФ → научные организации → фонды → Госсовет → координационные органы Правительства РФ. 
+          Цвет узла отражает загруженность (количество поручений / запросов).
+        </p>
+      </section>
+
+      <!-- Риски и узкие места -->
+      <section class="alert-section">
+        <h2 class="alert-section__title">
+          ⚠️ Риски и узкие места
+        </h2>
+        <ul class="alert-list">
+          <li class="alert-item">
+            <div class="alert-item__header">
+              <span class="status-dot status-dot--red"></span>
+              Задержка ответов от ФОИВ
+            </div>
+            <div class="alert-item__body">
+              Средний срок ответа на запросы от Минпромторга превышает нормативный на 5 дней. 
+              Требуется усиление контроля за сроками исполнения.
+            </div>
+          </li>
+          <li class="alert-item">
+            <div class="alert-item__header">
+              <span class="status-dot status-dot--yellow"></span>
+              Низкое качество данных
+            </div>
+            <div class="alert-item__body">
+              В 12% запросов информация предоставляется неполная или требует уточнения. 
+              Рекомендуется усилить требования к качеству предоставляемых данных.
+            </div>
+          </li>
+          <li class="alert-item">
+            <div class="alert-item__header">
+              <span class="status-dot status-dot--yellow"></span>
+              Частые запросы по одной тематике
+            </div>
+            <div class="alert-item__body">
+              По тематике "кадровая политика" зафиксировано 45 запросов за квартал. 
+              Возможно, требуется создание постоянной рабочей группы.
+            </div>
+          </li>
+          <li class="alert-item">
+            <div class="alert-item__header">
+              <span class="status-dot status-dot--yellow"></span>
+              Перегрузка отдельных подразделений
+            </div>
+            <div class="alert-item__body">
+              Подразделение 6.3 обрабатывает 156 запросов при норме 120. 
+              Рекомендуется перераспределение нагрузки или увеличение штата.
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Влияние на НТР -->
+      <section class="section-block">
+        <h2 class="section-block__title">Влияние Административно-организационного блока на достижение целей НТР</h2>
+        <div class="radar-chart-container">
+          <canvas id="radar-chart"></canvas>
+        </div>
+        <p style="color: var(--material-neutral-content-secondary); font-size: var(--font-size-body); margin-top: var(--space-12);">
+          Радар-диаграмма показывает влияние административно-организационных функций на ключевые направления НТР: 
+          кадры, технологии, инфраструктура, образование, взаимодействие с регионами, скорость принятия решений.
+        </p>
+      </section>
+    </main>
+  </div>
+  <script>
+    // Карта взаимодействий (упрощённая визуализация)
+    const interactionCtx = document.getElementById('interaction-map-chart');
+    if (interactionCtx) {
+      // Создаём простую визуализацию сети взаимодействий
+      const ctx = interactionCtx.getContext('2d');
+      const width = interactionCtx.width = interactionCtx.offsetWidth;
+      const height = interactionCtx.height = 400;
+
+      // Узлы сети
+      const nodes = [
+        { name: 'Комиссия', x: width / 2, y: 50, size: 80, color: '#0066ff' },
+        { name: 'ФОИВ', x: width / 2, y: 150, size: 60, color: '#00c951' },
+        { name: 'Субъекты РФ', x: width / 4, y: 250, size: 50, color: '#ff9900' },
+        { name: 'Научные орг-ии', x: width * 3 / 4, y: 250, size: 50, color: '#ff9900' },
+        { name: 'Фонды', x: width / 2, y: 320, size: 40, color: '#ff9900' },
+        { name: 'Госсовет', x: width / 6, y: 150, size: 50, color: '#51a2ff' },
+        { name: 'Коорд. органы', x: width * 5 / 6, y: 150, size: 50, color: '#51a2ff' }
+      ];
+
+      // Рисуем связи
+      ctx.strokeStyle = '#e0e0e0';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(nodes[0].x, nodes[0].y);
+      ctx.lineTo(nodes[1].x, nodes[1].y);
+      ctx.moveTo(nodes[1].x, nodes[1].y);
+      ctx.lineTo(nodes[2].x, nodes[2].y);
+      ctx.moveTo(nodes[1].x, nodes[1].y);
+      ctx.lineTo(nodes[3].x, nodes[3].y);
+      ctx.moveTo(nodes[2].x, nodes[2].y);
+      ctx.lineTo(nodes[4].x, nodes[4].y);
+      ctx.moveTo(nodes[3].x, nodes[3].y);
+      ctx.lineTo(nodes[4].x, nodes[4].y);
+      ctx.moveTo(nodes[0].x, nodes[0].y);
+      ctx.lineTo(nodes[5].x, nodes[5].y);
+      ctx.moveTo(nodes[0].x, nodes[0].y);
+      ctx.lineTo(nodes[6].x, nodes[6].y);
+      ctx.stroke();
+
+      // Рисуем узлы
+      nodes.forEach(node => {
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.size / 2, 0, Math.PI * 2);
+        ctx.fillStyle = node.color;
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        // Подписи
+        ctx.fillStyle = '#333';
+        ctx.font = '12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(node.name, node.x, node.y + node.size / 2 + 15);
+      });
+    }
+
+    // Радар-диаграмма влияния на НТР
+    const radarCtx = document.getElementById('radar-chart');
+    if (radarCtx) {
+      new Chart(radarCtx, {
+        type: 'radar',
+        data: {
+          labels: ['Кадры', 'Технологии', 'Инфраструктура', 'Образование', 'Взаимодействие с регионами', 'Скорость принятия решений'],
+          datasets: [{
+            label: 'Влияние раздела 6',
+            data: [78, 72, 68, 75, 82, 85],
+            borderColor: '#0066ff',
+            backgroundColor: 'rgba(0, 102, 255, 0.2)',
+            pointBackgroundColor: '#0066ff',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#0066ff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                stepSize: 20
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
+

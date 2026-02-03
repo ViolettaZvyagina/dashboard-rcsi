@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подраздел 4.1 — Рассмотрение представленной ФОИВ информации о результатах НТР</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .header-section {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--space-24);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: var(--space-4) 0 var(--space-6) 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .service-controls {
+      background: linear-gradient(165deg, rgba(255, 105, 0, 0.12), rgba(0, 102, 255, 0.12));
+      border: 1px solid var(--color-warning-200);
+      border-radius: var(--radius-lg);
+      padding: var(--space-16);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      min-width: 280px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-controls__group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .service-controls__label {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label);
+    }
+
+    .service-controls__select-wrapper {
+      position: relative;
+    }
+
+    .service-controls__select {
+      padding: var(--space-6) var(--space-10);
+      padding-right: calc(var(--space-10) + 20px);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+      cursor: pointer;
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+
+    .service-controls__select-wrapper::after {
+      content: "▼";
+      position: absolute;
+      right: var(--space-10);
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      color: var(--material-neutral-content-tertiary);
+      pointer-events: none;
+    }
+
+    .service-controls__actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      margin-top: auto;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-6);
+      height: var(--control-height);
+      padding: 0 var(--space-16);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-family: var(--font-main);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      text-decoration: none;
+      cursor: pointer;
+      background-color: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-primary);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn--primary {
+      background-color: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn--small {
+      height: 32px;
+      padding: 0 var(--space-12);
+      font-size: var(--font-size-caption);
+    }
+
+    .filter-bar {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-16);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      align-items: center;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .filter-group__label {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label);
+    }
+
+    .filter-group__select-wrapper {
+      position: relative;
+    }
+
+    .filter-group__select {
+      padding: var(--space-6) var(--space-10);
+      padding-right: calc(var(--space-10) + 20px);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      width: 100%;
+    }
+
+    .filter-group__select-wrapper::after {
+      content: "▼";
+      position: absolute;
+      right: var(--space-10);
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      color: var(--material-neutral-content-tertiary);
+      pointer-events: none;
+    }
+
+    .filter-dropdown {
+      position: relative;
+    }
+
+    .filter-dropdown__button {
+      width: 100%;
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-8);
+    }
+
+    .filter-dropdown__button:hover {
+      border-color: var(--color-accent-400);
+    }
+
+    .filter-dropdown__button::after {
+      content: "▼";
+      font-size: 10px;
+      color: var(--material-neutral-content-tertiary);
+      transition: transform 0.2s ease;
+    }
+
+    .filter-dropdown__button--open::after {
+      transform: rotate(180deg);
+    }
+
+    .filter-dropdown__menu {
+      position: absolute;
+      top: calc(100% + var(--space-4));
+      left: 0;
+      right: 0;
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      padding: var(--space-8);
+      gap: var(--space-4);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .filter-dropdown__menu--open {
+      display: flex;
+    }
+
+    .filter-dropdown__item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      padding: var(--space-6) var(--space-8);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .filter-dropdown__item:hover {
+      background: var(--material-neutral-highlight-primary);
+    }
+
+    .filter-dropdown__item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .filter-dropdown__item label {
+      cursor: pointer;
+      flex: 1;
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+    }
+
+    .filter-group__chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-6);
+    }
+
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-6) var(--space-12);
+      border-radius: var(--radius-md);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .filter-chip:hover {
+      border-color: var(--color-accent-400);
+      color: var(--material-neutral-content-primary);
+    }
+
+    .filter-chip--active {
+      background: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .filter-chip input[type="checkbox"] {
+      margin: 0;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-20);
+      align-items: stretch;
+    }
+
+    @media (min-width: 1200px) {
+      .kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kpi-card__label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .kpi-card__value {
+      font-family: var(--font-alt);
+      font-size: 42px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 48px;
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-8);
+      margin-top: auto;
+    }
+
+    .kpi-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .kpi-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .kpi-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-card__trend {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+    }
+
+    .kpi-card__trend--positive {
+      color: var(--color-positive-500);
+    }
+
+    .kpi-card__trend--negative {
+      color: var(--color-negative-500);
+    }
+
+    .kpi-card__status {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      margin-top: var(--space-4);
+    }
+
+    .tabs {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    .tabs__header {
+      display: flex;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-highlight-primary);
+    }
+
+    .tabs__tab {
+      padding: var(--space-12) var(--space-20);
+      border: none;
+      background: transparent;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      font-weight: var(--font-weight-label);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+
+    .tabs__tab:hover {
+      color: var(--material-neutral-content-primary);
+      background: var(--material-neutral-surface-primary);
+    }
+
+    .tabs__tab--active {
+      color: var(--color-accent-600);
+      border-bottom-color: var(--color-accent-600);
+      background: var(--material-neutral-surface-primary);
+      font-weight: 600;
+    }
+
+    .tabs__content {
+      padding: var(--space-24);
+      display: none;
+    }
+
+    .tabs__content--active {
+      display: block;
+    }
+
+    .section-block {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      margin-top: var(--space-24);
+    }
+
+    .section-block__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-24) 0;
+    }
+
+    .section-block__description {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .charts-grid--full {
+      grid-template-columns: 1fr;
+    }
+
+    .chart-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .chart-card canvas {
+      width: 100% !important;
+      height: 300px !important;
+      display: block;
+    }
+
+    .chart-card--large canvas {
+      height: 400px !important;
+      min-height: 400px;
+    }
+
+    .two-column-layout--equal-height .chart-card {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .two-column-layout--equal-height .chart-card canvas {
+      height: 100% !important;
+      min-height: 300px;
+    }
+
+    .chart-card__title {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .table {
+      width: 100%;
+      max-width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-body);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      box-sizing: border-box;
+    }
+
+    .table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table th,
+    .table td {
+      padding: var(--space-16) var(--space-16);
+      text-align: left;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .table th {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label-xl);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+    }
+
+    .table td {
+      color: var(--material-neutral-content-primary);
+      background-color: var(--material-neutral-surface-primary);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .table tbody tr:hover {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .table__indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: var(--font-size-body);
+    }
+
+    .table__indicator--high {
+      background-color: rgba(0, 201, 81, 0.1);
+      color: var(--color-positive-500);
+    }
+
+    .table__indicator--medium {
+      background-color: rgba(245, 165, 36, 0.1);
+      color: var(--color-warning-500);
+    }
+
+    .table__indicator--low {
+      background-color: rgba(251, 44, 54, 0.1);
+      color: var(--color-negative-500);
+    }
+
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-12);
+      margin-top: var(--space-16);
+    }
+
+    .heatmap-cell {
+      aspect-ratio: 1;
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-12);
+      font-size: var(--font-size-body);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .heatmap-cell:hover {
+      transform: scale(1.05);
+    }
+
+    .heatmap-cell--high {
+      background-color: rgba(0, 201, 81, 0.2);
+    }
+
+    .heatmap-cell--medium {
+      background-color: rgba(245, 165, 36, 0.2);
+    }
+
+    .heatmap-cell--low {
+      background-color: rgba(251, 44, 54, 0.2);
+    }
+
+    .heatmap-cell__value {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: var(--space-4);
+    }
+
+    .heatmap-cell__label {
+      font-size: var(--font-size-caption);
+      text-align: center;
+    }
+
+    .heatmap-legend {
+      display: flex;
+      gap: var(--space-12);
+      align-items: center;
+      margin-top: var(--space-12);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .heatmap-legend__item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+    }
+
+    .heatmap-legend__dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .heatmap-legend__dot--high {
+      background-color: rgba(0, 201, 81, 0.3);
+    }
+
+    .heatmap-legend__dot--medium {
+      background-color: rgba(245, 165, 36, 0.3);
+    }
+
+    .heatmap-legend__dot--low {
+      background-color: rgba(251, 44, 54, 0.3);
+    }
+
+    .foiv-profile {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      margin-top: var(--space-24);
+    }
+
+    .foiv-profile__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .foiv-profile__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--space-16);
+    }
+
+    .foiv-profile__section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      min-width: 0;
+    }
+
+    .foiv-profile__section .btn {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .foiv-profile__section .btn--wide {
+      width: 100%;
+      max-width: 100%;
+      align-self: flex-start;
+      white-space: normal !important;
+      word-wrap: break-word;
+      text-align: center;
+      padding: var(--space-12) var(--space-16);
+      line-height: 1.4;
+      height: auto;
+      min-height: var(--control-height);
+    }
+
+    .foiv-profile__section-title {
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label-xl);
+      color: var(--material-neutral-content-primary);
+    }
+
+    .foiv-profile__list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+
+    .foiv-profile__item {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      padding-left: var(--space-16);
+      position: relative;
+    }
+
+    .foiv-profile__item::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--material-neutral-content-tertiary);
+    }
+
+    .quick-questions {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      margin-top: var(--space-24);
+    }
+
+    .quick-questions__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .quick-questions__list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-12);
+    }
+
+    .quick-question {
+      padding: var(--space-12) var(--space-16);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+
+    .quick-question:hover {
+      border-color: var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .two-column-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-24);
+    }
+
+    .two-column-layout--equal-height {
+      align-items: stretch;
+    }
+
+    .two-column-layout--equal-height > div {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .two-column-layout--equal-height > div:first-child {
+      max-width: 100%;
+    }
+
+    .two-column-layout--equal-height > div > div[style*="overflow-x"] {
+      min-width: 0;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow-x: auto;
+      overflow-y: visible;
+      padding-bottom: var(--space-8);
+      margin-bottom: var(--space-4);
+    }
+
+    .two-column-layout--equal-height > div > div[style*="overflow-x"] .table {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    @media (max-width: 1024px) {
+      .header-section {
+        grid-template-columns: 1fr;
+      }
+
+      .two-column-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .heatmap-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <!-- Шапка страницы -->
+      <section class="header-section">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="chapter4.html">
+                <span class="back-link__icon"></span>
+                Назад к разделу 4
+              </a>
+              <span class="meta-pill">Подраздел 4.1</span>
+            </div>
+            <h1>4.1. Рассмотрение информации ФОИВ о результатах НТР</h1>
+            <p>Сводная панель для анализа результатов НТР по данным ФОИВ: ресурсы → наука → технологии → экономика → технологический суверенитет → кадры.</p>
+            <div class="meta-row">
+              <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+              <span class="meta-pill">Источники: Минобрнауки, Росстат, ФОИВ, ЕГИСУ НИОКТР</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Служебный блок (верхний правый угол) -->
+        <div class="service-controls">
+          <div class="service-controls__group">
+            <div class="service-controls__label">Период</div>
+            <div class="service-controls__select-wrapper">
+              <select class="service-controls__select">
+                <option>Год: 2025</option>
+                <option>Квартал: Q4 2025</option>
+                <option>Последний отчет ФОИВ</option>
+              </select>
+            </div>
+          </div>
+          <div class="service-controls__group">
+            <div class="service-controls__label">Единицы</div>
+            <div class="service-controls__select-wrapper">
+              <select class="service-controls__select">
+                <option>Рубли</option>
+                <option>%</option>
+                <option>Индекс</option>
+                <option>Место в рейтинге</option>
+              </select>
+            </div>
+          </div>
+          <div class="service-controls__actions">
+            <button class="btn btn--primary btn--small">Экспорт отчета</button>
+            <button class="btn btn--small">Сравнить ФОИВ</button>
+            <button class="btn btn--small">Настроить витрину</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Блок быстрых фильтров -->
+      <section class="filter-bar">
+        <div class="filter-group">
+          <div class="filter-group__label">ФОИВ</div>
+          <div class="filter-group__select-wrapper">
+            <select class="filter-group__select">
+              <option>Все ФОИВ</option>
+              <option>Минобрнауки</option>
+              <option>Минпромторг</option>
+              <option>Минэнерго</option>
+              <option>Росатом</option>
+              <option>Роскосмос</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group__label">Уровень анализа</div>
+          <div class="filter-group__chips">
+            <button class="filter-chip filter-chip--active">Вся РФ</button>
+            <button class="filter-chip">Отрасли</button>
+            <button class="filter-chip">Регионы</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group__label">Тип показателей</div>
+          <div class="filter-dropdown">
+            <button type="button" class="filter-dropdown__button" id="indicator-types-button">
+              <span id="indicator-types-text">Все типы выбраны (5)</span>
+            </button>
+            <div class="filter-dropdown__menu" id="indicator-types-menu">
+              <div class="filter-dropdown__item">
+                <input type="checkbox" id="type-resources" checked>
+                <label for="type-resources">Ресурсы и финансы</label>
+              </div>
+              <div class="filter-dropdown__item">
+                <input type="checkbox" id="type-science" checked>
+                <label for="type-science">Наука и результаты ИД</label>
+              </div>
+              <div class="filter-dropdown__item">
+                <input type="checkbox" id="type-technologies" checked>
+                <label for="type-technologies">Технологии и суверенитет</label>
+              </div>
+              <div class="filter-dropdown__item">
+                <input type="checkbox" id="type-innovation" checked>
+                <label for="type-innovation">Инновации и промышленность</label>
+              </div>
+              <div class="filter-dropdown__item">
+                <input type="checkbox" id="type-personnel" checked>
+                <label for="type-personnel">Кадры и образование</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group__label">Период</div>
+          <div class="filter-group__select-wrapper">
+            <select class="filter-group__select">
+              <option>Год</option>
+              <option>Квартал</option>
+              <option>Пользовательский интервал</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group__label">Режим сравнения</div>
+          <div class="filter-group__chips">
+            <button class="filter-chip filter-chip--active">Один ФОИВ</button>
+            <button class="filter-chip">Сравнение ФОИВ</button>
+            <button class="filter-chip">Сравнение с РФ</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Верхний аналитический блок (KPI карточки) -->
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-card__label">Внутренние затраты на НИР, % ВВП</div>
+          <div class="kpi-card__value kpi-card__value--yellow">0.96%</div>
+          <div class="kpi-card__trend kpi-card__trend--positive">
+            <span>↑</span>
+            <span>+0.12 п.п. к предыдущему периоду</span>
+          </div>
+          <div class="kpi-card__status">Ниже целевого значения (1.2%)</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Место РФ в мире по объему НИР</div>
+          <div class="kpi-card__value kpi-card__value--green">9-е</div>
+          <div class="kpi-card__trend kpi-card__trend--positive">
+            <span>↑</span>
+            <span>+1 место к предыдущему периоду</span>
+          </div>
+          <div class="kpi-card__status">Выше целевого значения</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Доля высокотехнологичной и наукоемкой продукции в ВВП</div>
+          <div class="kpi-card__value kpi-card__value--green">21.3%</div>
+          <div class="kpi-card__trend kpi-card__trend--positive">
+            <span>↑</span>
+            <span>+1.2 п.п. к предыдущему периоду</span>
+          </div>
+          <div class="kpi-card__status">Выше целевого значения</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Индекс технологической зависимости</div>
+          <div class="kpi-card__value kpi-card__value--green">0.43</div>
+          <div class="kpi-card__trend kpi-card__trend--positive">
+            <span>↓</span>
+            <span>-0.05 к предыдущему периоду</span>
+          </div>
+          <div class="kpi-card__status">Ниже целевого значения (лучше)</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Место РФ в рейтинге конкурентоспособности талантов</div>
+          <div class="kpi-card__value kpi-card__value--red">24-е</div>
+          <div class="kpi-card__trend kpi-card__trend--negative">
+            <span>↓</span>
+            <span>-2 места к предыдущему периоду</span>
+          </div>
+          <div class="kpi-card__status">Ниже целевого значения</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Число заявок российских заявителей на патенты</div>
+          <div class="kpi-card__value kpi-card__value--green">28,450</div>
+          <div class="kpi-card__trend kpi-card__trend--positive">
+            <span>↑</span>
+            <span>+1,240 к предыдущему периоду</span>
+          </div>
+          <div class="kpi-card__status">Выше целевого значения</div>
+        </article>
+      </section>
+
+      <!-- Центральная область: вкладки анализа -->
+      <section class="tabs">
+        <div class="tabs__header">
+          <button class="tabs__tab tabs__tab--active" data-tab="summary">Итоги НТР по ФОИВ</button>
+          <button class="tabs__tab" data-tab="science">Наука и технологии</button>
+          <button class="tabs__tab" data-tab="innovation">Инновации и промышленность</button>
+          <button class="tabs__tab" data-tab="sovereignty">Технологический суверенитет</button>
+          <button class="tabs__tab" data-tab="personnel">Кадры и образование</button>
+        </div>
+
+        <!-- Вкладка "Итоги НТР по ФОИВ" -->
+        <div class="tabs__content tabs__content--active" data-content="summary">
+          <div class="two-column-layout two-column-layout--equal-height">
+            <div>
+              <h3 class="section-block__title">Матрица ФОИВ × тип результата</h3>
+              <div style="overflow-x: auto;">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>ФОИВ</th>
+                      <th>Ресурсы</th>
+                      <th>Наука</th>
+                      <th>Технологии</th>
+                      <th>Экономика</th>
+                      <th>Суверенитет</th>
+                      <th>Кадры</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Минобрнауки</strong></td>
+                      <td><span class="table__indicator table__indicator--high">0.85</span></td>
+                      <td><span class="table__indicator table__indicator--high">0.92</span></td>
+                      <td><span class="table__indicator table__indicator--medium">0.68</span></td>
+                      <td><span class="table__indicator table__indicator--medium">0.72</span></td>
+                      <td><span class="table__indicator table__indicator--medium">0.65</span></td>
+                      <td><span class="table__indicator table__indicator--high">0.88</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Минпромторг</strong></td>
+                      <td><span class="table__indicator table__indicator--medium">0.72</span></td>
+                      <td><span class="table__indicator table__indicator--medium">0.65</span></td>
+                      <td><span class="table__indicator table__indicator--high">0.89</span></td>
+                      <td><span class="table__indicator table__indicator--high">0.91</span></td>
+                      <td><span class="table__indicator table__indicator--high">0.87</span></td>
+                      <td><span class="table__indicator table__indicator--medium">0.74</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Минэнерго</strong></td>
+                      <td><span class="table__indicator table__indicator--high">0.88</span></td>
+                      <td><span class="table__indicator table__indicator--medium">0.71</span></td>
+                      <td><span class="table__indicator table__indicator--high">0.85</span></td>
+                      <td><span class="table__indicator table__indicator--high">0.83</span></td>
+                      <td><span class="table__indicator table__indicator--high">0.90</span></td>
+                      <td><span class="table__indicator table__indicator--medium">0.69</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Росатом</strong></td>
+                      <td><span class="table__indicator table__indicator--high">0.91</span></td>
+                      <td><span class="table__indicator table__indicator--high">0.87</span></td>
+                      <td><span class="table__indicator table__indicator--high">0.93</span></td>
+                      <td><span class="table__indicator table__indicator--high">0.89</span></td>
+                      <td><span class="table__indicator table__indicator--high">0.95</span></td>
+                      <td><span class="table__indicator table__indicator--high">0.86</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Роскосмос</strong></td>
+                      <td><span class="table__indicator table__indicator--medium">0.78</span></td>
+                      <td><span class="table__indicator table__indicator--high">0.84</span></td>
+                      <td><span class="table__indicator table__indicator--high">0.88</span></td>
+                      <td><span class="table__indicator table__indicator--medium">0.76</span></td>
+                      <td><span class="table__indicator table__indicator--high">0.82</span></td>
+                      <td><span class="table__indicator table__indicator--medium">0.71</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div>
+              <h3 class="section-block__title">ТОП-5 ФОИВ по интегральному индексу</h3>
+              <div class="chart-card">
+                <canvas id="chart-top-foiv"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Вкладка "Наука и технологии" -->
+        <div class="tabs__content" data-content="science">
+          <div class="section-block">
+            <h3 class="section-block__title">Публикации и цитируемость</h3>
+            <div class="charts-grid">
+              <div class="chart-card">
+                <h4 class="chart-card__title">Количество публикаций в высокорейтинговых журналах</h4>
+                <canvas id="chart-publications"></canvas>
+              </div>
+              <div class="chart-card">
+                <h4 class="chart-card__title">Число исследователей с публикациями A*</h4>
+                <canvas id="chart-researchers"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="section-block">
+            <h3 class="section-block__title">ИД и патенты</h3>
+            <div class="charts-grid">
+              <div class="chart-card">
+                <h4 class="chart-card__title">Число заявок российских заявителей на патенты</h4>
+                <canvas id="chart-patents"></canvas>
+              </div>
+              <div class="chart-card">
+                <h4 class="chart-card__title">Количество РИД из ЕГИСУ НИОКТР</h4>
+                <canvas id="chart-rid"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="section-block">
+            <h3 class="section-block__title">Направления научной специализации, где РФ в топ-10</h3>
+            <div style="overflow-x: auto;">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Направление</th>
+                    <th>Текущее место</th>
+                    <th>Статус</th>
+                    <th>Динамика</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Математика</strong></td>
+                    <td>6-е</td>
+                    <td><span class="table__indicator table__indicator--high">Лидер</span></td>
+                    <td>↑ +1 место</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Физика</strong></td>
+                    <td>8-е</td>
+                    <td><span class="table__indicator table__indicator--high">Лидер</span></td>
+                    <td>↑ +2 места</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Химия</strong></td>
+                    <td>9-е</td>
+                    <td><span class="table__indicator table__indicator--high">Лидер</span></td>
+                    <td>→ Стабильно</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Материаловедение</strong></td>
+                    <td>10-е</td>
+                    <td><span class="table__indicator table__indicator--medium">На границе</span></td>
+                    <td>↓ -1 место</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Вкладка "Инновации и промышленность" -->
+        <div class="tabs__content" data-content="innovation">
+          <div class="two-column-layout">
+            <div>
+              <h3 class="section-block__title">Динамика по РФ</h3>
+              <div class="chart-card chart-card--large">
+                <canvas id="chart-innovation-rf"></canvas>
+              </div>
+            </div>
+            <div>
+              <h3 class="section-block__title">Разбивка по отраслям</h3>
+              <div class="chart-card chart-card--large">
+                <canvas id="chart-innovation-industries"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="section-block">
+            <h3 class="section-block__title">Ключевые показатели инновационной активности</h3>
+            <div style="overflow-x: auto;">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Показатель</th>
+                    <th>Значение</th>
+                    <th>Динамика</th>
+                    <th>Статус</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Доля предприятий обрабатывающей промышленности с технологическими инновациями</td>
+                    <td>18.5%</td>
+                    <td>↑ +1.2 п.п.</td>
+                    <td><span class="table__indicator table__indicator--high">Хорошо</span></td>
+                  </tr>
+                  <tr>
+                    <td>Затраты на инновационную деятельность, млн руб.</td>
+                    <td>1,245,000</td>
+                    <td>↑ +8.3%</td>
+                    <td><span class="table__indicator table__indicator--high">Хорошо</span></td>
+                  </tr>
+                  <tr>
+                    <td>Внутренние затраты на НИОКР в обрабатывающей промышленности</td>
+                    <td>892,000</td>
+                    <td>↑ +5.7%</td>
+                    <td><span class="table__indicator table__indicator--high">Хорошо</span></td>
+                  </tr>
+                  <tr>
+                    <td>Количество отечественных технологий, используемых в реальном секторе</td>
+                    <td>342</td>
+                    <td>↑ +28</td>
+                    <td><span class="table__indicator table__indicator--high">Хорошо</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Вкладка "Технологический суверенитет" -->
+        <div class="tabs__content" data-content="sovereignty">
+          <div class="section-block">
+            <h3 class="section-block__title">Уровни технологического суверенитета по направлениям</h3>
+            <div class="heatmap-grid">
+              <div class="heatmap-cell heatmap-cell--high">
+                <div class="heatmap-cell__value">92%</div>
+                <div class="heatmap-cell__label">Новые материалы и химия</div>
+              </div>
+              <div class="heatmap-cell heatmap-cell--high">
+                <div class="heatmap-cell__value">88%</div>
+                <div class="heatmap-cell__label">ТЭК, нефтегаз</div>
+              </div>
+              <div class="heatmap-cell heatmap-cell--high">
+                <div class="heatmap-cell__value">85%</div>
+                <div class="heatmap-cell__label">Электроэнергетика</div>
+              </div>
+              <div class="heatmap-cell heatmap-cell--medium">
+                <div class="heatmap-cell__value">72%</div>
+                <div class="heatmap-cell__label">Авиастроение</div>
+              </div>
+              <div class="heatmap-cell heatmap-cell--medium">
+                <div class="heatmap-cell__value">68%</div>
+                <div class="heatmap-cell__label">Судостроение</div>
+              </div>
+              <div class="heatmap-cell heatmap-cell--high">
+                <div class="heatmap-cell__value">95%</div>
+                <div class="heatmap-cell__label">Новые атомные технологии</div>
+              </div>
+              <div class="heatmap-cell heatmap-cell--medium">
+                <div class="heatmap-cell__value">65%</div>
+                <div class="heatmap-cell__label">Средства производства</div>
+              </div>
+              <div class="heatmap-cell heatmap-cell--high">
+                <div class="heatmap-cell__value">89%</div>
+                <div class="heatmap-cell__label">Продовольственная безопасность</div>
+              </div>
+              <div class="heatmap-cell heatmap-cell--medium">
+                <div class="heatmap-cell__value">71%</div>
+                <div class="heatmap-cell__label">БАС</div>
+              </div>
+            </div>
+            <div class="heatmap-legend">
+              <div class="heatmap-legend__item">
+                <span class="heatmap-legend__dot heatmap-legend__dot--high"></span>
+                <span>Высокий уровень (80-100%)</span>
+              </div>
+              <div class="heatmap-legend__item">
+                <span class="heatmap-legend__dot heatmap-legend__dot--medium"></span>
+                <span>Средний уровень (60-79%)</span>
+              </div>
+              <div class="heatmap-legend__item">
+                <span class="heatmap-legend__dot heatmap-legend__dot--low"></span>
+                <span>Низкий уровень (&lt;60%)</span>
+              </div>
+            </div>
+          </div>
+          <div class="section-block">
+            <h3 class="section-block__title">Ключевые количественные показатели</h3>
+            <div style="overflow-x: auto;">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Направление</th>
+                    <th>Количество созданных ключевых технологий</th>
+                    <th>Количество решений по интеграции</th>
+                    <th>Уровень суверенитета</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Атомная энергетика</strong></td>
+                    <td>24</td>
+                    <td>18</td>
+                    <td><span class="table__indicator table__indicator--high">95%</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>ТЭК</strong></td>
+                    <td>31</td>
+                    <td>22</td>
+                    <td><span class="table__indicator table__indicator--high">88%</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Авиастроение</strong></td>
+                    <td>19</td>
+                    <td>14</td>
+                    <td><span class="table__indicator table__indicator--medium">72%</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Судостроение</strong></td>
+                    <td>16</td>
+                    <td>11</td>
+                    <td><span class="table__indicator table__indicator--medium">68%</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Вкладка "Кадры и образование" -->
+        <div class="tabs__content" data-content="personnel">
+          <div class="two-column-layout">
+            <div>
+              <h3 class="section-block__title">Кадровые блоки</h3>
+              <div class="chart-card chart-card--large">
+                <canvas id="chart-personnel-blocks"></canvas>
+              </div>
+            </div>
+            <div>
+              <h3 class="section-block__title">ФОИВ × ключевые кадровые индикаторы</h3>
+              <div style="overflow-x: auto;">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>ФОИВ</th>
+                      <th>Доля молодых ученых</th>
+                      <th>Коэффициент восполнения</th>
+                      <th>Трудоустройство</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Минобрнауки</strong></td>
+                      <td>42%</td>
+                      <td>0.88</td>
+                      <td><span class="table__indicator table__indicator--high">85%</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Минпромторг</strong></td>
+                      <td>35%</td>
+                      <td>0.76</td>
+                      <td><span class="table__indicator table__indicator--medium">72%</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Минэнерго</strong></td>
+                      <td>38%</td>
+                      <td>0.82</td>
+                      <td><span class="table__indicator table__indicator--high">78%</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Росатом</strong></td>
+                      <td>41%</td>
+                      <td>0.91</td>
+                      <td><span class="table__indicator table__indicator--high">89%</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="section-block">
+            <h3 class="section-block__title">Детальные показатели кадров</h3>
+            <div style="overflow-x: auto;">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Показатель</th>
+                    <th>Значение</th>
+                    <th>Динамика</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Доля молодых ученых</td>
+                    <td>39%</td>
+                    <td>↑ +2.1 п.п.</td>
+                  </tr>
+                  <tr>
+                    <td>Доля докторов и кандидатов среди исследователей</td>
+                    <td>68%</td>
+                    <td>↑ +1.5 п.п.</td>
+                  </tr>
+                  <tr>
+                    <td>Коэффициент восполнения кадров</td>
+                    <td>0.84</td>
+                    <td>↑ +0.03</td>
+                  </tr>
+                  <tr>
+                    <td>Количество граждан, обучающихся по программам непрерывного образования</td>
+                    <td>1,245,000</td>
+                    <td>↑ +8.2%</td>
+                  </tr>
+                  <tr>
+                    <td>Уровень трудоустройства по профилю</td>
+                    <td>78%</td>
+                    <td>↑ +3.2 п.п.</td>
+                  </tr>
+                  <tr>
+                    <td>Количество специалистов в сфере БАС (в реестре)</td>
+                    <td>12,450</td>
+                    <td>↑ +1,240</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Блок "Паспорт ФОИВ" -->
+      <section class="foiv-profile">
+        <h2 class="foiv-profile__title">Паспорт ФОИВ</h2>
+        <div class="foiv-profile__grid">
+          <div class="foiv-profile__section">
+            <div class="foiv-profile__section-title">Краткий профиль</div>
+            <p style="color: var(--material-neutral-content-secondary); margin: 0;">Роль в НТР, основные направления деятельности и ключевые показатели эффективности.</p>
+          </div>
+          <div class="foiv-profile__section">
+            <div class="foiv-profile__section-title">Топ-5 сильных показателей</div>
+            <ul class="foiv-profile__list">
+              <li class="foiv-profile__item">Высокий уровень технологического суверенитета (95%)</li>
+              <li class="foiv-profile__item">Рост числа заявок на патенты (+12%)</li>
+              <li class="foiv-profile__item">Увеличение доли молодых ученых (42%)</li>
+              <li class="foiv-profile__item">Высокий уровень трудоустройства (89%)</li>
+              <li class="foiv-profile__item">Рост инновационной активности (+8.3%)</li>
+            </ul>
+          </div>
+          <div class="foiv-profile__section">
+            <div class="foiv-profile__section-title">Топ-5 проблемных областей</div>
+            <ul class="foiv-profile__list">
+              <li class="foiv-profile__item">Низкий уровень технологического суверенитета в БАС (71%)</li>
+              <li class="foiv-profile__item">Дефицит кадров в судостроении</li>
+              <li class="foiv-profile__item">Снижение места в рейтинге талантов (-2 места)</li>
+              <li class="foiv-profile__item">Недостаточный рост затрат на НИОКР</li>
+              <li class="foiv-profile__item">Низкая доля предприятий с инновациями (18.5%)</li>
+            </ul>
+          </div>
+          <div class="foiv-profile__section">
+            <div class="foiv-profile__section-title">Сводка по технологическому суверенитету и кадрам</div>
+            <ul class="foiv-profile__list">
+              <li class="foiv-profile__item">Общий индекс технологического суверенитета: 0.82</li>
+              <li class="foiv-profile__item">Кадровая обеспеченность: 78%</li>
+              <li class="foiv-profile__item">Коэффициент восполнения кадров: 0.84</li>
+            </ul>
+            <a href="#" class="btn btn--primary btn--wide" style="margin-top: var(--space-12);">Перейти к детализированному отчёту ФОИВ</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Блок "Быстрые вопросы КНТР" -->
+      <section class="quick-questions">
+        <h2 class="quick-questions__title">Быстрые вопросы КНТР</h2>
+        <div class="quick-questions__list">
+          <button class="quick-question">Какие ФОИВ показывают лучший прогресс по технологическому суверенитету?</button>
+          <button class="quick-question">Где максимальный дефицит кадров при высоких технологиях?</button>
+          <button class="quick-question">Какие отрасли лидируют по внедрению отечественных технологий?</button>
+          <button class="quick-question">Как связаны затраты на НИОКР и экспорт наукоёмкой продукции?</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Переключение вкладок
+    const tabs = document.querySelectorAll('.tabs__tab');
+    const contents = document.querySelectorAll('.tabs__content');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetTab = tab.getAttribute('data-tab');
+        
+        // Убираем активный класс у всех вкладок и контента
+        tabs.forEach(t => t.classList.remove('tabs__tab--active'));
+        contents.forEach(c => c.classList.remove('tabs__content--active'));
+        
+        // Добавляем активный класс к выбранной вкладке и контенту
+        tab.classList.add('tabs__tab--active');
+        document.querySelector(`[data-content="${targetTab}"]`).classList.add('tabs__content--active');
+      });
+    });
+
+    // Выпадающий список "Тип показателей"
+    const indicatorTypesButton = document.getElementById('indicator-types-button');
+    const indicatorTypesMenu = document.getElementById('indicator-types-menu');
+    const indicatorTypesText = document.getElementById('indicator-types-text');
+    const indicatorTypesCheckboxes = document.querySelectorAll('#indicator-types-menu input[type="checkbox"]');
+
+    // Функция обновления текста кнопки
+    function updateIndicatorTypesText() {
+      const checked = Array.from(indicatorTypesCheckboxes).filter(cb => cb.checked);
+      const total = indicatorTypesCheckboxes.length;
+      
+      if (checked.length === total) {
+        indicatorTypesText.textContent = `Все типы выбраны (${total})`;
+      } else if (checked.length === 0) {
+        indicatorTypesText.textContent = 'Типы не выбраны';
+      } else {
+        indicatorTypesText.textContent = `Выбрано: ${checked.length} из ${total}`;
+      }
+    }
+
+    // Открытие/закрытие dropdown
+    indicatorTypesButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = indicatorTypesMenu.classList.contains('filter-dropdown__menu--open');
+      
+      if (isOpen) {
+        indicatorTypesMenu.classList.remove('filter-dropdown__menu--open');
+        indicatorTypesButton.classList.remove('filter-dropdown__button--open');
+      } else {
+        indicatorTypesMenu.classList.add('filter-dropdown__menu--open');
+        indicatorTypesButton.classList.add('filter-dropdown__button--open');
+      }
+    });
+
+    // Закрытие dropdown при клике вне его
+    document.addEventListener('click', (e) => {
+      if (!indicatorTypesButton.contains(e.target) && !indicatorTypesMenu.contains(e.target)) {
+        indicatorTypesMenu.classList.remove('filter-dropdown__menu--open');
+        indicatorTypesButton.classList.remove('filter-dropdown__button--open');
+      }
+    });
+
+    // Обновление текста при изменении чекбоксов
+    indicatorTypesCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', updateIndicatorTypesText);
+    });
+
+    // Инициализация текста
+    updateIndicatorTypesText();
+
+    // Настройка Chart.js
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+    const colors = {
+      primary: '#1565FF',
+      secondary: '#00C951',
+      neutral: '#8A94A6',
+      warning: '#F5A524',
+      danger: '#F44336'
+    };
+
+    const years = ['2021', '2022', '2023', '2024', '2025'];
+
+    // График ТОП-5 ФОИВ
+    new Chart(document.getElementById('chart-top-foiv'), {
+      type: 'bar',
+      data: {
+        labels: ['Росатом', 'Минэнерго', 'Минобрнауки', 'Роскосмос', 'Минпромторг'],
+        datasets: [{
+          label: 'Интегральный индекс',
+          data: [0.91, 0.88, 0.85, 0.82, 0.78],
+          backgroundColor: colors.primary,
+          borderColor: colors.primary,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 1
+          }
+        }
+      }
+    });
+
+    // График публикаций
+    new Chart(document.getElementById('chart-publications'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{
+          label: 'Публикации в Q1-Q2',
+          data: [12500, 13200, 14100, 15200, 16400],
+          borderColor: colors.primary,
+          backgroundColor: 'rgba(21, 101, 255, 0.1)',
+          tension: 0.3
+        }]
+      }
+    });
+
+    // График исследователей A*
+    new Chart(document.getElementById('chart-researchers'), {
+      type: 'bar',
+      data: {
+        labels: years,
+        datasets: [{
+          label: 'Исследователи с публикациями A*',
+          data: [3200, 3450, 3680, 3920, 4180],
+          backgroundColor: colors.secondary,
+          borderColor: colors.secondary
+        }]
+      }
+    });
+
+    // График патентов
+    new Chart(document.getElementById('chart-patents'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{
+          label: 'Заявки на патенты',
+          data: [24500, 25600, 26800, 27200, 28450],
+          borderColor: colors.primary,
+          backgroundColor: 'rgba(21, 101, 255, 0.1)',
+          tension: 0.3
+        }]
+      }
+    });
+
+    // График РИД
+    new Chart(document.getElementById('chart-rid'), {
+      type: 'bar',
+      data: {
+        labels: years,
+        datasets: [{
+          label: 'РИД из ЕГИСУ НИОКТР',
+          data: [2850, 3020, 3280, 3520, 3682],
+          backgroundColor: colors.secondary,
+          borderColor: colors.secondary
+        }]
+      }
+    });
+
+    // График инноваций по РФ
+    new Chart(document.getElementById('chart-innovation-rf'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [
+          {
+            label: 'Доля предприятий с инновациями, %',
+            data: [16.2, 16.8, 17.3, 17.8, 18.5],
+            borderColor: colors.primary,
+            backgroundColor: 'rgba(21, 101, 255, 0.1)',
+            yAxisID: 'y',
+            tension: 0.3
+          },
+          {
+            label: 'Затраты на инновации, млрд руб.',
+            data: [950, 1020, 1100, 1150, 1245],
+            borderColor: colors.secondary,
+            backgroundColor: 'rgba(0, 201, 81, 0.1)',
+            yAxisID: 'y1',
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            position: 'left'
+          },
+          y1: {
+            type: 'linear',
+            position: 'right',
+            grid: { drawOnChartArea: false }
+          }
+        }
+      }
+    });
+
+    // График инноваций по отраслям
+    new Chart(document.getElementById('chart-innovation-industries'), {
+      type: 'bar',
+      data: {
+        labels: ['Химия', 'Судостроение', 'Энергетика', 'Авиация', 'Транспорт'],
+        datasets: [{
+          label: 'Объем отгруженной продукции, млрд руб.',
+          data: [2450, 1820, 3200, 2150, 1890],
+          backgroundColor: [
+            colors.primary,
+            colors.secondary,
+            colors.warning,
+            colors.neutral,
+            colors.danger
+          ]
+        }]
+      }
+    });
+
+    // График кадровых блоков
+    new Chart(document.getElementById('chart-personnel-blocks'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Исследователи', 'Кадры АПК', 'Высокотехнологичные отрасли', 'БАС'],
+        datasets: [{
+          data: [245000, 180000, 320000, 12450],
+          backgroundColor: [
+            colors.primary,
+            colors.secondary,
+            colors.warning,
+            colors.neutral
+          ]
+        }]
+      }
+    });
+  </script>
+</body>
+</html>
+

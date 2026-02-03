@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел 3 — Стратегическое планирование и управление</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .management-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-20);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      grid-column: span 2;
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); border-color: var(--color-accent-500); background: var(--material-lite-accent-highlight); }
+    .back-link__icon { width: 8px; height: 8px; border-left: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); display: inline-block; }
+
+    .risk-card {
+      background: linear-gradient(165deg, rgba(255, 105, 0, 0.12), rgba(0, 102, 255, 0.12));
+      border: 1px solid var(--color-warning-200);
+      color: var(--material-neutral-content-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .risk-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-8);
+      font-family: var(--font-alt);
+      font-weight: var(--font-weight-label-xl);
+      font-size: var(--font-size-label-xl);
+      line-height: var(--line-height-label-xl);
+      letter-spacing: var(--letter-spacing-label-xl);
+    }
+
+    .risk-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: var(--space-10);
+    }
+
+    .risk-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-8);
+      align-items: center;
+      font-size: var(--font-size-body);
+    }
+
+    .risk-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 105, 0, 0.1);
+    }
+
+    .risk-dot--high {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.12);
+    }
+
+    .risk-dot--progress {
+      background-color: var(--color-info-300);
+      box-shadow: 0 0 0 4px rgba(81, 162, 255, 0.12);
+    }
+
+    .risk-legend {
+      display: flex;
+      gap: var(--space-12);
+      flex-wrap: wrap;
+      align-items: center;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      margin-top: auto;
+      padding-top: var(--space-8);
+    }
+
+    .legend {
+      display: flex;
+      gap: var(--space-8);
+      align-items: center;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.12);
+    }
+
+    .status-dot--red {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.18);
+    }
+
+    .status-dot--yellow {
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 185, 106, 0.15);
+    }
+
+    .status-dot--green {
+      background-color: var(--color-positive-400);
+      box-shadow: 0 0 0 4px rgba(0, 201, 81, 0.15);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: var(--space-24);
+    }
+
+    @media (min-width: 1200px) {
+      .dashboard-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .section-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-card::before {
+      content: attr(data-code);
+      position: absolute;
+      top: var(--space-12);
+      right: var(--space-12);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-tertiary);
+      letter-spacing: var(--letter-spacing-caption);
+      text-transform: uppercase;
+    }
+
+    .section-card__title {
+      font-family: var(--font-alt);
+      font-size: 28px;
+      line-height: 36px;
+      letter-spacing: -0.4px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+      max-width: 90%;
+    }
+
+    .section-card__description {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .section-card__structure {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .section-card__structure-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-8);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .section-card__structure-icon {
+      flex-shrink: 0;
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    .section-card__indicators {
+      list-style: none;
+      margin: 0;
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .section-card__indicator {
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+      font-weight: 400;
+    }
+
+    .section-card__status-block {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      margin-top: auto;
+    }
+
+    .section-card__status-text {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .section-card__kpi {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-12);
+      flex-wrap: nowrap;
+    }
+
+    .section-card__kpi-info {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .section-card__kpi-label {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-label);
+      font-weight: var(--font-weight-label);
+    }
+
+    .section-card__kpi-value {
+      font-family: var(--font-alt);
+      font-size: 34px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 40px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .section-card__kpi-value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .section-card__kpi-value--green {
+      color: var(--color-positive-300);
+    }
+
+    .section-card__kpi-value--red {
+      color: var(--color-negative-300);
+    }
+
+    .kpi-hint {
+      color: var(--material-neutral-content-tertiary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+    }
+
+    .micro-metrics {
+      list-style: none;
+      margin: 0;
+      padding: var(--space-12);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-10);
+    }
+
+    .micro-metric {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-8);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+    }
+
+    .micro-metric strong {
+      color: var(--material-neutral-content-primary);
+      font-weight: 600;
+    }
+
+    .section-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: var(--space-8);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      font-weight: var(--font-weight-label);
+      white-space: nowrap;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .status-dot--green {
+      background-color: var(--color-positive-400);
+      box-shadow: 0 0 0 4px rgba(0, 201, 81, 0.15);
+    }
+
+    .status-dot--yellow {
+      background-color: var(--color-warning-400);
+      box-shadow: 0 0 0 4px rgba(255, 185, 106, 0.15);
+    }
+
+    .status-dot--red {
+      background-color: var(--color-negative-400);
+      box-shadow: 0 0 0 4px rgba(251, 44, 54, 0.18);
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-6);
+      height: var(--control-height);
+      padding: 0 var(--space-16);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-family: var(--font-main);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      text-decoration: none;
+      cursor: pointer;
+      background-color: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-primary);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn--primary {
+      background-color: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    @media (max-width: 640px) {
+      .section-card__kpi {
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .management-bar {
+        grid-template-columns: 1fr;
+      }
+
+      .section-card__kpi {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .section-card__footer {
+        flex-direction: column;
+        align-items: flex-end;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-bar">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="index.html">
+                <span class="back-link__icon"></span>
+                На главную
+              </a>
+              <span class="meta-pill">Раздел 3</span>
+            </div>
+            <h1>3. Стратегическое планирование и управление</h1>
+            <p>Раздел объединяет ключевые процессы стратегического управления НТР: формирование приоритетов, разработку отраслевых стратегий, определение мер и инструментов, кадровое планирование, реализацию Стратегии НТР и координацию НПТЛ на уровне университетов, отраслей и регионов. На странице — карточки всех групп подразделов с их смыслом, структурой, блоками показателей и статусом готовности.</p>
+          </div>
+          <div class="meta-row">
+            <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+            <span class="meta-pill">Источник: Стратегия НТР, Минобрнауки, ФОИВ</span>
+          </div>
+        </div>
+        <aside class="risk-card">
+          <div class="risk-title">
+            Краткая сводка рисков
+          </div>
+          <ul class="risk-list">
+            <li class="risk-item">
+              <span class="risk-dot risk-dot--high"></span>
+              Низкая готовность стратегических документов НТР
+            </li>
+            <li class="risk-item">
+              <span class="risk-dot"></span>
+              Задержки в реализации мероприятий Стратегии НТР
+            </li>
+            <li class="risk-item">
+              <span class="risk-dot risk-dot--high"></span>
+              Недостаточная кадровая обеспеченность приоритетов
+            </li>
+            <li class="risk-item">
+              <span class="risk-dot risk-dot--progress"></span>
+              Рост технологической независимости по направлениям НТР
+            </li>
+          </ul>
+          <div class="risk-legend">
+            <span class="legend"><span class="status-dot status-dot--red"></span> высокий риск</span>
+            <span class="legend"><span class="status-dot status-dot--yellow"></span> средний</span>
+            <span class="legend"><span class="status-dot status-dot--green"></span> низкий</span>
+          </div>
+        </aside>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="section-card" data-code="3.1–3.4">
+          <h2 class="section-card__title">Перечни приоритетов НТР и ВНТ</h2>
+          <p class="section-card__description">Формирование, оценка и рассмотрение перечней приоритетов НТР и важнейших научных и технологий.</p>
+          <ul class="section-card__structure">
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">📌</span>
+              <span>Определение направлений и приоритетов</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">🧭</span>
+              <span>Оценка проектов перечней</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">📑</span>
+              <span>Подготовка перечней для Президента</span>
+            </li>
+          </ul>
+          <ul class="section-card__indicators">
+            <li class="section-card__indicator">Технологическая независимость</li>
+            <li class="section-card__indicator">Наукоёмкие технологии</li>
+            <li class="section-card__indicator">Результаты интеллектуальной деятельности</li>
+          </ul>
+          <div class="section-card__status-block">
+            <span class="status-dot status-dot--yellow"></span>
+            <span class="section-card__status-text">Есть риски</span>
+          </div>
+          <div class="section-card__footer">
+            <a href="chapter3-1-4.html" class="btn btn--primary">Перейти в подраздел</a>
+          </div>
+        </article>
+
+        <article class="section-card" data-code="3.5">
+          <h2 class="section-card__title">Меры и инструменты НТР</h2>
+          <p class="section-card__description">Определение механизмов, инструментов и инфраструктурных мер, обеспечивающих реализацию НТР.</p>
+          <ul class="section-card__structure">
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">💰</span>
+              <span>Финансирование НИОКР</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">🏗️</span>
+              <span>Инфраструктурные инструменты</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">👥</span>
+              <span>Кадровые меры</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">💼</span>
+              <span>Инвестиционные инструменты</span>
+            </li>
+          </ul>
+          <ul class="section-card__indicators">
+            <li class="section-card__indicator">Финансирование НИОКР</li>
+            <li class="section-card__indicator">Доступность инфраструктуры</li>
+            <li class="section-card__indicator">Технологическое развитие</li>
+          </ul>
+          <div class="section-card__status-block">
+            <span class="status-dot status-dot--green"></span>
+            <span class="section-card__status-text">В работе / стабильно</span>
+          </div>
+          <div class="section-card__footer">
+            <a href="chapter3-5.html" class="btn btn--primary">Перейти в подраздел</a>
+          </div>
+        </article>
+
+        <article class="section-card" data-code="3.6">
+          <h2 class="section-card__title">Отраслевые стратегии и НПТЛ</h2>
+          <p class="section-card__description">Согласование отраслевых стратегий и паспортов НПТЛ по кадровому и научному обеспечению.</p>
+          <ul class="section-card__structure">
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">📊</span>
+              <span>Отраслевые стратегии</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">👥</span>
+              <span>Кадровые модели</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">🔬</span>
+              <span>Научно-технологическое обеспечение</span>
+            </li>
+          </ul>
+          <ul class="section-card__indicators">
+            <li class="section-card__indicator">Занятость</li>
+            <li class="section-card__indicator">Производительность</li>
+            <li class="section-card__indicator">Технологический суверенитет</li>
+          </ul>
+          <div class="section-card__status-block">
+            <span class="status-dot status-dot--yellow"></span>
+            <span class="section-card__status-text">Есть риски</span>
+          </div>
+          <div class="section-card__footer">
+            <a href="chapter3-6.html" class="btn btn--primary">Перейти в подраздел</a>
+          </div>
+        </article>
+
+        <article class="section-card" data-code="3.7">
+          <h2 class="section-card__title">НП и ФП по соц-эконом развитию</h2>
+          <p class="section-card__description">Утверждение паспортов национальных и федеральных проектов, связанных с НТР.</p>
+          <ul class="section-card__structure">
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">🇷🇺</span>
+              <span>Нацпроекты</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">📋</span>
+              <span>Федеральные проекты</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">📈</span>
+              <span>Показатели технологического и кадрового развития</span>
+            </li>
+          </ul>
+          <ul class="section-card__indicators">
+            <li class="section-card__indicator">Экономический рост</li>
+            <li class="section-card__indicator">Технологическая независимость</li>
+            <li class="section-card__indicator">Производительность</li>
+          </ul>
+          <div class="section-card__status-block">
+            <span class="status-dot status-dot--green"></span>
+            <span class="section-card__status-text">В работе / стабильно</span>
+          </div>
+          <div class="section-card__footer">
+            <a href="chapter3-7.html" class="btn btn--primary">Перейти в подраздел</a>
+          </div>
+        </article>
+
+        <article class="section-card" data-code="3.8">
+          <h2 class="section-card__title">Координация дорожных карт</h2>
+          <p class="section-card__description">Координация дорожных карт или механизмов реализации.</p>
+          <ul class="section-card__structure">
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">🗺️</span>
+              <span>Дорожные карты</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">⚙️</span>
+              <span>Механизмы реализации</span>
+            </li>
+          </ul>
+          <ul class="section-card__indicators">
+            <li class="section-card__indicator">Коэффициент исполнения</li>
+            <li class="section-card__indicator">Согласованность</li>
+          </ul>
+          <div class="section-card__status-block">
+            <span class="status-dot status-dot--yellow"></span>
+            <span class="section-card__status-text">Есть риски</span>
+          </div>
+          <div class="section-card__footer">
+            <a href="#" class="btn btn--primary">Перейти в подраздел</a>
+          </div>
+        </article>
+
+        <article class="section-card" data-code="3.9">
+          <h2 class="section-card__title">Реализация Стратегии НТР</h2>
+          <p class="section-card__description">Реализация организационных, нормативных и методических мер Стратегии НТР.</p>
+          <ul class="section-card__structure">
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">🏢</span>
+              <span>Организационные меры</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">📜</span>
+              <span>Нормативно-правовое обеспечение</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">📚</span>
+              <span>Методическое обеспечение</span>
+            </li>
+          </ul>
+          <ul class="section-card__indicators">
+            <li class="section-card__indicator">Внутренние затраты на НИОКР</li>
+            <li class="section-card__indicator">Позиция РФ в мире по НИОКР</li>
+            <li class="section-card__indicator">Доля высокотехнологичной продукции</li>
+          </ul>
+          <div class="section-card__status-block">
+            <span class="status-dot status-dot--green"></span>
+            <span class="section-card__status-text">В работе / стабильно</span>
+          </div>
+          <div class="section-card__footer">
+            <a href="chapter3-9.html" class="btn btn--primary">Перейти в подраздел</a>
+          </div>
+        </article>
+
+        <article class="section-card" data-code="3.10">
+          <h2 class="section-card__title">Центры компетенций НПТЛ</h2>
+          <p class="section-card__description">Отбор и согласование центров компетенций НПТЛ и их руководителей.</p>
+          <ul class="section-card__structure">
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">👥</span>
+              <span>Кадровое обеспечение</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">🎓</span>
+              <span>Образовательные программы</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">🔬</span>
+              <span>Научные компетенции</span>
+            </li>
+          </ul>
+          <ul class="section-card__indicators">
+            <li class="section-card__indicator">Кадровый потенциал</li>
+            <li class="section-card__indicator">Квалификационная обеспеченность</li>
+          </ul>
+          <div class="section-card__status-block">
+            <span class="status-dot status-dot--yellow"></span>
+            <span class="section-card__status-text">Есть риски</span>
+          </div>
+          <div class="section-card__footer">
+            <a href="chapter3-10.html" class="btn btn--primary">Перейти в подраздел</a>
+          </div>
+        </article>
+
+        <article class="section-card" data-code="3.11">
+          <h2 class="section-card__title">Стратегия развития инженерных университетов</h2>
+          <p class="section-card__description">Кадровые программы, главные конструкторы и стратегии развития инженерных университетов.</p>
+          <ul class="section-card__structure">
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">🎓</span>
+              <span>Программы подготовки кадров</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">👨‍🔬</span>
+              <span>Главные конструкторы</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">🏛️</span>
+              <span>Стратегии университетов</span>
+            </li>
+          </ul>
+          <ul class="section-card__indicators">
+            <li class="section-card__indicator">Трудоустройство выпускников</li>
+            <li class="section-card__indicator">Кадровая обеспеченность отраслей</li>
+          </ul>
+          <div class="section-card__status-block">
+            <span class="status-dot status-dot--green"></span>
+            <span class="section-card__status-text">В работе / стабильно</span>
+          </div>
+          <div class="section-card__footer">
+            <a href="chapter3-11.html" class="btn btn--primary">Перейти в подраздел</a>
+          </div>
+        </article>
+
+        <article class="section-card" data-code="3.12">
+          <h2 class="section-card__title">КЦП по приоритетам</h2>
+          <p class="section-card__description">Определение контрольных цифр приёма по приоритетным направлениям подготовки.</p>
+          <ul class="section-card__structure">
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">📊</span>
+              <span>Аналитика потребности</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">📋</span>
+              <span>Распределение КЦП</span>
+            </li>
+            <li class="section-card__structure-item">
+              <span class="section-card__structure-icon">🎯</span>
+              <span>Приоритетные специальности</span>
+            </li>
+          </ul>
+          <ul class="section-card__indicators">
+            <li class="section-card__indicator">Молодые учёные</li>
+            <li class="section-card__indicator">Прирост занятых</li>
+            <li class="section-card__indicator">Обучение по доп. программам</li>
+          </ul>
+          <div class="section-card__status-block">
+            <span class="status-dot status-dot--green"></span>
+            <span class="section-card__status-text">В работе / стабильно</span>
+          </div>
+          <div class="section-card__footer">
+            <a href="chapter3-12.html" class="btn btn--primary">Перейти в подраздел</a>
+          </div>
+        </article>
+
+      </section>
+    </main>
+  </div>
+</body>
+</html>
+

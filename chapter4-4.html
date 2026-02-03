@@ -1,0 +1,2461 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подраздел 4.4 — Осуществление мониторинга реализации СНТР</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page {
+      min-height: 100vh;
+      background: radial-gradient(90% 120% at 10% 10%, rgba(0, 102, 255, 0.08), transparent 45%),
+        radial-gradient(70% 100% at 90% 0%, rgba(0, 201, 81, 0.08), transparent 45%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-32) var(--space-24) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      position: relative;
+    }
+
+    .header-section {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--space-24);
+      align-items: stretch;
+    }
+
+    .management-panel {
+      background: linear-gradient(145deg, rgba(0, 102, 255, 0.06), rgba(0, 201, 81, 0.05));
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .management-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 20% 0%, rgba(0, 102, 255, 0.1), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    .hero-title__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .hero-title h1 {
+      font-family: var(--font-alt);
+      font-size: var(--font-size-heading-xl);
+      line-height: var(--line-height-heading-xl);
+      letter-spacing: var(--letter-spacing-heading-xl);
+      font-weight: var(--font-weight-heading-xl);
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .hero-title p {
+      margin: var(--space-4) 0 var(--space-6) 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body-lg);
+      line-height: var(--line-height-body-lg);
+      max-width: 1100px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-12);
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-12);
+      border-radius: 999px;
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-label);
+      white-space: nowrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-400);
+      background: var(--material-lite-accent-surface);
+      color: var(--material-lite-accent-content-primary);
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-500);
+      background: var(--material-lite-accent-highlight);
+    }
+
+    .back-link__icon {
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      display: inline-block;
+    }
+
+    .service-controls {
+      background: linear-gradient(165deg, rgba(255, 105, 0, 0.12), rgba(0, 102, 255, 0.12));
+      border: 1px solid var(--color-warning-200);
+      border-radius: var(--radius-lg);
+      padding: var(--space-16);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      min-width: 280px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-controls__group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .service-controls__label {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label);
+    }
+
+    .service-controls__select-wrapper {
+      position: relative;
+    }
+
+    .service-controls__select {
+      padding: var(--space-6) var(--space-10);
+      padding-right: calc(var(--space-10) + 20px);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-surface-primary);
+      color: var(--material-neutral-content-primary);
+      font-size: var(--font-size-body);
+      cursor: pointer;
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+
+    .service-controls__select-wrapper::after {
+      content: "▼";
+      position: absolute;
+      right: var(--space-10);
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      color: var(--material-neutral-content-tertiary);
+      pointer-events: none;
+    }
+
+    .service-controls__toggle {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 2px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--material-neutral-border-primary);
+      background: var(--material-neutral-highlight-primary);
+      font-size: var(--font-size-body);
+      position: relative;
+    }
+
+    .service-controls__toggle-option {
+      flex: 1;
+      min-width: 0;
+      min-height: 40px;
+      padding: var(--space-6) var(--space-10);
+      border-radius: calc(var(--radius-md) - 2px);
+      transition: all 0.2s ease;
+      text-align: center;
+      cursor: pointer;
+      color: var(--material-neutral-content-secondary);
+      position: relative;
+      z-index: 1;
+      font-size: var(--font-size-caption);
+      font-weight: normal;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      line-height: 1.4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .service-controls__toggle-option:hover {
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .service-controls__toggle-option--active {
+      background: var(--material-accent-surface-primary);
+      color: var(--material-accent-content-primary);
+      font-weight: normal;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .service-controls__actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      margin-top: auto;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-6);
+      height: var(--control-height);
+      padding: 0 var(--space-16);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-family: var(--font-main);
+      font-size: var(--font-size-label);
+      font-weight: var(--font-weight-label);
+      text-decoration: none;
+      cursor: pointer;
+      background-color: var(--material-neutral-highlight-primary);
+      color: var(--material-neutral-content-primary);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn--primary {
+      background-color: var(--material-accent-surface-primary);
+      border-color: var(--material-accent-border-primary);
+      color: var(--material-accent-content-primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn--small {
+      height: 32px;
+      padding: 0 var(--space-12);
+      font-size: var(--font-size-caption);
+    }
+
+    /* Индекс реализации СНТР */
+    .index-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-48);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-24);
+      text-align: center;
+      min-height: 300px;
+    }
+
+    .index-card__value {
+      font-family: var(--font-alt);
+      font-size: 120px;
+      font-weight: 700;
+      line-height: 1;
+      margin: 0;
+    }
+
+    .index-card__value--green {
+      color: var(--color-positive-300);
+    }
+
+    .index-card__value--yellow {
+      color: var(--color-warning-300);
+    }
+
+    .index-card__value--red {
+      color: var(--color-negative-300);
+    }
+
+    .index-card__title {
+      font-family: var(--font-alt);
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .index-card__summary {
+      font-size: var(--font-size-body-lg);
+      color: var(--material-neutral-content-secondary);
+      max-width: 600px;
+      margin: 0;
+      line-height: var(--line-height-body-lg);
+    }
+
+    /* Стратегические траектории */
+    .trajectories-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-24);
+    }
+
+    @media (max-width: 1024px) {
+      .trajectories-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .trajectory-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .trajectory-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--color-accent-400);
+    }
+
+    .trajectory-card__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-16);
+    }
+
+    .trajectory-card__title {
+      font-family: var(--font-alt);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+      flex: 1;
+    }
+
+    .trajectory-card__status {
+      padding: var(--space-4) var(--space-12);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .trajectory-card__status--green {
+      background: rgba(0, 201, 81, 0.1);
+      color: var(--color-positive-700);
+      border: 1px solid var(--color-positive-300);
+    }
+
+    .trajectory-card__status--yellow {
+      background: rgba(245, 165, 36, 0.1);
+      color: var(--color-warning-700);
+      border: 1px solid var(--color-warning-300);
+    }
+
+    .trajectory-card__status--red {
+      background: rgba(251, 44, 54, 0.1);
+      color: var(--color-negative-700);
+      border: 1px solid var(--color-negative-300);
+    }
+
+    .trajectory-card__metrics {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .trajectory-card__metric {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-8) 0;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .trajectory-card__metric:last-child {
+      border-bottom: none;
+    }
+
+    .trajectory-card__metric-label {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .trajectory-card__metric-value {
+      font-size: var(--font-size-body);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+    }
+
+    .trajectory-card__sparkline {
+      height: 40px;
+      margin-top: var(--space-8);
+    }
+
+    /* Ключевые индикаторы */
+    .kpi-section {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+    }
+
+    .kpi-section__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-20);
+      cursor: pointer;
+    }
+
+    .kpi-section__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .kpi-section__toggle {
+      font-size: 24px;
+      color: var(--material-neutral-content-secondary);
+      transition: transform 0.3s ease;
+    }
+
+    .kpi-section__toggle--expanded {
+      transform: rotate(180deg);
+    }
+
+    .kpi-section__content {
+      display: none;
+    }
+
+    .kpi-section__content--expanded {
+      display: block;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .kpi-card {
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-16);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .kpi-card__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-12);
+      min-height: 2.8em;
+    }
+
+    .kpi-card__title {
+      font-size: var(--font-size-body);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+      flex: 1;
+      line-height: 1.4;
+    }
+
+    .kpi-card__status {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .kpi-card__status--green {
+      background: var(--color-positive-500);
+    }
+
+    .kpi-card__status--yellow {
+      background: var(--color-warning-500);
+    }
+
+    .kpi-card__status--red {
+      background: var(--color-negative-500);
+    }
+
+    .kpi-card__values {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: nowrap;
+      gap: var(--space-16);
+    }
+
+    .kpi-card__fact {
+      font-family: var(--font-alt);
+      font-size: 22px;
+      font-weight: 650;
+      color: var(--material-neutral-content-primary);
+      line-height: 0.9;
+      display: inline-block;
+      margin: 0;
+      padding: 0;
+      letter-spacing: -0.2px;
+    }
+
+    .kpi-card__trajectory {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+
+    .kpi-card__change {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+    }
+
+    .kpi-card__change--positive {
+      color: var(--color-positive-500);
+    }
+
+    .kpi-card__change--negative {
+      color: var(--color-negative-500);
+    }
+
+    .kpi-card__sparkline {
+      height: 30px;
+      margin-top: var(--space-8);
+    }
+
+    .kpi-card__details {
+      display: none;
+      margin-top: var(--space-16);
+      padding-top: var(--space-16);
+      border-top: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .kpi-card__details--expanded {
+      display: block;
+    }
+
+    .kpi-card__details-section {
+      margin-bottom: var(--space-16);
+    }
+
+    .kpi-card__details-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .kpi-card__details-title {
+      font-size: var(--font-size-label);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-8) 0;
+    }
+
+    .kpi-card__details-text {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+      line-height: var(--line-height-body);
+      margin: 0 0 var(--space-8) 0;
+    }
+
+    .kpi-card__details-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+
+    .kpi-card__details-item {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+      padding-left: var(--space-16);
+      position: relative;
+    }
+
+    .kpi-card__details-item::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--material-neutral-content-tertiary);
+    }
+
+    .kpi-card__details-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-6);
+    }
+
+    .kpi-card__details-tag {
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    /* Тепловая карта */
+    .heatmap-section {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+      overflow-x: auto;
+    }
+
+    .heatmap-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-body);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .heatmap-table thead {
+      background-color: var(--material-neutral-highlight-primary);
+    }
+
+    .heatmap-table th,
+    .heatmap-table td {
+      padding: var(--space-12) var(--space-16);
+      text-align: left;
+      border-bottom: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    .heatmap-table th {
+      font-size: var(--font-size-label);
+      color: var(--material-neutral-content-secondary);
+      font-weight: var(--font-weight-label-xl);
+      border-bottom: 2px solid var(--material-neutral-border-primary);
+      white-space: nowrap;
+    }
+
+    .heatmap-table td {
+      color: var(--material-neutral-content-primary);
+      background-color: var(--material-neutral-surface-primary);
+    }
+
+    .heatmap-table tbody tr:hover {
+      background-color: var(--material-neutral-highlight-primary);
+      cursor: pointer;
+    }
+
+    .heatmap-cell {
+      padding: var(--space-8) var(--space-12);
+      border-radius: var(--radius-sm);
+      text-align: center;
+      font-weight: 600;
+      font-size: var(--font-size-body);
+    }
+
+    .heatmap-cell--green {
+      background: rgba(0, 201, 81, 0.2);
+      color: var(--color-positive-700);
+    }
+
+    .heatmap-cell--yellow {
+      background: rgba(245, 165, 36, 0.2);
+      color: var(--color-warning-700);
+    }
+
+    .heatmap-cell--red {
+      background: rgba(251, 44, 54, 0.2);
+      color: var(--color-negative-700);
+    }
+
+    /* Динамика реализации */
+    .dynamics-section {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+    }
+
+    .dynamics-section__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-24) 0;
+    }
+
+    .dynamics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-24);
+    }
+
+    @media (max-width: 1024px) {
+      .dynamics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .dynamics-chart {
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-20);
+    }
+
+    .dynamics-chart__title {
+      font-size: var(--font-size-body);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-16) 0;
+    }
+
+    .dynamics-chart canvas {
+      width: 100% !important;
+      height: 250px !important;
+    }
+
+    /* Риски */
+    .risks-section {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+    }
+
+    .risks-section__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0 0 var(--space-24) 0;
+    }
+
+    .risks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .risk-card {
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-20);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .risk-card--high {
+      border-left: 4px solid var(--color-negative-500);
+    }
+
+    .risk-card--medium {
+      border-left: 4px solid var(--color-warning-500);
+    }
+
+    .risk-card--low {
+      border-left: 4px solid var(--color-positive-500);
+    }
+
+    .risk-card__title {
+      font-size: var(--font-size-body);
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .risk-card__directions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-6);
+    }
+
+    .risk-card__direction {
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-sm);
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    .risk-card__kpis {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .risk-card__kpi {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      padding-left: var(--space-16);
+      position: relative;
+    }
+
+    .risk-card__kpi::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--material-neutral-content-tertiary);
+    }
+
+    .risk-card__comment {
+      font-size: var(--font-size-body);
+      color: var(--material-neutral-content-secondary);
+      line-height: var(--line-height-body);
+      margin: 0;
+      padding-top: var(--space-8);
+      border-top: 1px solid var(--material-neutral-divider-primary);
+    }
+
+    /* Управленческие выводы */
+    .summary-section {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-20);
+    }
+
+    .summary-section__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      letter-spacing: -0.2px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .summary-card {
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .summary-card__title {
+      font-family: var(--font-alt);
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 600;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+    }
+
+    .summary-card__title--positive {
+      color: var(--color-positive-500);
+    }
+
+    .summary-card__title--negative {
+      color: var(--color-negative-500);
+    }
+
+    .summary-card__title--warning {
+      color: var(--color-warning-500);
+    }
+
+    .summary-card__list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .summary-card__item {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+      padding-left: var(--space-20);
+      position: relative;
+    }
+
+    .summary-card__item::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--material-neutral-content-tertiary);
+    }
+
+    /* Pop-up */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .popup--open {
+      display: flex;
+    }
+
+    .popup__content {
+      background: var(--material-neutral-surface-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+    }
+
+    .popup__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-20);
+      padding-bottom: var(--space-16);
+      border-bottom: 1px solid var(--material-neutral-border-primary);
+    }
+
+    .popup__title {
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 32px;
+      font-weight: 500;
+      color: var(--material-neutral-content-primary);
+      margin: 0;
+    }
+
+    .popup__close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--material-neutral-content-secondary);
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+    }
+
+    .popup__close:hover {
+      background: var(--material-neutral-highlight-primary);
+    }
+
+    .popup__text {
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+      line-height: var(--line-height-body);
+      margin: 0 0 var(--space-16) 0;
+    }
+
+    @media (max-width: 1024px) {
+      .header-section {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <!-- Шапка страницы -->
+      <section class="header-section">
+        <div class="management-panel">
+          <div class="hero-title">
+            <div class="hero-title__header">
+              <a class="back-link" href="chapter4.html">
+                <span class="back-link__icon"></span>
+                Назад к разделу 4
+              </a>
+              <span class="meta-pill">Подраздел 4.4</span>
+            </div>
+            <h1>Мониторинг реализации СНТР</h1>
+            <p>Агрегированная оценка достижения целей и траекторий Стратегии научно-технологического развития Российской Федерации.</p>
+            <div class="meta-row">
+              <span class="meta-pill">Последнее обновление: <strong>15.12.2025</strong></span>
+              <span class="meta-pill">Источники: Минобрнауки, Росстат, ФОИВ, ЕГИСУ НИОКТР</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Правый верхний блок -->
+        <aside class="service-controls">
+          <div class="service-controls__group">
+            <label class="service-controls__label">Период</label>
+            <div class="service-controls__select-wrapper">
+              <select class="service-controls__select" id="period-select">
+                <option>Год</option>
+                <option>Квартал</option>
+              </select>
+            </div>
+          </div>
+          <div class="service-controls__group">
+            <label class="service-controls__label">Режим отображения</label>
+            <div class="service-controls__toggle" id="view-toggle">
+              <span class="service-controls__toggle-option service-controls__toggle-option--active" data-view="fact">Факт</span>
+              <span class="service-controls__toggle-option" data-view="fact-vs-goal">Факт vs Цель</span>
+              <span class="service-controls__toggle-option" data-view="fact-vs-trajectory">Факт vs Траектория</span>
+            </div>
+          </div>
+          <div class="service-controls__actions">
+            <button class="btn btn--primary btn--small" id="pdf-btn">Версия для отчёта КНТР (PDF)</button>
+            <button class="btn btn--small" id="methodology-btn">Методология мониторинга</button>
+          </div>
+        </aside>
+      </section>
+
+      <!-- Первый экран: Индекс реализации СНТР -->
+      <section class="index-card">
+        <h2 class="index-card__title">Индекс реализации СНТР</h2>
+        <div class="index-card__value index-card__value--green" id="sntr-index">72</div>
+        <p class="index-card__summary" id="index-summary">Динамика реализации СНТР соответствует установленным траекториям. Наблюдается стабильный рост по ключевым направлениям.</p>
+      </section>
+
+      <!-- Стратегические траектории СНТР -->
+      <section>
+        <h2 style="font-family: var(--font-alt); font-size: 24px; font-weight: 600; color: var(--material-neutral-content-primary); margin: 0 0 var(--space-24) 0;">Стратегические траектории СНТР</h2>
+        <div class="trajectories-grid">
+          <div class="trajectory-card" onclick="window.location.href='#trajectory-1'">
+            <div class="trajectory-card__header">
+              <h3 class="trajectory-card__title">Развитие научного потенциала</h3>
+              <span class="trajectory-card__status trajectory-card__status--green">В траектории</span>
+            </div>
+            <div class="trajectory-card__metrics">
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Доля молодых учёных</span>
+                <span class="trajectory-card__metric-value">42% (цель: 40%)</span>
+              </div>
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Публикации Q1–Q2</span>
+                <span class="trajectory-card__metric-value">45% (цель: 50%)</span>
+              </div>
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Количество заявок на патенты</span>
+                <span class="trajectory-card__metric-value">28,450 (+8% YoY)</span>
+              </div>
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Исследователи с публикациями на A* конференциях</span>
+                <span class="trajectory-card__metric-value">3,245 (+12% YoY)</span>
+              </div>
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Техническая вооружённость сектора</span>
+                <span class="trajectory-card__metric-value">0.72 (цель: 0.75)</span>
+              </div>
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Прогресс vs траектория</span>
+                <span class="trajectory-card__metric-value">+2 п.п.</span>
+              </div>
+            </div>
+            <div class="trajectory-card__sparkline">
+              <canvas id="sparkline-1"></canvas>
+            </div>
+          </div>
+
+          <div class="trajectory-card" onclick="window.location.href='#trajectory-2'">
+            <div class="trajectory-card__header">
+              <h3 class="trajectory-card__title">Развитие технологического потенциала</h3>
+              <span class="trajectory-card__status trajectory-card__status--green">В траектории</span>
+            </div>
+            <div class="trajectory-card__metrics">
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Количество разработанных важнейших наукоёмких технологий</span>
+                <span class="trajectory-card__metric-value">156 (цель: 150)</span>
+              </div>
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Объём отечественных решений vs импорт</span>
+                <span class="trajectory-card__metric-value">72% / 28%</span>
+              </div>
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Доля высокотехнологичной продукции в ВВП</span>
+                <span class="trajectory-card__metric-value">21.3% (цель: 20%)</span>
+              </div>
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Объём реализованной наукоёмкой продукции</span>
+                <span class="trajectory-card__metric-value">1,245 млрд руб. (+8.5% YoY)</span>
+              </div>
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Δ за год</span>
+                <span class="trajectory-card__metric-value">+12 технологий</span>
+              </div>
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Целевой коридор</span>
+                <span class="trajectory-card__metric-value">150–160 технологий</span>
+              </div>
+            </div>
+            <div class="trajectory-card__sparkline">
+              <canvas id="sparkline-2"></canvas>
+            </div>
+          </div>
+
+          <div class="trajectory-card" onclick="window.location.href='#trajectory-3'">
+            <div class="trajectory-card__header">
+              <h3 class="trajectory-card__title">Развитие инновационного предпринимательства</h3>
+              <span class="trajectory-card__status trajectory-card__status--yellow">Риск отклонения</span>
+            </div>
+            <div class="trajectory-card__metrics">
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Прирост выручки малых технологических компаний</span>
+                <span class="trajectory-card__metric-value">+12% YoY</span>
+              </div>
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Удельный вес отечественных высокотехнологичных товаров без импорта</span>
+                <span class="trajectory-card__metric-value">68%</span>
+              </div>
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Показатель YoY</span>
+                <span class="trajectory-card__metric-value">+12%</span>
+              </div>
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Индекс соответствия траектории</span>
+                <span class="trajectory-card__metric-value">0.65 (цель: 0.70)</span>
+              </div>
+            </div>
+            <div class="trajectory-card__sparkline">
+              <canvas id="sparkline-3"></canvas>
+            </div>
+          </div>
+
+          <div class="trajectory-card" onclick="window.location.href='#trajectory-4'">
+            <div class="trajectory-card__header">
+              <h3 class="trajectory-card__title">Финансирование и условия развития НТР</h3>
+              <span class="trajectory-card__status trajectory-card__status--green">В траектории</span>
+            </div>
+            <div class="trajectory-card__metrics">
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Расходы на НИОКР (% ВВП)</span>
+                <span class="trajectory-card__metric-value">0.96% (цель: 1.2%)</span>
+              </div>
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Доля внебюджетных инвестиций в НИОКР</span>
+                <span class="trajectory-card__metric-value">38% (цель: 35%)</span>
+              </div>
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Место РФ по объёму НИОКР в мире</span>
+                <span class="trajectory-card__metric-value">9-е место</span>
+              </div>
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Прогресс</span>
+                <span class="trajectory-card__metric-value">+0.12 п.п. к прошлому году</span>
+              </div>
+              <div class="trajectory-card__metric">
+                <span class="trajectory-card__metric-label">Траектория</span>
+                <span class="trajectory-card__metric-value">0.96% → 1.2% к 2030</span>
+              </div>
+            </div>
+            <div class="trajectory-card__sparkline">
+              <canvas id="sparkline-4"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ключевые индикаторы СНТР -->
+      <section class="kpi-section">
+        <div class="kpi-section__header" id="kpi-toggle">
+          <h2 class="kpi-section__title">Ключевые индикаторы СНТР</h2>
+          <span class="kpi-section__toggle" id="kpi-toggle-icon">▼</span>
+        </div>
+        <div class="kpi-section__content" id="kpi-content">
+          <div class="kpi-grid">
+            <div class="kpi-card" data-kpi="1">
+              <div class="kpi-card__header">
+                <h3 class="kpi-card__title">Внутренние затраты на НИОКР (% ВВП)</h3>
+                <span class="kpi-card__status kpi-card__status--yellow"></span>
+              </div>
+              <div class="kpi-card__values">
+                <span class="kpi-card__fact">0.96%</span>
+                <span class="kpi-card__trajectory">Траектория: 0.9% → 1.2%</span>
+              </div>
+              <div class="kpi-card__change kpi-card__change--positive">↑ +0.12 п.п. YoY</div>
+              <div class="kpi-card__sparkline">
+                <canvas id="kpi-sparkline-1"></canvas>
+              </div>
+              <div class="kpi-card__details" id="kpi-details-1">
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Источник данных</h4>
+                  <p class="kpi-card__details-text">Росстат, Минобрнауки, ЕГИСУ НИОКТР</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Методика</h4>
+                  <p class="kpi-card__details-text">Отношение внутренних затрат на исследования и разработки к валовому внутреннему продукту, выраженное в процентах. Рассчитывается по методологии ОЭСР.</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Влияющие меры НТР</h4>
+                  <ul class="kpi-card__details-list">
+                    <li class="kpi-card__details-item">Государственная программа «Научно-технологическое развитие Российской Федерации»</li>
+                    <li class="kpi-card__details-item">Федеральные целевые программы в области НТР</li>
+                    <li class="kpi-card__details-item">Меры поддержки внебюджетного финансирования НИОКР</li>
+                  </ul>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Разрезы</h4>
+                  <div class="kpi-card__details-tags">
+                    <span class="kpi-card__details-tag">По отраслям</span>
+                    <span class="kpi-card__details-tag">По регионам</span>
+                    <span class="kpi-card__details-tag">По источникам финансирования</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-card" data-kpi="2">
+              <div class="kpi-card__header">
+                <h3 class="kpi-card__title">Удельный вес внебюджетного сектора в НИОКР</h3>
+                <span class="kpi-card__status kpi-card__status--green"></span>
+              </div>
+              <div class="kpi-card__values">
+                <span class="kpi-card__fact">38%</span>
+                <span class="kpi-card__trajectory">Траектория: 35% → 45%</span>
+              </div>
+              <div class="kpi-card__change kpi-card__change--positive">↑ +2 п.п. YoY</div>
+              <div class="kpi-card__sparkline">
+                <canvas id="kpi-sparkline-2"></canvas>
+              </div>
+              <div class="kpi-card__details" id="kpi-details-2">
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Источник данных</h4>
+                  <p class="kpi-card__details-text">Росстат, Минобрнауки</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Методика</h4>
+                  <p class="kpi-card__details-text">Доля внебюджетных источников финансирования в общем объёме внутренних затрат на НИОКР.</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Влияющие меры НТР</h4>
+                  <ul class="kpi-card__details-list">
+                    <li class="kpi-card__details-item">Налоговые льготы для компаний, осуществляющих НИОКР</li>
+                    <li class="kpi-card__details-item">Гранты и субсидии для инновационных проектов</li>
+                    <li class="kpi-card__details-item">Меры поддержки венчурного финансирования</li>
+                  </ul>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Разрезы</h4>
+                  <div class="kpi-card__details-tags">
+                    <span class="kpi-card__details-tag">По отраслям</span>
+                    <span class="kpi-card__details-tag">По типам организаций</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-card" data-kpi="3">
+              <div class="kpi-card__header">
+                <h3 class="kpi-card__title">Место РФ в мире по НИОКР</h3>
+                <span class="kpi-card__status kpi-card__status--green"></span>
+              </div>
+              <div class="kpi-card__values">
+                <span class="kpi-card__fact">9-е место</span>
+                <span class="kpi-card__trajectory">Траектория: 10 → 8</span>
+              </div>
+              <div class="kpi-card__change kpi-card__change--positive">↑ +1 место YoY</div>
+              <div class="kpi-card__sparkline">
+                <canvas id="kpi-sparkline-3"></canvas>
+              </div>
+              <div class="kpi-card__details" id="kpi-details-3">
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Источник данных</h4>
+                  <p class="kpi-card__details-text">ЮНЕСКО, ОЭСР, Росстат</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Методика</h4>
+                  <p class="kpi-card__details-text">Ранжирование стран по объёму внутренних затрат на НИОКР в абсолютных значениях (в долларах США по паритету покупательной способности).</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Влияющие меры НТР</h4>
+                  <ul class="kpi-card__details-list">
+                    <li class="kpi-card__details-item">Увеличение бюджетного финансирования НИОКР</li>
+                    <li class="kpi-card__details-item">Стимулирование частных инвестиций</li>
+                    <li class="kpi-card__details-item">Развитие международного сотрудничества</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-card" data-kpi="4">
+              <div class="kpi-card__header">
+                <h3 class="kpi-card__title">Доля молодых учёных</h3>
+                <span class="kpi-card__status kpi-card__status--green"></span>
+              </div>
+              <div class="kpi-card__values">
+                <span class="kpi-card__fact">42%</span>
+                <span class="kpi-card__trajectory">Траектория: 40% → 45%</span>
+              </div>
+              <div class="kpi-card__change kpi-card__change--positive">↑ +2 п.п. YoY</div>
+              <div class="kpi-card__sparkline">
+                <canvas id="kpi-sparkline-4"></canvas>
+              </div>
+              <div class="kpi-card__details" id="kpi-details-4">
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Источник данных</h4>
+                  <p class="kpi-card__details-text">Росстат, Минобрнауки</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Методика</h4>
+                  <p class="kpi-card__details-text">Доля исследователей в возрасте до 39 лет в общей численности исследователей.</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Влияющие меры НТР</h4>
+                  <ul class="kpi-card__details-list">
+                    <li class="kpi-card__details-item">Программы поддержки молодых учёных</li>
+                    <li class="kpi-card__details-item">Гранты для молодых исследователей</li>
+                    <li class="kpi-card__details-item">Меры по привлечению выпускников в науку</li>
+                  </ul>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Разрезы</h4>
+                  <div class="kpi-card__details-tags">
+                    <span class="kpi-card__details-tag">По отраслям</span>
+                    <span class="kpi-card__details-tag">По регионам</span>
+                    <span class="kpi-card__details-tag">По типам организаций</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-card" data-kpi="5">
+              <div class="kpi-card__header">
+                <h3 class="kpi-card__title">Техническая вооружённость сектора</h3>
+                <span class="kpi-card__status kpi-card__status--yellow"></span>
+              </div>
+              <div class="kpi-card__values">
+                <span class="kpi-card__fact">0.72</span>
+                <span class="kpi-card__trajectory">Траектория: 0.70 → 0.80</span>
+              </div>
+              <div class="kpi-card__change kpi-card__change--positive">↑ +0.02 YoY</div>
+              <div class="kpi-card__sparkline">
+                <canvas id="kpi-sparkline-5"></canvas>
+              </div>
+              <div class="kpi-card__details" id="kpi-details-5">
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Источник данных</h4>
+                  <p class="kpi-card__details-text">Минобрнауки, ЕГИСУ НИОКТР</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Методика</h4>
+                  <p class="kpi-card__details-text">Интегральный показатель, отражающий уровень оснащённости научных организаций современным оборудованием и инфраструктурой.</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Влияющие меры НТР</h4>
+                  <ul class="kpi-card__details-list">
+                    <li class="kpi-card__details-item">Программы обновления научного оборудования</li>
+                    <li class="kpi-card__details-item">Развитие уникальных научных установок</li>
+                    <li class="kpi-card__details-item">Модернизация инфраструктуры НИИ и вузов</li>
+                  </ul>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Разрезы</h4>
+                  <div class="kpi-card__details-tags">
+                    <span class="kpi-card__details-tag">По отраслям</span>
+                    <span class="kpi-card__details-tag">По регионам</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-card" data-kpi="6">
+              <div class="kpi-card__header">
+                <h3 class="kpi-card__title">Патентная активность</h3>
+                <span class="kpi-card__status kpi-card__status--green"></span>
+              </div>
+              <div class="kpi-card__values">
+                <span class="kpi-card__fact">28,450 заявок</span>
+                <span class="kpi-card__trajectory">Траектория: +5% → +10%</span>
+              </div>
+              <div class="kpi-card__change kpi-card__change--positive">↑ +8% YoY</div>
+              <div class="kpi-card__sparkline">
+                <canvas id="kpi-sparkline-6"></canvas>
+              </div>
+              <div class="kpi-card__details" id="kpi-details-6">
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Источник данных</h4>
+                  <p class="kpi-card__details-text">Роспатент, Минобрнауки</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Методика</h4>
+                  <p class="kpi-card__details-text">Количество заявок на патенты, поданных российскими заявителями в течение года.</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Влияющие меры НТР</h4>
+                  <ul class="kpi-card__details-list">
+                    <li class="kpi-card__details-item">Субсидирование патентования</li>
+                    <li class="kpi-card__details-item">Программы поддержки коммерциализации результатов НИОКР</li>
+                    <li class="kpi-card__details-item">Меры стимулирования патентной активности</li>
+                  </ul>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Разрезы</h4>
+                  <div class="kpi-card__details-tags">
+                    <span class="kpi-card__details-tag">По отраслям</span>
+                    <span class="kpi-card__details-tag">По регионам</span>
+                    <span class="kpi-card__details-tag">По типам заявителей</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-card" data-kpi="7">
+              <div class="kpi-card__header">
+                <h3 class="kpi-card__title">Публикационная активность</h3>
+                <span class="kpi-card__status kpi-card__status--yellow"></span>
+              </div>
+              <div class="kpi-card__values">
+                <span class="kpi-card__fact">45%</span>
+                <span class="kpi-card__trajectory">Траектория: 50% → 55%</span>
+              </div>
+              <div class="kpi-card__change kpi-card__change--positive">↑ +2 п.п. YoY</div>
+              <div class="kpi-card__sparkline">
+                <canvas id="kpi-sparkline-7"></canvas>
+              </div>
+              <div class="kpi-card__details" id="kpi-details-7">
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Источник данных</h4>
+                  <p class="kpi-card__details-text">Web of Science, Scopus, РИНЦ</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Методика</h4>
+                  <p class="kpi-card__details-text">Доля публикаций российских учёных в журналах Q1–Q2 в общем объёме публикаций.</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Влияющие меры НТР</h4>
+                  <ul class="kpi-card__details-list">
+                    <li class="kpi-card__details-item">Гранты на публикации в высокорейтинговых журналах</li>
+                    <li class="kpi-card__details-item">Поддержка развития российских научных журналов</li>
+                    <li class="kpi-card__details-item">Меры стимулирования публикационной активности</li>
+                  </ul>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Разрезы</h4>
+                  <div class="kpi-card__details-tags">
+                    <span class="kpi-card__details-tag">По научным направлениям</span>
+                    <span class="kpi-card__details-tag">По регионам</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-card" data-kpi="8">
+              <div class="kpi-card__header">
+                <h3 class="kpi-card__title">Количество разработанных важнейших технологий</h3>
+                <span class="kpi-card__status kpi-card__status--green"></span>
+              </div>
+              <div class="kpi-card__values">
+                <span class="kpi-card__fact">156</span>
+                <span class="kpi-card__trajectory">Траектория: 150 → 180</span>
+              </div>
+              <div class="kpi-card__change kpi-card__change--positive">↑ +12 YoY</div>
+              <div class="kpi-card__sparkline">
+                <canvas id="kpi-sparkline-8"></canvas>
+              </div>
+              <div class="kpi-card__details" id="kpi-details-8">
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Источник данных</h4>
+                  <p class="kpi-card__details-text">Минобрнауки, ФОИВ, ЕГИСУ НИОКТР</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Методика</h4>
+                  <p class="kpi-card__details-text">Количество важнейших наукоёмких технологий, разработанных в рамках реализации приоритетов НТР.</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Влияющие меры НТР</h4>
+                  <ul class="kpi-card__details-list">
+                    <li class="kpi-card__details-item">Федеральные целевые программы</li>
+                    <li class="kpi-card__details-item">Гранты на разработку критических технологий</li>
+                    <li class="kpi-card__details-item">Поддержка крупных технологических проектов</li>
+                  </ul>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Разрезы</h4>
+                  <div class="kpi-card__details-tags">
+                    <span class="kpi-card__details-tag">По приоритетам НТР</span>
+                    <span class="kpi-card__details-tag">По отраслям</span>
+                    <span class="kpi-card__details-tag">По ФОИВ</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-card" data-kpi="9">
+              <div class="kpi-card__header">
+                <h3 class="kpi-card__title">Прирост выручки малых технологических компаний</h3>
+                <span class="kpi-card__status kpi-card__status--green"></span>
+              </div>
+              <div class="kpi-card__values">
+                <span class="kpi-card__fact">+12%</span>
+                <span class="kpi-card__trajectory">Траектория: +10% → +15%</span>
+              </div>
+              <div class="kpi-card__change kpi-card__change--positive">↑ +2 п.п. YoY</div>
+              <div class="kpi-card__sparkline">
+                <canvas id="kpi-sparkline-9"></canvas>
+              </div>
+              <div class="kpi-card__details" id="kpi-details-9">
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Источник данных</h4>
+                  <p class="kpi-card__details-text">Росстат, Минэкономразвития</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Методика</h4>
+                  <p class="kpi-card__details-text">Годовой прирост выручки малых технологических компаний (до 250 сотрудников) в процентах.</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Влияющие меры НТР</h4>
+                  <ul class="kpi-card__details-list">
+                    <li class="kpi-card__details-item">Поддержка малого инновационного предпринимательства</li>
+                    <li class="kpi-card__details-item">Гранты и субсидии для технологических стартапов</li>
+                    <li class="kpi-card__details-item">Налоговые льготы для инновационных компаний</li>
+                  </ul>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Разрезы</h4>
+                  <div class="kpi-card__details-tags">
+                    <span class="kpi-card__details-tag">По отраслям</span>
+                    <span class="kpi-card__details-tag">По регионам</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-card" data-kpi="10">
+              <div class="kpi-card__header">
+                <h3 class="kpi-card__title">Соотношение отечественной и импортной наукоёмкой продукции</h3>
+                <span class="kpi-card__status kpi-card__status--yellow"></span>
+              </div>
+              <div class="kpi-card__values">
+                <span class="kpi-card__fact">72% / 28%</span>
+                <span class="kpi-card__trajectory">Траектория: 70% → 80%</span>
+              </div>
+              <div class="kpi-card__change kpi-card__change--positive">↑ +2 п.п. YoY</div>
+              <div class="kpi-card__sparkline">
+                <canvas id="kpi-sparkline-10"></canvas>
+              </div>
+              <div class="kpi-card__details" id="kpi-details-10">
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Источник данных</h4>
+                  <p class="kpi-card__details-text">Росстат, Минпромторг</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Методика</h4>
+                  <p class="kpi-card__details-text">Соотношение объёмов отечественной и импортной наукоёмкой продукции на внутреннем рынке.</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Влияющие меры НТР</h4>
+                  <ul class="kpi-card__details-list">
+                    <li class="kpi-card__details-item">Меры по импортозамещению</li>
+                    <li class="kpi-card__details-item">Поддержка отечественных производителей</li>
+                    <li class="kpi-card__details-item">Развитие технологического суверенитета</li>
+                  </ul>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Разрезы</h4>
+                  <div class="kpi-card__details-tags">
+                    <span class="kpi-card__details-tag">По отраслям</span>
+                    <span class="kpi-card__details-tag">По типам продукции</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-card" data-kpi="11">
+              <div class="kpi-card__header">
+                <h3 class="kpi-card__title">Доля высокотехнологичной продукции в ВВП</h3>
+                <span class="kpi-card__status kpi-card__status--green"></span>
+              </div>
+              <div class="kpi-card__values">
+                <span class="kpi-card__fact">21.3%</span>
+                <span class="kpi-card__trajectory">Траектория: 20% → 25%</span>
+              </div>
+              <div class="kpi-card__change kpi-card__change--positive">↑ +1.2 п.п. YoY</div>
+              <div class="kpi-card__sparkline">
+                <canvas id="kpi-sparkline-11"></canvas>
+              </div>
+              <div class="kpi-card__details" id="kpi-details-11">
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Источник данных</h4>
+                  <p class="kpi-card__details-text">Росстат, Минэкономразвития</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Методика</h4>
+                  <p class="kpi-card__details-text">Доля продукции высокотехнологичных отраслей в валовом внутреннем продукте, рассчитанная по методологии ОЭСР.</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Влияющие меры НТР</h4>
+                  <ul class="kpi-card__details-list">
+                    <li class="kpi-card__details-item">Поддержка высокотехнологичных отраслей</li>
+                    <li class="kpi-card__details-item">Меры стимулирования инновационной деятельности</li>
+                    <li class="kpi-card__details-item">Развитие наукоёмкого производства</li>
+                  </ul>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Разрезы</h4>
+                  <div class="kpi-card__details-tags">
+                    <span class="kpi-card__details-tag">По отраслям</span>
+                    <span class="kpi-card__details-tag">По регионам</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-card" data-kpi="12">
+              <div class="kpi-card__header">
+                <h3 class="kpi-card__title">Объём налоговых поступлений от наукоёмкой продукции</h3>
+                <span class="kpi-card__status kpi-card__status--green"></span>
+              </div>
+              <div class="kpi-card__values">
+                <span class="kpi-card__fact">342 млрд руб.</span>
+                <span class="kpi-card__trajectory">Траектория: 300 → 400</span>
+              </div>
+              <div class="kpi-card__change kpi-card__change--positive">↑ +12% YoY</div>
+              <div class="kpi-card__sparkline">
+                <canvas id="kpi-sparkline-12"></canvas>
+              </div>
+              <div class="kpi-card__details" id="kpi-details-12">
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Источник данных</h4>
+                  <p class="kpi-card__details-text">ФНС, Минфин</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Методика</h4>
+                  <p class="kpi-card__details-text">Объём налоговых поступлений от реализации наукоёмкой продукции и услуг высокотехнологичных отраслей.</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Влияющие меры НТР</h4>
+                  <ul class="kpi-card__details-list">
+                    <li class="kpi-card__details-item">Налоговые льготы для инновационных компаний</li>
+                    <li class="kpi-card__details-item">Меры стимулирования коммерциализации</li>
+                    <li class="kpi-card__details-item">Поддержка экспорта высокотехнологичной продукции</li>
+                  </ul>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Разрезы</h4>
+                  <div class="kpi-card__details-tags">
+                    <span class="kpi-card__details-tag">По отраслям</span>
+                    <span class="kpi-card__details-tag">По регионам</span>
+                    <span class="kpi-card__details-tag">По типам налогов</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-card" data-kpi="13">
+              <div class="kpi-card__header">
+                <h3 class="kpi-card__title">Удельный вес отечественных высокотехнологичных товаров</h3>
+                <span class="kpi-card__status kpi-card__status--yellow"></span>
+              </div>
+              <div class="kpi-card__values">
+                <span class="kpi-card__fact">68%</span>
+                <span class="kpi-card__trajectory">Траектория: 65% → 75%</span>
+              </div>
+              <div class="kpi-card__change kpi-card__change--positive">↑ +2 п.п. YoY</div>
+              <div class="kpi-card__sparkline">
+                <canvas id="kpi-sparkline-13"></canvas>
+              </div>
+              <div class="kpi-card__details" id="kpi-details-13">
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Источник данных</h4>
+                  <p class="kpi-card__details-text">Росстат, Минпромторг</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Методика</h4>
+                  <p class="kpi-card__details-text">Доля отечественных высокотехнологичных товаров в общем объёме высокотехнологичной продукции на внутреннем рынке.</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Влияющие меры НТР</h4>
+                  <ul class="kpi-card__details-list">
+                    <li class="kpi-card__details-item">Меры по импортозамещению</li>
+                    <li class="kpi-card__details-item">Поддержка отечественных производителей</li>
+                    <li class="kpi-card__details-item">Развитие технологического суверенитета</li>
+                  </ul>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Разрезы</h4>
+                  <div class="kpi-card__details-tags">
+                    <span class="kpi-card__details-tag">По отраслям</span>
+                    <span class="kpi-card__details-tag">По типам товаров</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-card" data-kpi="14">
+              <div class="kpi-card__header">
+                <h3 class="kpi-card__title">Объём реализованной продукции на базе ключевых технологий</h3>
+                <span class="kpi-card__status kpi-card__status--green"></span>
+              </div>
+              <div class="kpi-card__values">
+                <span class="kpi-card__fact">1,245 млрд руб.</span>
+                <span class="kpi-card__trajectory">Траектория: 1,000 → 1,500</span>
+              </div>
+              <div class="kpi-card__change kpi-card__change--positive">↑ +8.5% YoY</div>
+              <div class="kpi-card__sparkline">
+                <canvas id="kpi-sparkline-14"></canvas>
+              </div>
+              <div class="kpi-card__details" id="kpi-details-14">
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Источник данных</h4>
+                  <p class="kpi-card__details-text">Росстат, Минпромторг, ФОИВ</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Методика</h4>
+                  <p class="kpi-card__details-text">Объём реализованной продукции, созданной на основе ключевых технологий, разработанных в рамках приоритетов НТР.</p>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Влияющие меры НТР</h4>
+                  <ul class="kpi-card__details-list">
+                    <li class="kpi-card__details-item">Программы коммерциализации технологий</li>
+                    <li class="kpi-card__details-item">Поддержка внедрения разработок</li>
+                    <li class="kpi-card__details-item">Меры стимулирования инновационной деятельности</li>
+                  </ul>
+                </div>
+                <div class="kpi-card__details-section">
+                  <h4 class="kpi-card__details-title">Разрезы</h4>
+                  <div class="kpi-card__details-tags">
+                    <span class="kpi-card__details-tag">По приоритетам НТР</span>
+                    <span class="kpi-card__details-tag">По отраслям</span>
+                    <span class="kpi-card__details-tag">По регионам</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Исполнение ключевых направлений СНТР (Heatmap) -->
+      <section class="heatmap-section">
+        <h2 style="font-family: var(--font-alt); font-size: 24px; font-weight: 600; color: var(--material-neutral-content-primary); margin: 0 0 var(--space-24) 0;">Исполнение ключевых направлений СНТР</h2>
+        <div style="overflow-x: auto;">
+          <table class="heatmap-table">
+            <thead>
+              <tr>
+                <th>Направление СНТР</th>
+                <th>Факт</th>
+                <th>Δ YoY</th>
+                <th>Прогноз</th>
+                <th>Статус траектории</th>
+                <th>Оценка риска</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Наука</strong></td>
+                <td><div class="heatmap-cell heatmap-cell--green">78</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">+5</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">80</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">В траектории</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">Низкий</div></td>
+              </tr>
+              <tr>
+                <td><strong>Кадры</strong></td>
+                <td><div class="heatmap-cell heatmap-cell--green">75</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">+3</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">77</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">В траектории</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">Низкий</div></td>
+              </tr>
+              <tr>
+                <td><strong>Технологии</strong></td>
+                <td><div class="heatmap-cell heatmap-cell--green">72</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">+4</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">74</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">В траектории</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">Низкий</div></td>
+              </tr>
+              <tr>
+                <td><strong>Инфраструктура</strong></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">68</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">+2</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">70</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">Риск отклонения</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">Средний</div></td>
+              </tr>
+              <tr>
+                <td><strong>Инновации</strong></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">65</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">+1</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">67</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">Риск отклонения</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">Средний</div></td>
+              </tr>
+              <tr>
+                <td><strong>Импортозамещение / технологическая независимость</strong></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">68</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">+2</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">70</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">Риск отклонения</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">Средний</div></td>
+              </tr>
+              <tr>
+                <td><strong>Предпринимательство</strong></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">62</div></td>
+                <td><div class="heatmap-cell heatmap-cell--green">+1</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">64</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">Риск отклонения</div></td>
+                <td><div class="heatmap-cell heatmap-cell--yellow">Средний</div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Динамика реализации СНТР -->
+      <section class="dynamics-section">
+        <h2 class="dynamics-section__title">Динамика реализации СНТР</h2>
+        <div class="dynamics-grid">
+          <div class="dynamics-chart">
+            <h3 class="dynamics-chart__title">НИОКР (% ВВП) vs. целевая стратегическая линия</h3>
+            <canvas id="chart-niokr"></canvas>
+          </div>
+          <div class="dynamics-chart">
+            <h3 class="dynamics-chart__title">Количество важнейших технологий vs. план</h3>
+            <canvas id="chart-technologies"></canvas>
+          </div>
+          <div class="dynamics-chart">
+            <h3 class="dynamics-chart__title">Доля высокотехнологичной продукции vs. траектория</h3>
+            <canvas id="chart-htp"></canvas>
+          </div>
+          <div class="dynamics-chart">
+            <h3 class="dynamics-chart__title">Публикации Q1–Q2 vs. целевые темпы</h3>
+            <canvas id="chart-publications"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Риски реализации СНТР -->
+      <section class="risks-section">
+        <h2 class="risks-section__title">Риски реализации СНТР</h2>
+        <div class="risks-grid">
+          <div class="risk-card risk-card--medium">
+            <h3 class="risk-card__title">Отставание по внебюджетному финансированию НИОКР</h3>
+            <div class="risk-card__directions">
+              <span class="risk-card__direction">Финансирование</span>
+              <span class="risk-card__direction">Инновации</span>
+            </div>
+            <ul class="risk-card__kpis">
+              <li class="risk-card__kpi">Внутренние затраты на НИОКР (% ВВП): 0.96% (цель: 1.2%)</li>
+              <li class="risk-card__kpi">Удельный вес внебюджетного сектора: 38%</li>
+            </ul>
+            <p class="risk-card__comment">Текущий уровень финансирования НИОКР ниже целевого значения. Требуется усиление мер по привлечению внебюджетных инвестиций.</p>
+          </div>
+
+          <div class="risk-card risk-card--low">
+            <h3 class="risk-card__title">Низкие темпы создания новых наукоёмких технологий</h3>
+            <div class="risk-card__directions">
+              <span class="risk-card__direction">Технологии</span>
+              <span class="risk-card__direction">Инновации</span>
+            </div>
+            <ul class="risk-card__kpis">
+              <li class="risk-card__kpi">Количество разработанных технологий: 156 (цель: 150)</li>
+              <li class="risk-card__kpi">Темп роста: +8% YoY</li>
+            </ul>
+            <p class="risk-card__comment">Показатель находится в целевом коридоре, но темпы роста могут быть ускорены для достижения более амбициозных целей.</p>
+          </div>
+
+          <div class="risk-card risk-card--medium">
+            <h3 class="risk-card__title">Снижение публикационной активности молодых учёных</h3>
+            <div class="risk-card__directions">
+              <span class="risk-card__direction">Наука</span>
+              <span class="risk-card__direction">Кадры</span>
+            </div>
+            <ul class="risk-card__kpis">
+              <li class="risk-card__kpi">Публикации Q1–Q2: 45% (цель: 50%)</li>
+              <li class="risk-card__kpi">Доля молодых учёных: 42%</li>
+            </ul>
+            <p class="risk-card__comment">Публикационная активность в высокорейтинговых журналах ниже целевого значения. Требуется поддержка молодых исследователей.</p>
+          </div>
+
+          <div class="risk-card risk-card--medium">
+            <h3 class="risk-card__title">Рост зависимости от импортных технологий</h3>
+            <div class="risk-card__directions">
+              <span class="risk-card__direction">Импортозамещение</span>
+              <span class="risk-card__direction">Технологии</span>
+            </div>
+            <ul class="risk-card__kpis">
+              <li class="risk-card__kpi">Уровень технологической независимости: 68%</li>
+              <li class="risk-card__kpi">Соотношение отечественной и импортной продукции: 72%</li>
+            </ul>
+            <p class="risk-card__comment">В некоторых критических направлениях сохраняется зависимость от импортных решений. Необходимо усиление мер по технологическому суверенитету.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Управленческие выводы -->
+      <section class="summary-section">
+        <h2 class="summary-section__title">Управленческие выводы</h2>
+        <div class="summary-cards">
+          <article class="summary-card">
+            <h3 class="summary-card__title summary-card__title--positive">
+              <span>✓</span>
+              <span>Что выполнено в соответствии с траекторией</span>
+            </h3>
+            <ul class="summary-card__list">
+              <li class="summary-card__item">Развитие научного потенциала: индекс 78, выше целевого коридора</li>
+              <li class="summary-card__item">Развитие технологического потенциала: создано 156 важнейших технологий</li>
+              <li class="summary-card__item">Финансирование НТР: внебюджетные инвестиции достигли 38%</li>
+              <li class="summary-card__item">Доля высокотехнологичной продукции в ВВП: 21.3%, превышает целевое значение</li>
+            </ul>
+          </article>
+
+          <article class="summary-card">
+            <h3 class="summary-card__title summary-card__title--warning">
+              <span>⚠</span>
+              <span>Где наблюдаются риски</span>
+            </h3>
+            <ul class="summary-card__list">
+              <li class="summary-card__item">Инфраструктура: индекс 68, риск отклонения от траектории</li>
+              <li class="summary-card__item">Инновационное предпринимательство: индекс 65, требует внимания</li>
+              <li class="summary-card__item">Публикационная активность: 45%, ниже целевого значения (50%)</li>
+              <li class="summary-card__item">Внутренние затраты на НИОКР: 0.96%, ниже целевого значения (1.2%)</li>
+            </ul>
+          </article>
+
+          <article class="summary-card">
+            <h3 class="summary-card__title summary-card__title--negative">
+              <span>⚠</span>
+              <span>Где необходимо вмешательство КНТР / ФОИВ</span>
+            </h3>
+            <ul class="summary-card__list">
+              <li class="summary-card__item">Усиление мер по привлечению внебюджетного финансирования НИОКР</li>
+              <li class="summary-card__item">Поддержка публикационной активности молодых учёных в высокорейтинговых журналах</li>
+              <li class="summary-card__item">Ускорение темпов создания новых наукоёмких технологий</li>
+              <li class="summary-card__item">Усиление мер по технологическому суверенитету в критических направлениях</li>
+            </ul>
+          </article>
+
+          <article class="summary-card">
+            <h3 class="summary-card__title summary-card__title--positive">
+              <span>→</span>
+              <span>Как изменилось состояние СНТР по сравнению с прошлым годом</span>
+            </h3>
+            <ul class="summary-card__list">
+              <li class="summary-card__item">Индекс реализации СНТР вырос с 68 до 72 (+4 пункта)</li>
+              <li class="summary-card__item">Улучшение по всем ключевым направлениям, кроме инфраструктуры</li>
+              <li class="summary-card__item">Рост доли высокотехнологичной продукции в ВВП на 1.2 п.п.</li>
+              <li class="summary-card__item">Увеличение количества разработанных технологий на 12 единиц</li>
+            </ul>
+          </article>
+
+          <article class="summary-card">
+            <h3 class="summary-card__title summary-card__title--warning">
+              <span>→</span>
+              <span>Какие направления требуют пересмотра мер политики</span>
+            </h3>
+            <ul class="summary-card__list">
+              <li class="summary-card__item">Политика поддержки инновационного предпринимательства</li>
+              <li class="summary-card__item">Меры по развитию научной инфраструктуры</li>
+              <li class="summary-card__item">Программы стимулирования публикационной активности</li>
+              <li class="summary-card__item">Механизмы привлечения внебюджетного финансирования НИОКР</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Pop-up "Методология мониторинга" -->
+  <div class="popup" id="methodology-popup">
+    <div class="popup__content">
+      <div class="popup__header">
+        <h2 class="popup__title">Методология мониторинга реализации СНТР</h2>
+        <button class="popup__close" id="popup-close">×</button>
+      </div>
+      <div>
+        <p class="popup__text">
+          <strong>Индекс реализации СНТР</strong> рассчитывается как агрегированная оценка достижения целей и траекторий Стратегии научно-технологического развития Российской Федерации на основе взвешенной суммы показателей по ключевым направлениям.
+        </p>
+        <p class="popup__text">
+          <strong>Целевые траектории</strong> определяются на основе стратегических документов и поручений КНТР. Значения индекса 80–100 соответствуют зелёной зоне (стабильное выполнение), 60–79 — жёлтой зоне (риск отклонения), ниже 60 — красной зоне (критическое отставание).
+        </p>
+        <p class="popup__text">
+          <strong>Ключевые индикаторы СНТР</strong> формируются из показателей, отражающих состояние научного потенциала, технологического развития, инновационной активности и финансирования НТР. Каждый индикатор сопоставляется с целевой траекторией и оценивается по статусу выполнения.
+        </p>
+        <p class="popup__text">
+          <strong>Риски реализации СНТР</strong> выявляются автоматически на основе отклонений показателей от целевых траекторий и анализируются с учётом влияющих факторов и мер государственной политики.
+        </p>
+        <p class="popup__text">
+          <strong>Управленческие выводы</strong> генерируются автоматически на основе анализа всех показателей и включают оценку выполнения траекторий, выявление рисков и рекомендации по корректировке мер политики.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Настройка Chart.js
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+    const colors = {
+      primary: '#1565FF',
+      secondary: '#00C951',
+      neutral: '#8A94A6',
+      warning: '#F5A524',
+      danger: '#FB2C36'
+    };
+
+    // Переключение режима отображения
+    const viewToggle = document.getElementById('view-toggle');
+    const viewOptions = viewToggle ? viewToggle.querySelectorAll('.service-controls__toggle-option') : [];
+    
+    viewOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        viewOptions.forEach(opt => opt.classList.remove('service-controls__toggle-option--active'));
+        option.classList.add('service-controls__toggle-option--active');
+        const view = option.getAttribute('data-view');
+        console.log('Режим отображения изменён на:', view);
+        // Здесь можно добавить логику обновления графиков
+      });
+    });
+
+    // Разворачивание блока ключевых индикаторов
+    const kpiToggle = document.getElementById('kpi-toggle');
+    const kpiContent = document.getElementById('kpi-content');
+    const kpiToggleIcon = document.getElementById('kpi-toggle-icon');
+    
+    if (kpiToggle && kpiContent) {
+      kpiToggle.addEventListener('click', () => {
+        const isExpanded = kpiContent.classList.contains('kpi-section__content--expanded');
+        if (isExpanded) {
+          kpiContent.classList.remove('kpi-section__content--expanded');
+          kpiToggleIcon.classList.remove('kpi-section__toggle--expanded');
+        } else {
+          kpiContent.classList.add('kpi-section__content--expanded');
+          kpiToggleIcon.classList.add('kpi-section__toggle--expanded');
+        }
+      });
+    }
+
+    // Pop-up "Методология мониторинга"
+    const methodologyBtn = document.getElementById('methodology-btn');
+    const methodologyPopup = document.getElementById('methodology-popup');
+    const popupClose = document.getElementById('popup-close');
+
+    if (methodologyBtn) {
+      methodologyBtn.addEventListener('click', () => {
+        methodologyPopup.classList.add('popup--open');
+      });
+    }
+
+    if (popupClose) {
+      popupClose.addEventListener('click', () => {
+        methodologyPopup.classList.remove('popup--open');
+      });
+    }
+
+    if (methodologyPopup) {
+      methodologyPopup.addEventListener('click', (e) => {
+        if (e.target === methodologyPopup) {
+          methodologyPopup.classList.remove('popup--open');
+        }
+      });
+    }
+
+    // Кнопка PDF
+    const pdfBtn = document.getElementById('pdf-btn');
+    if (pdfBtn) {
+      pdfBtn.addEventListener('click', () => {
+        alert('Функция экспорта в PDF будет реализована в следующей версии');
+      });
+    }
+
+    // Спарклайны для траекторий
+    const sparklineData = [65, 67, 69, 70, 72];
+    const sparklineOptions = {
+      type: 'line',
+      data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+          data: sparklineData,
+          borderColor: colors.primary,
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointRadius: 0,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false }
+        },
+        scales: {
+          x: { display: false },
+          y: { display: false }
+        }
+      }
+    };
+
+    ['sparkline-1', 'sparkline-2', 'sparkline-3', 'sparkline-4'].forEach((id, index) => {
+      const canvas = document.getElementById(id);
+      if (canvas) {
+        const data = [
+          [65, 67, 69, 70, 72],
+          [70, 72, 74, 75, 76],
+          [60, 61, 62, 63, 65],
+          [68, 69, 70, 71, 72]
+        ];
+        new Chart(canvas, {
+          ...sparklineOptions,
+          data: {
+            labels: ['2021', '2022', '2023', '2024', '2025'],
+            datasets: [{
+              data: data[index],
+              borderColor: colors.primary,
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              pointRadius: 0,
+              tension: 0.4
+            }]
+          }
+        });
+      }
+    });
+
+    // Раскрытие деталей KPI при клике
+    const kpiCards = document.querySelectorAll('.kpi-card');
+    kpiCards.forEach(card => {
+      card.addEventListener('click', (e) => {
+        // Не раскрываем, если клик по спарклайну
+        if (e.target.tagName === 'CANVAS' || e.target.closest('canvas')) {
+          return;
+        }
+        
+        const details = card.querySelector('.kpi-card__details');
+        if (details) {
+          const isExpanded = details.classList.contains('kpi-card__details--expanded');
+          if (isExpanded) {
+            details.classList.remove('kpi-card__details--expanded');
+          } else {
+            // Закрываем другие открытые карточки
+            kpiCards.forEach(c => {
+              const d = c.querySelector('.kpi-card__details');
+              if (d && d !== details) {
+                d.classList.remove('kpi-card__details--expanded');
+              }
+            });
+            details.classList.add('kpi-card__details--expanded');
+          }
+        }
+      });
+    });
+
+    // Спарклайны для KPI (14 показателей)
+    const kpiSparklineData = [
+      [0.84, 0.86, 0.88, 0.92, 0.96], // 1. Внутренние затраты на НИОКР
+      [34, 35, 36, 37, 38], // 2. Удельный вес внебюджетного сектора
+      [10, 10, 9, 9, 9], // 3. Место РФ в мире
+      [38, 39, 40, 41, 42], // 4. Доля молодых учёных
+      [0.68, 0.69, 0.70, 0.71, 0.72], // 5. Техническая вооружённость
+      [24, 25, 26, 27, 28.45], // 6. Патентная активность (тыс. заявок)
+      [42, 43, 44, 44, 45], // 7. Публикационная активность
+      [140, 144, 148, 152, 156], // 8. Количество технологий
+      [8, 9, 10, 11, 12], // 9. Прирост выручки МТК (%)
+      [68, 69, 70, 71, 72], // 10. Соотношение отечественной/импортной (%)
+      [19.5, 20.0, 20.5, 20.8, 21.3], // 11. Доля ВТП в ВВП
+      [280, 295, 310, 325, 342], // 12. Налоговые поступления (млрд руб.)
+      [64, 65, 66, 67, 68], // 13. Удельный вес отечественных ВТТ
+      [980, 1050, 1120, 1180, 1245] // 14. Объём реализованной продукции (млрд руб.)
+    ];
+
+    kpiSparklineData.forEach((data, index) => {
+      const canvas = document.getElementById(`kpi-sparkline-${index + 1}`);
+      if (canvas) {
+        new Chart(canvas, {
+          ...sparklineOptions,
+          data: {
+            labels: ['2021', '2022', '2023', '2024', '2025'],
+            datasets: [{
+              data: data,
+              borderColor: colors.primary,
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              pointRadius: 0,
+              tension: 0.4
+            }]
+          }
+        });
+      }
+    });
+
+    // Графики динамики
+    const years = ['2021', '2022', '2023', '2024', '2025'];
+
+    // НИОКР (% ВВП)
+    new Chart(document.getElementById('chart-niokr'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{
+          label: 'Факт',
+          data: [0.84, 0.86, 0.88, 0.92, 0.96],
+          borderColor: colors.primary,
+          backgroundColor: 'rgba(21, 101, 255, 0.1)',
+          tension: 0.3,
+          fill: true
+        }, {
+          label: 'Траектория',
+          data: [0.90, 0.95, 1.00, 1.10, 1.20],
+          borderColor: colors.secondary,
+          backgroundColor: 'transparent',
+          borderDash: [5, 5],
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: true, position: 'bottom' }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            min: 0.7,
+            title: { display: true, text: '% ВВП' }
+          }
+        }
+      }
+    });
+
+    // Количество важнейших технологий
+    new Chart(document.getElementById('chart-technologies'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{
+          label: 'Факт',
+          data: [140, 144, 148, 152, 156],
+          borderColor: colors.primary,
+          backgroundColor: 'rgba(21, 101, 255, 0.1)',
+          tension: 0.3,
+          fill: true
+        }, {
+          label: 'План',
+          data: [135, 140, 145, 150, 155],
+          borderColor: colors.secondary,
+          backgroundColor: 'transparent',
+          borderDash: [5, 5],
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: true, position: 'bottom' }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            min: 130,
+            title: { display: true, text: 'Количество' }
+          }
+        }
+      }
+    });
+
+    // Доля высокотехнологичной продукции
+    new Chart(document.getElementById('chart-htp'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{
+          label: 'Факт',
+          data: [19.5, 20.0, 20.5, 20.8, 21.3],
+          borderColor: colors.primary,
+          backgroundColor: 'rgba(21, 101, 255, 0.1)',
+          tension: 0.3,
+          fill: true
+        }, {
+          label: 'Траектория',
+          data: [19.0, 19.5, 20.0, 20.5, 21.0],
+          borderColor: colors.secondary,
+          backgroundColor: 'transparent',
+          borderDash: [5, 5],
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: true, position: 'bottom' }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            min: 18,
+            title: { display: true, text: '% ВВП' }
+          }
+        }
+      }
+    });
+
+    // Публикации Q1–Q2
+    new Chart(document.getElementById('chart-publications'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{
+          label: 'Факт',
+          data: [42, 43, 44, 44, 45],
+          borderColor: colors.primary,
+          backgroundColor: 'rgba(21, 101, 255, 0.1)',
+          tension: 0.3,
+          fill: true
+        }, {
+          label: 'Целевые темпы',
+          data: [43, 45, 47, 48, 50],
+          borderColor: colors.warning,
+          backgroundColor: 'transparent',
+          borderDash: [5, 5],
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: true, position: 'bottom' }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            min: 40,
+            max: 52,
+            title: { display: true, text: '%' }
+          }
+        }
+      }
+    });
+
+    // Автоматическое обновление индекса и резюме на основе данных
+    function updateIndexSummary() {
+      const index = 72;
+      const indexElement = document.getElementById('sntr-index');
+      const summaryElement = document.getElementById('index-summary');
+      
+      if (index >= 80) {
+        indexElement.className = 'index-card__value index-card__value--green';
+        summaryElement.textContent = 'Динамика реализации СНТР соответствует установленным траекториям. Наблюдается стабильный рост по ключевым направлениям.';
+      } else if (index >= 60) {
+        indexElement.className = 'index-card__value index-card__value--yellow';
+        summaryElement.textContent = 'Есть риски по направлениям технологической независимости. Требуется усиление мер по некоторым показателям.';
+      } else {
+        indexElement.className = 'index-card__value index-card__value--red';
+        summaryElement.textContent = 'Отставание по развитию наукоёмкого сектора. Необходимо срочное вмешательство КНТР и ФОИВ.';
+      }
+      indexElement.textContent = index;
+    }
+
+    updateIndexSummary();
+  </script>
+</body>
+</html>
+
