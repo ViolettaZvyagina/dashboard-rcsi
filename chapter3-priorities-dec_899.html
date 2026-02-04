@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Приоритеты Указа №899 — Приоритеты и технологии</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <link rel="stylesheet" href="section3-priorities.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3-priorities.html">
+              <span class="back-link__icon"></span>
+              К обзору приоритетов
+            </a>
+            <span class="meta-pill">Указ №899</span>
+          </div>
+          <h1>Приоритеты Указа №899</h1>
+          <p>Направления развития науки, технологий и техники, закреплённые Указом Президента №899, с детализацией проектов.</p>
+        </div>
+        <div class="meta-row">
+          <span class="meta-pill">Проектов: <strong>418</strong></span>
+          <span class="meta-pill">Финансирование: <strong>98 млрд ₽</strong></span>
+          <span class="meta-pill">Период: <strong>2020–2025</strong></span>
+        </div>
+      </section>
+
+      <section class="filter-panel">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <div class="filter-group__title">Поиск приоритета</div>
+            <input class="input" type="text" placeholder="Введите ключевое слово" />
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">Статус</div>
+            <select class="select">
+              <option>Все статусы</option>
+              <option>Активные</option>
+              <option>Завершённые</option>
+              <option>Без проектов</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">Средняя длительность</div>
+            <input class="input" type="range" min="1" max="8" value="4" />
+            <span class="kpi-card__hint">1–8 лет</span>
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">Период</div>
+            <div class="filter-chips">
+              <label class="filter-chip"><input type="checkbox" checked />2020–2022</label>
+              <label class="filter-chip"><input type="checkbox" checked />2023–2025</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-card__label">Проектов в реестре</div>
+          <div class="kpi-card__value">418</div>
+          <div class="kpi-card__hint">Рост +5% к 2022</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Объём финансирования</div>
+          <div class="kpi-card__value">98 млрд ₽</div>
+          <div class="kpi-card__hint">Доля 21% от общего объёма</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Среднее на проект</div>
+          <div class="kpi-card__value">234 млн ₽</div>
+          <div class="kpi-card__hint">Пик 2024 года</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Активные приоритеты</div>
+          <div class="kpi-card__value">6</div>
+          <div class="kpi-card__hint">Фокус на технологическом импорте</div>
+        </article>
+      </section>
+
+      <section class="chart-grid">
+        <article class="chart-card">
+          <h2 class="chart-card__title">Динамика финансирования Указа №899</h2>
+          <p class="chart-card__subtitle">2020–2025, млрд ₽</p>
+          <canvas id="dec899Trend" height="180"></canvas>
+        </article>
+        <article class="chart-card">
+          <h2 class="chart-card__title">Структура проектов по статусу</h2>
+          <p class="chart-card__subtitle">Активные, завершённые, новые</p>
+          <canvas id="dec899Status" class="chart-canvas--donut" height="180"></canvas>
+        </article>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Каталог приоритетов Указа №899</h2>
+        <p class="section-block__description">Основные направления, закреплённые Указом №899.</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Приоритет</th>
+              <th>Проектов</th>
+              <th>Финансирование</th>
+              <th>Среднее на проект</th>
+              <th>Длительность</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="chapter3-priorities-dec_899-ai.html">Информационно-коммуникационные технологии</a></td>
+              <td>76</td>
+              <td>21,5 млрд ₽</td>
+              <td>283 млн ₽</td>
+              <td>3,7 года</td>
+              <td><span class="status-pill status-pill--active">Активен</span></td>
+            </tr>
+            <tr>
+              <td>Нано- и микроэлектроника</td>
+              <td>64</td>
+              <td>18,1 млрд ₽</td>
+              <td>283 млн ₽</td>
+              <td>4,5 года</td>
+              <td><span class="status-pill status-pill--active">Активен</span></td>
+            </tr>
+            <tr>
+              <td>Биомедицина и здравоохранение</td>
+              <td>58</td>
+              <td>13,4 млрд ₽</td>
+              <td>231 млн ₽</td>
+              <td>3,2 года</td>
+              <td><span class="status-pill status-pill--inactive">Завершён</span></td>
+            </tr>
+            <tr>
+              <td>Транспортные и логистические системы</td>
+              <td>46</td>
+              <td>11,2 млрд ₽</td>
+              <td>243 млн ₽</td>
+              <td>4,0 года</td>
+              <td><span class="status-pill status-pill--active">Активен</span></td>
+            </tr>
+            <tr>
+              <td>Новые материалы</td>
+              <td>39</td>
+              <td>8,1 млрд ₽</td>
+              <td>208 млн ₽</td>
+              <td>3,5 года</td>
+              <td><span class="status-pill status-pill--inactive">Завершён</span></td>
+            </tr>
+            <tr>
+              <td>Экология и природопользование</td>
+              <td>31</td>
+              <td>6,7 млрд ₽</td>
+              <td>216 млн ₽</td>
+              <td>3,9 года</td>
+              <td><span class="status-pill status-pill--active">Активен</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const dec899Trend = document.getElementById('dec899Trend');
+    if (dec899Trend) {
+      new Chart(dec899Trend, {
+        type: 'line',
+        data: {
+          labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+          datasets: [{
+            label: 'Финансирование, млрд ₽',
+            data: [12, 14, 16, 17, 19, 20],
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.15)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 3
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { ticks: { callback: (value) => value + ' млрд' } } }
+        }
+      });
+    }
+
+    const dec899Status = document.getElementById('dec899Status');
+    if (dec899Status) {
+      new Chart(dec899Status, {
+        type: 'doughnut',
+        data: {
+          labels: ['Активные', 'Завершённые', 'Новые'],
+          datasets: [{
+            data: [52, 38, 10],
+            backgroundColor: ['#10b981', '#94a3b8', '#f59e0b']
+          }]
+        },
+        options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+      });
+    }
+  </script>
+</body>
+</html>

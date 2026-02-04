@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ИКТ — Приоритеты Указа №899</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <link rel="stylesheet" href="section3-priorities.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3-priorities-dec_899.html">
+              <span class="back-link__icon"></span>
+              К приоритетам Указа №899
+            </a>
+            <span class="meta-pill">Указ №899 · профиль</span>
+          </div>
+          <h1>Информационно-коммуникационные технологии</h1>
+          <p>Профиль приоритета: цифровые платформы, ИИ, инфраструктура данных и кибербезопасность.</p>
+        </div>
+        <div class="meta-row">
+          <span class="meta-pill">Период: <strong>2020–2025</strong></span>
+          <span class="meta-pill">Проектов: <strong>76</strong></span>
+          <span class="meta-pill">Финансирование: <strong>21,5 млрд ₽</strong></span>
+        </div>
+      </section>
+
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-card__label">Всего проектов</div>
+          <div class="kpi-card__value">76</div>
+          <div class="kpi-card__hint">54 активных · 22 завершено</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Общий объём финансирования</div>
+          <div class="kpi-card__value">21,5 млрд ₽</div>
+          <div class="kpi-card__hint">22% от портфеля Указа №899</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Среднее на проект</div>
+          <div class="kpi-card__value">283 млн ₽</div>
+          <div class="kpi-card__hint">Смещение в сторону крупных программ</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Средняя длительность</div>
+          <div class="kpi-card__value">3,7 года</div>
+          <div class="kpi-card__hint">Диапазон 2–6 лет</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Доля активных</div>
+          <div class="kpi-card__value">71%</div>
+          <div class="kpi-card__hint">Фокус на ИИ и платформы данных</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Статус</div>
+          <div class="kpi-card__value">Критический</div>
+          <div class="kpi-card__hint">Высокий приоритет 2025</div>
+        </article>
+      </section>
+
+      <section class="chart-grid">
+        <article class="chart-card">
+          <h2 class="chart-card__title">Структура финансирования</h2>
+          <p class="chart-card__subtitle">Источники, % от объёма</p>
+          <canvas id="ictFunding" class="chart-canvas--donut" height="180"></canvas>
+        </article>
+        <article class="chart-card">
+          <h2 class="chart-card__title">Динамика запуска и завершения</h2>
+          <p class="chart-card__subtitle">Количество проектов по годам</p>
+          <canvas id="ictTimeline" height="180"></canvas>
+        </article>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Ключевые заказчики и исполнители</h2>
+        <p class="section-block__description">Организации, определяющие портфель проектов по ИКТ.</p>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h3 class="chart-card__title">Заказчики</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Организация</th>
+                  <th>Проектов</th>
+                  <th>Финансирование</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Минцифры России</td>
+                  <td>16</td>
+                  <td>4,1 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>Минобрнауки России</td>
+                  <td>12</td>
+                  <td>3,2 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>Минпромторг России</td>
+                  <td>10</td>
+                  <td>2,7 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>Росатом</td>
+                  <td>7</td>
+                  <td>1,9 млрд ₽</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="chart-card">
+            <h3 class="chart-card__title">Исполнители</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Организация</th>
+                  <th>Проектов</th>
+                  <th>Финансирование</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>ИТМО</td>
+                  <td>9</td>
+                  <td>2,1 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>СберТех</td>
+                  <td>7</td>
+                  <td>1,6 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>Яндекс Образование</td>
+                  <td>6</td>
+                  <td>1,4 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>Цифровые платформы Ростелеком</td>
+                  <td>6</td>
+                  <td>1,2 млрд ₽</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Портфель проектов</h2>
+        <p class="section-block__description">Примеры ключевых проектов по ИКТ.</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Рег. №</th>
+              <th>Проект</th>
+              <th>Заказчик</th>
+              <th>Исполнитель</th>
+              <th>Период</th>
+              <th>Статус</th>
+              <th>Финансирование</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ICT-2022-011</td>
+              <td>Национальная платформа ИИ</td>
+              <td>Минцифры</td>
+              <td>СберТех</td>
+              <td>2022–2026</td>
+              <td><span class="status-pill status-pill--active">В работе</span></td>
+              <td>510 млн ₽</td>
+            </tr>
+            <tr>
+              <td>ICT-2021-044</td>
+              <td>Единый каталог данных</td>
+              <td>Минобрнауки</td>
+              <td>ИТМО</td>
+              <td>2021–2024</td>
+              <td><span class="status-pill status-pill--inactive">Завершён</span></td>
+              <td>340 млн ₽</td>
+            </tr>
+            <tr>
+              <td>ICT-2020-028</td>
+              <td>Кибербезопасность критической инфраструктуры</td>
+              <td>Минпромторг</td>
+              <td>Ростелеком</td>
+              <td>2020–2025</td>
+              <td><span class="status-pill status-pill--active">В работе</span></td>
+              <td>420 млн ₽</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const ictFunding = document.getElementById('ictFunding');
+    if (ictFunding) {
+      new Chart(ictFunding, {
+        type: 'pie',
+        data: {
+          labels: ['Федеральный бюджет', 'Бизнес', 'Региональные бюджеты', 'Научные фонды', 'Собственные средства'],
+          datasets: [{
+            data: [50, 18, 12, 10, 10],
+            backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#94a3b8']
+          }]
+        },
+        options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+      });
+    }
+
+    const ictTimeline = document.getElementById('ictTimeline');
+    if (ictTimeline) {
+      new Chart(ictTimeline, {
+        type: 'bar',
+        data: {
+          labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+          datasets: [
+            {
+              label: 'Запуски',
+              data: [7, 10, 13, 15, 12, 8],
+              backgroundColor: '#3b82f6'
+            },
+            {
+              label: 'Завершения',
+              data: [3, 4, 6, 7, 9, 11],
+              backgroundColor: '#10b981'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { y: { ticks: { callback: (value) => value + ' проектов' } } }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Энергетические технологии — Приоритеты Указа №529</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <link rel="stylesheet" href="section3-priorities.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3-priorities-dec_529.html">
+              <span class="back-link__icon"></span>
+              К приоритетам Указа №529
+            </a>
+            <span class="meta-pill">Указ №529 · профиль</span>
+          </div>
+          <h1>Энергетические технологии и накопители</h1>
+          <p>Приоритет, объединяющий проекты по энергоэффективности, накопителям энергии и переходу к устойчивым источникам.</p>
+        </div>
+        <div class="meta-row">
+          <span class="meta-pill">Период: <strong>2020–2025</strong></span>
+          <span class="meta-pill">Проектов: <strong>48</strong></span>
+          <span class="meta-pill">Финансирование: <strong>16,4 млрд ₽</strong></span>
+        </div>
+      </section>
+
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-card__label">Всего проектов</div>
+          <div class="kpi-card__value">48</div>
+          <div class="kpi-card__hint">36 активных · 12 завершено</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Общий объём финансирования</div>
+          <div class="kpi-card__value">16,4 млрд ₽</div>
+          <div class="kpi-card__hint">23% портфеля Указа №529</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Среднее на проект</div>
+          <div class="kpi-card__value">342 млн ₽</div>
+          <div class="kpi-card__hint">Пик финансирования 2024</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Средняя длительность</div>
+          <div class="kpi-card__value">4,6 года</div>
+          <div class="kpi-card__hint">Диапазон 3–7 лет</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Доля активных</div>
+          <div class="kpi-card__value">75%</div>
+          <div class="kpi-card__hint">8 проектов в запуске</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Статус</div>
+          <div class="kpi-card__value">Стратегический</div>
+          <div class="kpi-card__hint">Поддержка НПТЛ</div>
+        </article>
+      </section>
+
+      <section class="chart-grid">
+        <article class="chart-card">
+          <h2 class="chart-card__title">Структура финансирования</h2>
+          <p class="chart-card__subtitle">Источники, % от объёма</p>
+          <canvas id="energyFunding" class="chart-canvas--donut" height="180"></canvas>
+        </article>
+        <article class="chart-card">
+          <h2 class="chart-card__title">Динамика запуска и завершения</h2>
+          <p class="chart-card__subtitle">Количество проектов по годам</p>
+          <canvas id="energyTimeline" height="180"></canvas>
+        </article>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Ключевые заказчики и исполнители</h2>
+        <p class="section-block__description">Организации, влияющие на портфель энергетических технологий.</p>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h3 class="chart-card__title">Заказчики</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Организация</th>
+                  <th>Проектов</th>
+                  <th>Финансирование</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Минэнерго России</td>
+                  <td>10</td>
+                  <td>3,4 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>Минпромторг России</td>
+                  <td>8</td>
+                  <td>2,6 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>Росатом</td>
+                  <td>7</td>
+                  <td>2,1 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>Фонд НТИ</td>
+                  <td>5</td>
+                  <td>1,4 млрд ₽</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="chart-card">
+            <h3 class="chart-card__title">Исполнители</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Организация</th>
+                  <th>Проектов</th>
+                  <th>Финансирование</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>ФИЦ энергетики и электроники</td>
+                  <td>8</td>
+                  <td>2,0 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>НИЦ «Курчатовский институт»</td>
+                  <td>6</td>
+                  <td>1,8 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>Томский политехнический университет</td>
+                  <td>5</td>
+                  <td>1,2 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>НТИ «Новые источники энергии»</td>
+                  <td>4</td>
+                  <td>1,0 млрд ₽</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Портфель проектов</h2>
+        <p class="section-block__description">Примеры проектов в области энергетических технологий.</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Рег. №</th>
+              <th>Проект</th>
+              <th>Заказчик</th>
+              <th>Исполнитель</th>
+              <th>Период</th>
+              <th>Статус</th>
+              <th>Финансирование</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>EN-2022-008</td>
+              <td>Высокоёмкие накопители энергии</td>
+              <td>Минэнерго</td>
+              <td>ТПУ</td>
+              <td>2022–2026</td>
+              <td><span class="status-pill status-pill--active">В работе</span></td>
+              <td>480 млн ₽</td>
+            </tr>
+            <tr>
+              <td>EN-2021-019</td>
+              <td>Системы управления энергосетями</td>
+              <td>Минпромторг</td>
+              <td>ФИЦ энергетики</td>
+              <td>2021–2025</td>
+              <td><span class="status-pill status-pill--active">В работе</span></td>
+              <td>360 млн ₽</td>
+            </tr>
+            <tr>
+              <td>EN-2020-005</td>
+              <td>Технологии водородной энергетики</td>
+              <td>Росатом</td>
+              <td>НИЦ «Курчатовский институт»</td>
+              <td>2020–2024</td>
+              <td><span class="status-pill status-pill--inactive">Завершён</span></td>
+              <td>290 млн ₽</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const energyFunding = document.getElementById('energyFunding');
+    if (energyFunding) {
+      new Chart(energyFunding, {
+        type: 'pie',
+        data: {
+          labels: ['Федеральный бюджет', 'Бизнес', 'Региональные бюджеты', 'Научные фонды', 'Собственные средства'],
+          datasets: [{
+            data: [48, 20, 14, 10, 8],
+            backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#94a3b8']
+          }]
+        },
+        options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+      });
+    }
+
+    const energyTimeline = document.getElementById('energyTimeline');
+    if (energyTimeline) {
+      new Chart(energyTimeline, {
+        type: 'bar',
+        data: {
+          labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+          datasets: [
+            {
+              label: 'Запуски',
+              data: [5, 7, 9, 11, 10, 6],
+              backgroundColor: '#3b82f6'
+            },
+            {
+              label: 'Завершения',
+              data: [2, 3, 4, 6, 7, 8],
+              backgroundColor: '#10b981'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { y: { ticks: { callback: (value) => value + ' проектов' } } }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

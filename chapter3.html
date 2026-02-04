@@ -232,6 +232,182 @@
       box-shadow: 0 0 0 4px rgba(0, 201, 81, 0.15);
     }
 
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--space-20);
+    }
+
+    .feature-card {
+      background: var(--material-neutral-surface-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 120% at 10% 0%, rgba(0, 102, 255, 0.08), transparent 45%);
+      pointer-events: none;
+    }
+
+    .feature-card--consulting::after {
+      background: radial-gradient(120% 120% at 90% 0%, rgba(88, 101, 242, 0.12), transparent 45%);
+    }
+
+    .feature-card__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-12);
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature-card__title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .feature-card__title h2 {
+      margin: 0;
+      font-family: var(--font-alt);
+      font-size: 24px;
+      line-height: 30px;
+    }
+
+    .feature-card__title p {
+      margin: 0;
+      color: var(--material-neutral-content-secondary);
+      font-size: var(--font-size-body);
+    }
+
+    .feature-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-16);
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature-kpi {
+      background: var(--material-neutral-highlight-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-12);
+      border: 1px solid var(--material-neutral-border-primary);
+    }
+
+    .feature-kpi__label {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+      margin-bottom: var(--space-6);
+    }
+
+    .feature-kpi__value {
+      font-family: var(--font-alt);
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature-list__item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-8);
+      background: var(--material-neutral-highlight-primary);
+      border: 1px solid var(--material-neutral-border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-10) var(--space-12);
+      font-size: var(--font-size-body);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: var(--font-size-caption);
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .badge--str {
+      background: rgba(59, 130, 246, 0.15);
+      color: #1e3a8a;
+      border-color: rgba(59, 130, 246, 0.35);
+    }
+
+    .badge--dec899 {
+      background: rgba(16, 185, 129, 0.15);
+      color: #065f46;
+      border-color: rgba(16, 185, 129, 0.35);
+    }
+
+    .badge--dec529 {
+      background: rgba(245, 158, 11, 0.15);
+      color: #92400e;
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    .sparkline {
+      width: 100%;
+      height: 60px;
+      background: rgba(16, 185, 129, 0.08);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sparkline svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .feature-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-8);
+      margin-top: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature-footer__note {
+      font-size: var(--font-size-caption);
+      color: var(--material-neutral-content-secondary);
+    }
+
+    @media (max-width: 1200px) {
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .feature-kpi-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      }
+    }
+
     .dashboard-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -569,6 +745,106 @@
             <span class="legend"><span class="status-dot status-dot--green"></span> низкий</span>
           </div>
         </aside>
+      </section>
+
+      <section class="feature-grid">
+        <article class="feature-card">
+          <div class="feature-card__header">
+            <div class="feature-card__title">
+              <h2>Приоритеты и технологии</h2>
+              <p>Реестр приоритетов НТР, объём финансирования и топ направлений.</p>
+            </div>
+            <span class="meta-pill">Период: 2020–2025</span>
+          </div>
+          <div class="feature-kpi-grid">
+            <div class="feature-kpi">
+              <div class="feature-kpi__label">Доля проектов в приоритетах</div>
+              <div class="feature-kpi__value">64,2%</div>
+            </div>
+            <div class="feature-kpi">
+              <div class="feature-kpi__label">Финансирование</div>
+              <div class="feature-kpi__value">312,4 млрд ₽</div>
+            </div>
+            <div class="feature-kpi">
+              <div class="feature-kpi__label">Активные приоритеты</div>
+              <div class="feature-kpi__value">18 направлений</div>
+            </div>
+          </div>
+          <ul class="feature-list">
+            <li class="feature-list__item">
+              <span>Квантовые и фотонные технологии</span>
+              <span class="badge badge--str">СНТР</span>
+            </li>
+            <li class="feature-list__item">
+              <span>Новые материалы и химия</span>
+              <span class="badge badge--dec899">Указ №899</span>
+            </li>
+            <li class="feature-list__item">
+              <span>Искусственный интеллект</span>
+              <span class="badge badge--dec529">Указ №529</span>
+            </li>
+            <li class="feature-list__item">
+              <span>Биотехнологии и генетика</span>
+              <span class="badge badge--str">СНТР</span>
+            </li>
+          </ul>
+          <div class="feature-footer">
+            <span class="feature-footer__note">Топ-4 приоритетов по финансированию</span>
+            <a href="chapter3-priorities.html" class="btn btn--primary">Перейти к аналитике</a>
+          </div>
+        </article>
+
+        <article class="feature-card feature-card--consulting">
+          <div class="feature-card__header">
+            <div class="feature-card__title">
+              <h2>Консультирование по иным вопросам НТР</h2>
+              <p>Мониторинг поручений и динамика исполнения.</p>
+            </div>
+          </div>
+          <div class="feature-kpi-grid">
+            <div class="feature-kpi">
+              <div class="feature-kpi__label">Всего поручений (YTD)</div>
+              <div class="feature-kpi__value">248</div>
+            </div>
+            <div class="feature-kpi">
+              <div class="feature-kpi__label">Просрочено</div>
+              <div class="feature-kpi__value">23</div>
+            </div>
+            <div class="feature-kpi">
+              <div class="feature-kpi__label">В срок</div>
+              <div class="feature-kpi__value">78%</div>
+            </div>
+          </div>
+          <div class="sparkline" aria-label="Исполнено по месяцам">
+            <svg viewBox="0 0 200 60" preserveAspectRatio="none">
+              <polyline
+                points="0,45 20,40 40,42 60,30 80,34 100,26 120,22 140,28 160,20 180,16 200,18"
+                fill="none"
+                stroke="#10b981"
+                stroke-width="3"
+              />
+              <circle cx="200" cy="18" r="3" fill="#10b981" />
+            </svg>
+          </div>
+          <ul class="feature-list">
+            <li class="feature-list__item">
+              <span>Ноябрь 2025</span>
+              <strong>42 исполнено</strong>
+            </li>
+            <li class="feature-list__item">
+              <span>Декабрь 2025</span>
+              <strong>38 исполнено</strong>
+            </li>
+            <li class="feature-list__item">
+              <span>Январь 2026</span>
+              <strong>46 исполнено</strong>
+            </li>
+          </ul>
+          <div class="feature-footer">
+            <span class="feature-footer__note">Срок ≤ 14 дней: 31 поручение</span>
+            <a href="chapter3-consulting.html" class="btn btn--primary">Перейти к поручениям</a>
+          </div>
+        </article>
       </section>
 
       <section class="dashboard-grid">

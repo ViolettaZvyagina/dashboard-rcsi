@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Консультирование по иным вопросам НТР — Поручения</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <link rel="stylesheet" href="section3-consulting.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3.html">
+              <span class="back-link__icon"></span>
+              К разделу 3
+            </a>
+            <span class="meta-pill">Консультирование</span>
+          </div>
+          <h1>Поручения</h1>
+          <p>Мониторинг и управление поручениями в рамках консультирования по иным вопросам НТР. KPI, динамика и ближайшие сроки.</p>
+        </div>
+        <div class="meta-row">
+          <span class="meta-pill">Период: <strong>2023–2025</strong></span>
+          <span class="meta-pill">Всего поручений: <strong>248</strong></span>
+          <a class="btn btn--primary" href="chapter3-consulting-list.html">Перейти к списку</a>
+        </div>
+      </section>
+
+      <section class="tabs">
+        <div class="tabs__header">
+          <a class="tabs__tab tabs__tab--active" href="chapter3-consulting.html">Обзор</a>
+          <a class="tabs__tab" href="chapter3-consulting-levels.html">По уровням</a>
+          <a class="tabs__tab" href="chapter3-consulting-foiv.html">По ФОИВ</a>
+        </div>
+      </section>
+
+      <section class="filter-panel">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <div class="filter-group__title">Период</div>
+            <div class="filter-chips">
+              <label class="filter-chip"><input type="checkbox" checked />2023</label>
+              <label class="filter-chip"><input type="checkbox" checked />2024</label>
+              <label class="filter-chip"><input type="checkbox" checked />2025</label>
+            </div>
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">Уровни</div>
+            <div class="filter-chips">
+              <label class="filter-chip"><input type="checkbox" checked />Президент</label>
+              <label class="filter-chip"><input type="checkbox" checked />Правительство</label>
+              <label class="filter-chip"><input type="checkbox" checked />Иное</label>
+            </div>
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">ФОИВ</div>
+            <select class="select">
+              <option>Все ФОИВ</option>
+              <option>Минобрнауки</option>
+              <option>Минпромторг</option>
+              <option>Минцифры</option>
+              <option>Росатом</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">Статус</div>
+            <select class="select">
+              <option>Все статусы</option>
+              <option>Исполнено</option>
+              <option>В работе</option>
+              <option>Просрочено</option>
+              <option>На согласовании</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-card__label">Всего поручений</div>
+          <div class="kpi-card__value">248</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Исполнено</div>
+          <div class="kpi-card__value">172</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Просрочено</div>
+          <div class="kpi-card__value">23</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">В работе</div>
+          <div class="kpi-card__value">53</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Доля в срок</div>
+          <div class="kpi-card__value">78%</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Медианное TTD</div>
+          <div class="kpi-card__value">18 дней</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Срок ≤ 14 дней</div>
+          <div class="kpi-card__value">31</div>
+        </article>
+      </section>
+
+      <section class="chart-grid">
+        <article class="chart-card">
+          <h2 class="chart-card__title">Распределение по статусам</h2>
+          <p class="chart-card__subtitle">Исполнено, в работе, просрочено</p>
+          <canvas id="statusDonut" height="200"></canvas>
+        </article>
+        <article class="chart-card">
+          <h2 class="chart-card__title">Топ-10 ФОИВ по просрочке</h2>
+          <p class="chart-card__subtitle">Количество просроченных поручений</p>
+          <canvas id="foivOverdue" height="200"></canvas>
+        </article>
+        <article class="chart-card">
+          <h2 class="chart-card__title">Исполнено по месяцам</h2>
+          <p class="chart-card__subtitle">Динамика за последние 12 месяцев</p>
+          <canvas id="completedLine" height="200"></canvas>
+        </article>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Ближайшие сроки (≤ 14 дней)</h2>
+        <p class="section-block__description">Поручения с ближайшими сроками исполнения.</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Поручение</th>
+              <th>ФОИВ</th>
+              <th>Срок</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>КНТР-2025-014</td>
+              <td>Подготовить предложения по цифровым платформам НТР</td>
+              <td>Минцифры</td>
+              <td>12.02.2026</td>
+              <td><span class="status-pill status-pill--progress">В работе</span></td>
+            </tr>
+            <tr>
+              <td>КНТР-2025-018</td>
+              <td>Уточнить перечень критических технологий</td>
+              <td>Минобрнауки</td>
+              <td>15.02.2026</td>
+              <td><span class="status-pill status-pill--wait">На согласовании</span></td>
+            </tr>
+            <tr>
+              <td>КНТР-2025-021</td>
+              <td>План мероприятий по импортонезависимости</td>
+              <td>Минпромторг</td>
+              <td>17.02.2026</td>
+              <td><span class="status-pill status-pill--progress">В работе</span></td>
+            </tr>
+            <tr>
+              <td>КНТР-2025-023</td>
+              <td>Отчёт по поддержке молодых исследователей</td>
+              <td>Минобрнауки</td>
+              <td>18.02.2026</td>
+              <td><span class="status-pill status-pill--progress">В работе</span></td>
+            </tr>
+            <tr>
+              <td>КНТР-2025-027</td>
+              <td>Сводка по отраслевым стратегиям</td>
+              <td>Минэкономразвития</td>
+              <td>20.02.2026</td>
+              <td><span class="status-pill status-pill--progress">В работе</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const statusDonut = document.getElementById('statusDonut');
+    if (statusDonut) {
+      new Chart(statusDonut, {
+        type: 'doughnut',
+        data: {
+          labels: ['Исполнено', 'В работе', 'Просрочено', 'На согласовании', 'Снято'],
+          datasets: [{
+            data: [172, 53, 23, 16, 12],
+            backgroundColor: ['#10b981', '#3b82f6', '#ef4444', '#f59e0b', '#94a3b8']
+          }]
+        },
+        options: { plugins: { legend: { position: 'bottom' } } }
+      });
+    }
+
+    const foivOverdue = document.getElementById('foivOverdue');
+    if (foivOverdue) {
+      new Chart(foivOverdue, {
+        type: 'bar',
+        data: {
+          labels: ['Минпромторг', 'Минобрнауки', 'Минцифры', 'Минэнерго', 'Минсельхоз'],
+          datasets: [{
+            label: 'Просрочено',
+            data: [6, 5, 4, 3, 2],
+            backgroundColor: '#ef4444',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          plugins: { legend: { display: false } },
+          scales: { x: { ticks: { stepSize: 1 } } }
+        }
+      });
+    }
+
+    const completedLine = document.getElementById('completedLine');
+    if (completedLine) {
+      new Chart(completedLine, {
+        type: 'line',
+        data: {
+          labels: ['02.25', '03.25', '04.25', '05.25', '06.25', '07.25', '08.25', '09.25', '10.25', '11.25', '12.25', '01.26'],
+          datasets: [{
+            label: 'Исполнено',
+            data: [12, 15, 18, 22, 19, 24, 26, 28, 31, 42, 38, 46],
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.15)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 3
+          }]
+        },
+        options: { plugins: { legend: { display: false } } }
+      });
+    }
+  </script>
+</body>
+</html>

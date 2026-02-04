@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Приоритеты Указа №529 — Приоритеты и технологии</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <link rel="stylesheet" href="section3-priorities.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3-priorities.html">
+              <span class="back-link__icon"></span>
+              К обзору приоритетов
+            </a>
+            <span class="meta-pill">Указ №529</span>
+          </div>
+          <h1>Приоритеты Указа №529</h1>
+          <p>Приоритетные направления научно-технологического развития, закреплённые Указом №529, с привязкой к отраслевым задачам.</p>
+        </div>
+        <div class="meta-row">
+          <span class="meta-pill">Проектов: <strong>254</strong></span>
+          <span class="meta-pill">Финансирование: <strong>72 млрд ₽</strong></span>
+          <span class="meta-pill">Период: <strong>2020–2025</strong></span>
+        </div>
+      </section>
+
+      <section class="filter-panel">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <div class="filter-group__title">Поиск приоритета</div>
+            <input class="input" type="text" placeholder="Введите ключевое слово" />
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">Статус</div>
+            <select class="select">
+              <option>Все статусы</option>
+              <option>Активные</option>
+              <option>Завершённые</option>
+              <option>Без проектов</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">Средняя длительность</div>
+            <input class="input" type="range" min="1" max="8" value="5" />
+            <span class="kpi-card__hint">1–8 лет</span>
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">Период</div>
+            <div class="filter-chips">
+              <label class="filter-chip"><input type="checkbox" checked />2020–2022</label>
+              <label class="filter-chip"><input type="checkbox" checked />2023–2025</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-card__label">Проектов в реестре</div>
+          <div class="kpi-card__value">254</div>
+          <div class="kpi-card__hint">Рост +9% к 2022</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Объём финансирования</div>
+          <div class="kpi-card__value">72 млрд ₽</div>
+          <div class="kpi-card__hint">Доля 16% от общего объёма</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Среднее на проект</div>
+          <div class="kpi-card__value">284 млн ₽</div>
+          <div class="kpi-card__hint">Медиана 270 млн ₽</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Активные приоритеты</div>
+          <div class="kpi-card__value">4</div>
+          <div class="kpi-card__hint">Фокус на критических технологиях</div>
+        </article>
+      </section>
+
+      <section class="chart-grid">
+        <article class="chart-card">
+          <h2 class="chart-card__title">Динамика финансирования Указа №529</h2>
+          <p class="chart-card__subtitle">2020–2025, млрд ₽</p>
+          <canvas id="dec529Trend" height="180"></canvas>
+        </article>
+        <article class="chart-card">
+          <h2 class="chart-card__title">Структура проектов по статусу</h2>
+          <p class="chart-card__subtitle">Активные, завершённые, новые</p>
+          <canvas id="dec529Status" class="chart-canvas--donut" height="180"></canvas>
+        </article>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Каталог приоритетов Указа №529</h2>
+        <p class="section-block__description">Основные направления и показатели проектов по Указу №529.</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Приоритет</th>
+              <th>Проектов</th>
+              <th>Финансирование</th>
+              <th>Среднее на проект</th>
+              <th>Длительность</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="chapter3-priorities-dec_529-energy.html">Энергетические технологии и накопители</a></td>
+              <td>48</td>
+              <td>16,4 млрд ₽</td>
+              <td>342 млн ₽</td>
+              <td>4,6 года</td>
+              <td><span class="status-pill status-pill--active">Активен</span></td>
+            </tr>
+            <tr>
+              <td>Технологии беспилотных систем</td>
+              <td>41</td>
+              <td>11,2 млрд ₽</td>
+              <td>273 млн ₽</td>
+              <td>4,1 года</td>
+              <td><span class="status-pill status-pill--active">Активен</span></td>
+            </tr>
+            <tr>
+              <td>Критическая инфраструктура</td>
+              <td>36</td>
+              <td>9,5 млрд ₽</td>
+              <td>264 млн ₽</td>
+              <td>3,9 года</td>
+              <td><span class="status-pill status-pill--active">Активен</span></td>
+            </tr>
+            <tr>
+              <td>Высокоточная медицина</td>
+              <td>29</td>
+              <td>7,3 млрд ₽</td>
+              <td>252 млн ₽</td>
+              <td>3,3 года</td>
+              <td><span class="status-pill status-pill--inactive">Завершён</span></td>
+            </tr>
+            <tr>
+              <td>Перспективные транспортные системы</td>
+              <td>27</td>
+              <td>6,1 млрд ₽</td>
+              <td>226 млн ₽</td>
+              <td>3,6 года</td>
+              <td><span class="status-pill status-pill--inactive">Завершён</span></td>
+            </tr>
+            <tr>
+              <td>Цифровая промышленность</td>
+              <td>22</td>
+              <td>5,4 млрд ₽</td>
+              <td>245 млн ₽</td>
+              <td>3,2 года</td>
+              <td><span class="status-pill status-pill--active">Активен</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const dec529Trend = document.getElementById('dec529Trend');
+    if (dec529Trend) {
+      new Chart(dec529Trend, {
+        type: 'line',
+        data: {
+          labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+          datasets: [{
+            label: 'Финансирование, млрд ₽',
+            data: [8, 9, 11, 13, 14, 17],
+            borderColor: '#f59e0b',
+            backgroundColor: 'rgba(245, 158, 11, 0.15)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 3
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { ticks: { callback: (value) => value + ' млрд' } } }
+        }
+      });
+    }
+
+    const dec529Status = document.getElementById('dec529Status');
+    if (dec529Status) {
+      new Chart(dec529Status, {
+        type: 'doughnut',
+        data: {
+          labels: ['Активные', 'Завершённые', 'Новые'],
+          datasets: [{
+            data: [46, 40, 14],
+            backgroundColor: ['#10b981', '#94a3b8', '#f59e0b']
+          }]
+        },
+        options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+      });
+    }
+  </script>
+</body>
+</html>

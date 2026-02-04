@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Приоритеты СНТР — Приоритеты и технологии</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <link rel="stylesheet" href="section3-priorities.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3-priorities.html">
+              <span class="back-link__icon"></span>
+              К обзору приоритетов
+            </a>
+            <span class="meta-pill">СНТР</span>
+          </div>
+          <h1>Приоритеты Стратегии НТР</h1>
+          <p>Каталог приоритетов, закреплённых в Стратегии научно-технологического развития, с анализом проектов и финансирования.</p>
+        </div>
+        <div class="meta-row">
+          <span class="meta-pill">Проектов: <strong>612</strong></span>
+          <span class="meta-pill">Финансирование: <strong>142 млрд ₽</strong></span>
+          <span class="meta-pill">Период: <strong>2020–2025</strong></span>
+        </div>
+      </section>
+
+      <section class="filter-panel">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <div class="filter-group__title">Поиск приоритета</div>
+            <input class="input" type="text" placeholder="Введите ключевое слово" />
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">Статус</div>
+            <select class="select">
+              <option>Все статусы</option>
+              <option>Активные</option>
+              <option>Завершённые</option>
+              <option>Без проектов</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">Средняя длительность</div>
+            <input class="input" type="range" min="1" max="8" value="4" />
+            <span class="kpi-card__hint">1–8 лет</span>
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">Период</div>
+            <div class="filter-chips">
+              <label class="filter-chip"><input type="checkbox" checked />2020–2022</label>
+              <label class="filter-chip"><input type="checkbox" checked />2023–2025</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-card__label">Проектов в реестре</div>
+          <div class="kpi-card__value">612</div>
+          <div class="kpi-card__hint">+8% к предыдущему периоду</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Объём финансирования</div>
+          <div class="kpi-card__value">142 млрд ₽</div>
+          <div class="kpi-card__hint">Доля 36% от общего объёма</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Среднее на проект</div>
+          <div class="kpi-card__value">232 млн ₽</div>
+          <div class="kpi-card__hint">Медиана 210 млн ₽</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Активные приоритеты</div>
+          <div class="kpi-card__value">8</div>
+          <div class="kpi-card__hint">В портфеле 2025–2026</div>
+        </article>
+      </section>
+
+      <section class="chart-grid">
+        <article class="chart-card">
+          <h2 class="chart-card__title">Динамика финансирования СНТР</h2>
+          <p class="chart-card__subtitle">2020–2025, млрд ₽</p>
+          <canvas id="strTrend" height="180"></canvas>
+        </article>
+        <article class="chart-card">
+          <h2 class="chart-card__title">Структура проектов по статусу</h2>
+          <p class="chart-card__subtitle">Доля активных, завершённых и в запуске</p>
+          <canvas id="strStatus" class="chart-canvas--donut" height="180"></canvas>
+        </article>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Каталог приоритетов СНТР</h2>
+        <p class="section-block__description">Список ключевых приоритетов и агрегированные показатели.</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Приоритет</th>
+              <th>Проектов</th>
+              <th>Финансирование</th>
+              <th>Среднее на проект</th>
+              <th>Длительность</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="chapter3-priorities-str_ntr-bio.html">Биотехнологии и генетика</a></td>
+              <td>84</td>
+              <td>18,2 млрд ₽</td>
+              <td>216 млн ₽</td>
+              <td>4,1 года</td>
+              <td><span class="status-pill status-pill--active">Активен</span></td>
+            </tr>
+            <tr>
+              <td>Квантовые и фотонные технологии</td>
+              <td>72</td>
+              <td>58,4 млрд ₽</td>
+              <td>811 млн ₽</td>
+              <td>5,3 года</td>
+              <td><span class="status-pill status-pill--active">Активен</span></td>
+            </tr>
+            <tr>
+              <td>Интеллектуальные энергетические системы</td>
+              <td>63</td>
+              <td>12,7 млрд ₽</td>
+              <td>201 млн ₽</td>
+              <td>3,8 года</td>
+              <td><span class="status-pill status-pill--active">Активен</span></td>
+            </tr>
+            <tr>
+              <td>Экологически чистая промышленность</td>
+              <td>51</td>
+              <td>9,6 млрд ₽</td>
+              <td>188 млн ₽</td>
+              <td>3,4 года</td>
+              <td><span class="status-pill status-pill--inactive">Завершён</span></td>
+            </tr>
+            <tr>
+              <td>Новые материалы и аддитивные технологии</td>
+              <td>44</td>
+              <td>7,3 млрд ₽</td>
+              <td>166 млн ₽</td>
+              <td>3,1 года</td>
+              <td><span class="status-pill status-pill--inactive">Завершён</span></td>
+            </tr>
+            <tr>
+              <td>Научное обеспечение обороны</td>
+              <td>38</td>
+              <td>6,8 млрд ₽</td>
+              <td>179 млн ₽</td>
+              <td>4,8 года</td>
+              <td><span class="status-pill status-pill--active">Активен</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const strTrend = document.getElementById('strTrend');
+    if (strTrend) {
+      new Chart(strTrend, {
+        type: 'line',
+        data: {
+          labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+          datasets: [{
+            label: 'Финансирование, млрд ₽',
+            data: [19, 22, 24, 26, 25, 26],
+            borderColor: '#2563eb',
+            backgroundColor: 'rgba(37, 99, 235, 0.15)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 3
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { ticks: { callback: (value) => value + ' млрд' } } }
+        }
+      });
+    }
+
+    const strStatus = document.getElementById('strStatus');
+    if (strStatus) {
+      new Chart(strStatus, {
+        type: 'doughnut',
+        data: {
+          labels: ['Активные', 'Завершённые', 'В запуске'],
+          datasets: [{
+            data: [58, 32, 10],
+            backgroundColor: ['#10b981', '#94a3b8', '#f59e0b']
+          }]
+        },
+        options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+      });
+    }
+  </script>
+</body>
+</html>

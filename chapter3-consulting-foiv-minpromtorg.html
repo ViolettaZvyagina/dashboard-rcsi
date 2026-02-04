@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Минпромторг — Поручения ФОИВ</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <link rel="stylesheet" href="section3-consulting.css" />
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3-consulting-foiv.html">
+              <span class="back-link__icon"></span>
+              К списку ФОИВ
+            </a>
+            <span class="meta-pill">Минпромторг России</span>
+          </div>
+          <h1>Минпромторг России</h1>
+          <p>Поручения в работе и просроченные поручения по ФОИВ.</p>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Активные поручения</h2>
+        <p class="section-block__description">Статус: В работе</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Поручение</th>
+              <th>Срок</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>КНТР-2025-021</td>
+              <td>План мероприятий по импортонезависимости</td>
+              <td>17.02.2026</td>
+              <td><span class="status-pill status-pill--progress">В работе</span></td>
+            </tr>
+            <tr>
+              <td>КНТР-2025-026</td>
+              <td>Доклад о мерах технологического суверенитета</td>
+              <td>25.02.2026</td>
+              <td><span class="status-pill status-pill--progress">В работе</span></td>
+            </tr>
+            <tr>
+              <td>КНТР-2025-012</td>
+              <td>Обновление перечня критических технологий</td>
+              <td>08.03.2026</td>
+              <td><span class="status-pill status-pill--wait">На согласовании</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Проблемные поручения</h2>
+        <p class="section-block__description">Статус: Просрочено</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Поручение</th>
+              <th>Срок</th>
+              <th>Просрочка</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>КНТР-2025-022</td>
+              <td>Отчёт по импортонезависимости технологий</td>
+              <td>28.01.2026</td>
+              <td><span class="status-pill status-pill--overdue">+1 день</span></td>
+            </tr>
+            <tr>
+              <td>КНТР-2025-002</td>
+              <td>Сводка по производственным цепочкам</td>
+              <td>15.01.2026</td>
+              <td><span class="status-pill status-pill--overdue">+21 день</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

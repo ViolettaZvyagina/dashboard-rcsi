@@ -258,6 +258,19 @@
   gap: var(--space-8);
 }
 
+/* ========== INACTIVE SECTION CARDS ========== */
+
+.section-card {
+  opacity: 0.55;
+  filter: grayscale(0.35);
+  transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
+.section-card[data-active="true"] {
+  opacity: 1;
+  filter: none;
+}
+
 .filters-panel {
   padding: var(--space-16);
   border-radius: var(--radius-md);

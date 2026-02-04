@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Приоритеты и технологии — Стратегическое планирование и управление</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <link rel="stylesheet" href="section3-priorities.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3.html">
+              <span class="back-link__icon"></span>
+              К разделу 3
+            </a>
+            <span class="meta-pill">Приоритеты и технологии</span>
+          </div>
+          <h1>Приоритеты и технологии</h1>
+          <p>Сводная аналитика по реестру приоритетов НТР и ВНТ: доля проектов, структура финансирования, динамика и перекрытия типов приоритетов.</p>
+        </div>
+        <div class="meta-row">
+          <span class="meta-pill">Период анализа: <strong>2020–2025</strong></span>
+          <span class="meta-pill">Источник: ЕГИСУ НИОКТР, Минобрнауки</span>
+        </div>
+      </section>
+
+      <section class="filter-panel">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <div class="filter-group__title">Период</div>
+            <div class="filter-chips">
+              <label class="filter-chip"><input type="checkbox" checked />2020–2022</label>
+              <label class="filter-chip"><input type="checkbox" checked />2023–2025</label>
+            </div>
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">Типы приоритетов</div>
+            <div class="filter-chips">
+              <label class="filter-chip"><input type="checkbox" checked />СНТР</label>
+              <label class="filter-chip"><input type="checkbox" checked />Указ №899</label>
+              <label class="filter-chip"><input type="checkbox" checked />Указ №529</label>
+            </div>
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">Статус проектов</div>
+            <div class="filter-chips">
+              <label class="filter-chip"><input type="checkbox" checked />Активные</label>
+              <label class="filter-chip"><input type="checkbox" />Завершённые</label>
+              <label class="filter-chip"><input type="checkbox" />Архив</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-card__label">Доля проектов, соответствующих приоритетам</div>
+          <div class="kpi-card__value">64,2%</div>
+          <div class="kpi-card__hint">1 284 проекта</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Общий объём финансирования</div>
+          <div class="kpi-card__value">312,4 млрд ₽</div>
+          <div class="kpi-card__hint">Сумма по всем приоритетам</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Активные приоритеты</div>
+          <div class="kpi-card__value">18</div>
+          <div class="kpi-card__hint">В работе в 2025–2026</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Среднее финансирование на проект</div>
+          <div class="kpi-card__value">243 млн ₽</div>
+          <div class="kpi-card__hint">Рост +7% к прошлому периоду</div>
+        </article>
+      </section>
+
+      <section class="chart-grid">
+        <article class="chart-card">
+          <h2 class="chart-card__title">Финансирование по типам приоритетов</h2>
+          <p class="chart-card__subtitle">Суммарный объём, млрд ₽</p>
+          <canvas id="fundingByType" height="180"></canvas>
+        </article>
+        <article class="chart-card">
+          <h2 class="chart-card__title">Динамика финансирования</h2>
+          <p class="chart-card__subtitle">Рост за 2020–2025</p>
+          <canvas id="fundingTrend" height="180"></canvas>
+        </article>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Топ приоритетов по финансированию</h2>
+        <p class="section-block__description">Наиболее капиталоёмкие направления, объединяющие проекты НИОКТР.</p>
+        <ul class="priority-list">
+          <li class="priority-item">
+            <span class="priority-item__name">Квантовые и фотонные технологии</span>
+            <span class="priority-item__value">58,4 млрд ₽</span>
+          </li>
+          <li class="priority-item">
+            <span class="priority-item__name">Искусственный интеллект и большие данные</span>
+            <span class="priority-item__value">46,9 млрд ₽</span>
+          </li>
+          <li class="priority-item">
+            <span class="priority-item__name">Новые материалы и химия</span>
+            <span class="priority-item__value">41,2 млрд ₽</span>
+          </li>
+          <li class="priority-item">
+            <span class="priority-item__name">Биотехнологии и генетика</span>
+            <span class="priority-item__value">33,7 млрд ₽</span>
+          </li>
+          <li class="priority-item">
+            <span class="priority-item__name">Энергетические технологии</span>
+            <span class="priority-item__value">29,1 млрд ₽</span>
+          </li>
+        </ul>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Типы приоритетов</h2>
+        <p class="section-block__description">Карточки с ключевыми метриками по каждому типу приоритетов.</p>
+        <div class="type-grid">
+          <article class="type-card">
+            <div class="type-card__title">Стратегия НТР <span class="badge badge--str">СНТР</span></div>
+            <div class="type-card__meta">12 направлений · 612 проектов</div>
+            <div class="type-card__stats">
+              <div class="type-card__stat">Финансирование: 142 млрд ₽</div>
+              <div class="type-card__stat">Среднее: 232 млн ₽</div>
+              <div class="type-card__stat">Активных: 8</div>
+              <div class="type-card__stat">Доля проектов: 36%</div>
+            </div>
+            <a href="chapter3-priorities-str_ntr.html" class="btn btn--primary">Перейти к типу</a>
+          </article>
+          <article class="type-card">
+            <div class="type-card__title">Указ №899 <span class="badge badge--dec899">Указ №899</span></div>
+            <div class="type-card__meta">9 направлений · 418 проектов</div>
+            <div class="type-card__stats">
+              <div class="type-card__stat">Финансирование: 98 млрд ₽</div>
+              <div class="type-card__stat">Среднее: 234 млн ₽</div>
+              <div class="type-card__stat">Активных: 6</div>
+              <div class="type-card__stat">Доля проектов: 21%</div>
+            </div>
+            <a href="chapter3-priorities-dec_899.html" class="btn btn--primary">Перейти к типу</a>
+          </article>
+          <article class="type-card">
+            <div class="type-card__title">Указ №529 <span class="badge badge--dec529">Указ №529</span></div>
+            <div class="type-card__meta">7 направлений · 254 проекта</div>
+            <div class="type-card__stats">
+              <div class="type-card__stat">Финансирование: 72 млрд ₽</div>
+              <div class="type-card__stat">Среднее: 284 млн ₽</div>
+              <div class="type-card__stat">Активных: 4</div>
+              <div class="type-card__stat">Доля проектов: 16%</div>
+            </div>
+            <a href="chapter3-priorities-dec_529.html" class="btn btn--primary">Перейти к типу</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Перекрытия типов приоритетов</h2>
+        <p class="section-block__description">Проекты, относящиеся к нескольким типам приоритетов.</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Комбинация</th>
+              <th>Проектов</th>
+              <th>Финансирование</th>
+              <th>Комментарий</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>СНТР + Указ №529</td>
+              <td>45</td>
+              <td>12,5 млрд ₽</td>
+              <td>Фокус на технологическом суверенитете</td>
+            </tr>
+            <tr>
+              <td>СНТР + Указ №899</td>
+              <td>32</td>
+              <td>8,9 млрд ₽</td>
+              <td>Согласование исследований и технологий</td>
+            </tr>
+            <tr>
+              <td>Указ №529 + Указ №899</td>
+              <td>28</td>
+              <td>6,7 млрд ₽</td>
+              <td>Пилотные проекты и отраслевые решения</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const fundingByTypeCtx = document.getElementById('fundingByType');
+    if (fundingByTypeCtx) {
+      new Chart(fundingByTypeCtx, {
+        type: 'bar',
+        data: {
+          labels: ['СНТР', 'Указ №899', 'Указ №529'],
+          datasets: [{
+            label: 'Финансирование, млрд ₽',
+            data: [142, 98, 72],
+            backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              ticks: { callback: (value) => value + ' млрд' }
+            }
+          }
+        }
+      });
+    }
+
+    const fundingTrendCtx = document.getElementById('fundingTrend');
+    if (fundingTrendCtx) {
+      new Chart(fundingTrendCtx, {
+        type: 'line',
+        data: {
+          labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+          datasets: [{
+            label: 'Объём финансирования, млрд ₽',
+            data: [210, 232, 255, 278, 295, 312],
+            borderColor: '#2563eb',
+            backgroundColor: 'rgba(37, 99, 235, 0.15)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              ticks: { callback: (value) => value + ' млрд' }
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

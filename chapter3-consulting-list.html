@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Список поручений — Консультирование НТР</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <link rel="stylesheet" href="section3-consulting.css" />
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3-consulting.html">
+              <span class="back-link__icon"></span>
+              К обзору поручений
+            </a>
+            <span class="meta-pill">Список поручений</span>
+          </div>
+          <h1>Список поручений</h1>
+          <p>Полный перечень поручений с фильтрами по периоду, уровню, ФОИВ и статусу.</p>
+        </div>
+        <div class="meta-row">
+          <span class="meta-pill">Всего поручений: <strong>248</strong></span>
+          <span class="meta-pill">Период: <strong>2023–2025</strong></span>
+        </div>
+      </section>
+
+      <section class="filter-panel">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <div class="filter-group__title">Дата начала</div>
+            <input class="input" type="date" value="2023-01-01" />
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">Дата окончания</div>
+            <input class="input" type="date" value="2025-12-31" />
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">Уровень</div>
+            <select class="select">
+              <option>Все уровни</option>
+              <option>Президент</option>
+              <option>Правительство</option>
+              <option>Иное</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">ФОИВ</div>
+            <select class="select">
+              <option>Все ФОИВ</option>
+              <option>Минобрнауки</option>
+              <option>Минпромторг</option>
+              <option>Минцифры</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">Статус</div>
+            <select class="select">
+              <option>Все статусы</option>
+              <option>Исполнено</option>
+              <option>В работе</option>
+              <option>Просрочено</option>
+              <option>На согласовании</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <div class="filter-group__title">Поиск</div>
+            <input class="input" type="text" placeholder="Номер или текст поручения" />
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Реестр поручений</h2>
+        <p class="section-block__description">Поручения, отсортированные по дате и статусу.</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Поручение</th>
+              <th>Уровень</th>
+              <th>ФОИВ</th>
+              <th>Срок</th>
+              <th>Статус</th>
+              <th>Дней до срока</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="chapter3-consulting-item-2025-014.html">КНТР-2025-014</a></td>
+              <td>Подготовить предложения по цифровым платформам НТР</td>
+              <td>Правительство</td>
+              <td>Минцифры</td>
+              <td>12.02.2026</td>
+              <td><span class="status-pill status-pill--progress">В работе</span></td>
+              <td>8</td>
+            </tr>
+            <tr>
+              <td><a href="chapter3-consulting-item-2025-031.html">КНТР-2025-031</a></td>
+              <td>Согласовать план развития инженерных университетов</td>
+              <td>Президент</td>
+              <td>Минобрнауки</td>
+              <td>22.02.2026</td>
+              <td><span class="status-pill status-pill--wait">На согласовании</span></td>
+              <td>18</td>
+            </tr>
+            <tr>
+              <td>КНТР-2025-022</td>
+              <td>Отчёт по импортонезависимости технологий</td>
+              <td>Правительство</td>
+              <td>Минпромторг</td>
+              <td>28.01.2026</td>
+              <td><span class="status-pill status-pill--overdue">Просрочено</span></td>
+              <td>-7</td>
+            </tr>
+            <tr>
+              <td>КНТР-2025-017</td>
+              <td>Подготовить паспорт НПТЛ по энергетике</td>
+              <td>Иное</td>
+              <td>Минэнерго</td>
+              <td>28.02.2026</td>
+              <td><span class="status-pill status-pill--progress">В работе</span></td>
+              <td>24</td>
+            </tr>
+            <tr>
+              <td>КНТР-2025-011</td>
+              <td>Анализ кадрового обеспечения проектов НТР</td>
+              <td>Президент</td>
+              <td>Минобрнауки</td>
+              <td>31.01.2026</td>
+              <td><span class="status-pill status-pill--done">Исполнено</span></td>
+              <td>-4</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

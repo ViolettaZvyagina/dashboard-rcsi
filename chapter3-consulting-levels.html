@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Поручения по уровням — Консультирование НТР</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <link rel="stylesheet" href="section3-consulting.css" />
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3-consulting.html">
+              <span class="back-link__icon"></span>
+              К обзору поручений
+            </a>
+            <span class="meta-pill">По уровням</span>
+          </div>
+          <h1>Поручения по уровням</h1>
+          <p>Сравнение показателей по уровням управления: Президент, Правительство, Иное.</p>
+        </div>
+        <div class="meta-row">
+          <span class="meta-pill">Период: <strong>2023–2025</strong></span>
+        </div>
+      </section>
+
+      <section class="tabs">
+        <div class="tabs__header">
+          <a class="tabs__tab" href="chapter3-consulting.html">Обзор</a>
+          <a class="tabs__tab tabs__tab--active" href="chapter3-consulting-levels.html">По уровням</a>
+          <a class="tabs__tab" href="chapter3-consulting-foiv.html">По ФОИВ</a>
+        </div>
+      </section>
+
+      <section class="level-grid">
+        <article class="level-card">
+          <div class="level-card__title">
+            Президент
+            <span class="status-pill status-pill--progress">102 поручения</span>
+          </div>
+          <div class="level-card__meta">Доля в срок: 81% · Просрочено: 8</div>
+          <a class="btn btn--primary" href="chapter3-consulting-level-president.html">Открыть уровень</a>
+        </article>
+        <article class="level-card">
+          <div class="level-card__title">
+            Правительство
+            <span class="status-pill status-pill--progress">96 поручений</span>
+          </div>
+          <div class="level-card__meta">Доля в срок: 76% · Просрочено: 11</div>
+          <a class="btn btn--primary" href="chapter3-consulting-level-government.html">Открыть уровень</a>
+        </article>
+        <article class="level-card">
+          <div class="level-card__title">
+            Иное
+            <span class="status-pill status-pill--progress">50 поручений</span>
+          </div>
+          <div class="level-card__meta">Доля в срок: 72% · Просрочено: 4</div>
+          <a class="btn btn--primary" href="chapter3-consulting-level-other.html">Открыть уровень</a>
+        </article>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Сводка по уровням</h2>
+        <p class="section-block__description">Сравнение основных KPI по уровням управления.</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Уровень</th>
+              <th>Всего</th>
+              <th>Исполнено</th>
+              <th>Просрочено</th>
+              <th>Доля в срок</th>
+              <th>Медианный TTD</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Президент</td>
+              <td>102</td>
+              <td>78</td>
+              <td>8</td>
+              <td>81%</td>
+              <td>16 дней</td>
+            </tr>
+            <tr>
+              <td>Правительство</td>
+              <td>96</td>
+              <td>66</td>
+              <td>11</td>
+              <td>76%</td>
+              <td>19 дней</td>
+            </tr>
+            <tr>
+              <td>Иное</td>
+              <td>50</td>
+              <td>28</td>
+              <td>4</td>
+              <td>72%</td>
+              <td>21 день</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

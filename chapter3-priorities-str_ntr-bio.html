@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Биотехнологии и генетика — Приоритеты СНТР</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <link rel="stylesheet" href="section3-priorities.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="page">
+    <main class="dashboard">
+      <section class="management-panel">
+        <div class="hero-title">
+          <div class="hero-title__header">
+            <a class="back-link" href="chapter3-priorities-str_ntr.html">
+              <span class="back-link__icon"></span>
+              К приоритетам СНТР
+            </a>
+            <span class="meta-pill">СНТР · профиль</span>
+          </div>
+          <h1>Биотехнологии и генетика</h1>
+          <p>Карточка приоритета: ключевые показатели, структура финансирования, заказчики, исполнители и портфель проектов.</p>
+        </div>
+        <div class="meta-row">
+          <span class="meta-pill">Период: <strong>2020–2025</strong></span>
+          <span class="meta-pill">Проектов: <strong>84</strong></span>
+          <span class="meta-pill">Финансирование: <strong>18,2 млрд ₽</strong></span>
+        </div>
+      </section>
+
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-card__label">Всего проектов</div>
+          <div class="kpi-card__value">84</div>
+          <div class="kpi-card__hint">62 активных · 22 завершено</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Общий объём финансирования</div>
+          <div class="kpi-card__value">18,2 млрд ₽</div>
+          <div class="kpi-card__hint">13% от портфеля СНТР</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Среднее на проект</div>
+          <div class="kpi-card__value">216 млн ₽</div>
+          <div class="kpi-card__hint">Медиана 205 млн ₽</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Средняя длительность</div>
+          <div class="kpi-card__value">4,1 года</div>
+          <div class="kpi-card__hint">Диапазон 2–7 лет</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Доля активных</div>
+          <div class="kpi-card__value">74%</div>
+          <div class="kpi-card__hint">В запуске 6 проектов</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-card__label">Статус</div>
+          <div class="kpi-card__value">Высокий приоритет</div>
+          <div class="kpi-card__hint">Обновление Q4 2025</div>
+        </article>
+      </section>
+
+      <section class="chart-grid">
+        <article class="chart-card">
+          <h2 class="chart-card__title">Структура финансирования</h2>
+          <p class="chart-card__subtitle">Источники, % от объёма</p>
+          <canvas id="bioFunding" class="chart-canvas--donut" height="180"></canvas>
+        </article>
+        <article class="chart-card">
+          <h2 class="chart-card__title">Динамика запуска и завершения</h2>
+          <p class="chart-card__subtitle">Количество проектов по годам</p>
+          <canvas id="bioTimeline" height="180"></canvas>
+        </article>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Ключевые заказчики и исполнители</h2>
+        <p class="section-block__description">Организации, формирующие основной портфель работ по приоритету.</p>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h3 class="chart-card__title">Заказчики</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Организация</th>
+                  <th>Проектов</th>
+                  <th>Финансирование</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Минобрнауки России</td>
+                  <td>18</td>
+                  <td>3,9 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>Минздрав России</td>
+                  <td>14</td>
+                  <td>2,8 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>Росатом</td>
+                  <td>9</td>
+                  <td>1,7 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>Фонд перспективных исследований</td>
+                  <td>7</td>
+                  <td>1,4 млрд ₽</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="chart-card">
+            <h3 class="chart-card__title">Исполнители</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Организация</th>
+                  <th>Проектов</th>
+                  <th>Финансирование</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>НИЦ «Курчатовский институт»</td>
+                  <td>12</td>
+                  <td>2,6 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>Сколтех</td>
+                  <td>8</td>
+                  <td>1,9 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>Институт биоорганической химии РАН</td>
+                  <td>7</td>
+                  <td>1,5 млрд ₽</td>
+                </tr>
+                <tr>
+                  <td>МГУ им. М.В. Ломоносова</td>
+                  <td>6</td>
+                  <td>1,2 млрд ₽</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-block__title">Портфель проектов</h2>
+        <p class="section-block__description">Примеры проектов, реализуемых в рамках приоритета.</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Рег. №</th>
+              <th>Проект</th>
+              <th>Заказчик</th>
+              <th>Исполнитель</th>
+              <th>Период</th>
+              <th>Статус</th>
+              <th>Финансирование</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>BI-2022-014</td>
+              <td>Платформа редактирования генома растений</td>
+              <td>Минобрнауки</td>
+              <td>Сколтех</td>
+              <td>2022–2026</td>
+              <td><span class="status-pill status-pill--active">В работе</span></td>
+              <td>420 млн ₽</td>
+            </tr>
+            <tr>
+              <td>BI-2021-067</td>
+              <td>Биобанк высокотехнологичных штаммов</td>
+              <td>Минздрав</td>
+              <td>НИЦ «Курчатовский институт»</td>
+              <td>2021–2025</td>
+              <td><span class="status-pill status-pill--active">В работе</span></td>
+              <td>365 млн ₽</td>
+            </tr>
+            <tr>
+              <td>BI-2020-031</td>
+              <td>Генетическая диагностика онкологических заболеваний</td>
+              <td>Минздрав</td>
+              <td>МГУ</td>
+              <td>2020–2024</td>
+              <td><span class="status-pill status-pill--inactive">Завершён</span></td>
+              <td>280 млн ₽</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const bioFunding = document.getElementById('bioFunding');
+    if (bioFunding) {
+      new Chart(bioFunding, {
+        type: 'pie',
+        data: {
+          labels: ['Федеральный бюджет', 'Региональные бюджеты', 'Бизнес', 'Научные фонды', 'Собственные средства'],
+          datasets: [{
+            data: [45, 20, 15, 10, 10],
+            backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#94a3b8']
+          }]
+        },
+        options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+      });
+    }
+
+    const bioTimeline = document.getElementById('bioTimeline');
+    if (bioTimeline) {
+      new Chart(bioTimeline, {
+        type: 'bar',
+        data: {
+          labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+          datasets: [
+            {
+              label: 'Запуски',
+              data: [9, 12, 15, 18, 14, 10],
+              backgroundColor: '#3b82f6'
+            },
+            {
+              label: 'Завершения',
+              data: [3, 5, 6, 8, 9, 11],
+              backgroundColor: '#10b981'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { y: { ticks: { callback: (value) => value + ' проектов' } } }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
